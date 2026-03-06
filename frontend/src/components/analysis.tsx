@@ -65,6 +65,7 @@ interface JumpAnalysis {
 
 interface StreamAnalysis {
     overall_confidence: number;
+    total_stream_patterns: number;
     // Spacing Profile
     s_stacked_count: number;
     s_overlapping_count: number;
@@ -413,9 +414,9 @@ function AnalysisCardDetails({
 
 function getSpacingTag(spacing: number) {
     if (spacing === 0) return "N/A";
-    if (spacing < 120) return "Narrow (Close)";
-    if (spacing < 190) return "Moderate";
-    if (spacing < 280) return "Wide (Far)";
+    if (spacing < 120) return "Narrow";
+    if (spacing < 200) return "Moderate";
+    if (spacing < 340) return "Wide";
     return "Cross-Screen (Extreme)";
 }
 
@@ -429,13 +430,13 @@ function getStreamSpacingTag(spacing: number) {
 
 function StreamDetails({ 
     analysis, 
-    totalObjects 
+    totalObjects
 }: { 
     analysis: StreamAnalysis; 
-    totalObjects: number; 
+    totalObjects: number;
 }) {
     const avg = analysis.avg_stream_spacing || 0;
-    const totalGaps = (analysis.v_steady_count || 0) + (analysis.v_variable_count || 0) + (analysis.v_dynamic_count || 0);
+    const totalPatterns = analysis.total_stream_patterns || 0;
 
     return (
         <>
@@ -443,40 +444,40 @@ function StreamDetails({
                 Type: {getStreamSpacingTag(avg)} ({avg.toFixed(1)} px)
             </li>
 
-            {/* --- NEW: DISTANCE PROFILE --- */}
-            <p className="text-xs font-semibold text-blue-400 uppercase mb-2">Distance Profile (Relative to Map)</p>
+            <p className="text-xs font-semibold text-blue-400 uppercase mb-2">
+                Spacing Profile (Density by Notes)
+            </p>
             <li className="flex justify-between">
-                <span>Stacked (&lt;10px):</span>
+                <span>Stacked patterns:</span>
                 <span>{analysis.s_stacked_count || 0} ({((analysis.s_stack_dens || 0) * 100).toFixed(1)}%)</span>
             </li>
             <li className="flex justify-between">
-                <span>Overlapping (10-30px):</span>
+                <span>Overlapping patterns:</span>
                 <span>{analysis.s_overlapping_count || 0} ({((analysis.s_over_dens || 0) * 100).toFixed(1)}%)</span>
             </li>
             <li className="flex justify-between">
-                <span>Spaced (30-60px):</span>
+                <span>Spaced patterns:</span>
                 <span>{analysis.s_spaced_count || 0} ({((analysis.s_space_dens || 0) * 100).toFixed(1)}%)</span>
             </li>
             <li className="flex justify-between mb-4">
-                <span>Extreme (60px+):</span>
+                <span>Extreme patterns:</span>
                 <span>{analysis.s_extreme_count || 0} ({((analysis.s_extr_dens || 0) * 100).toFixed(1)}%)</span>
             </li>
 
-            {/* --- NEW: VARIANCE PROFILE --- */}
             <p className="text-xs font-semibold text-blue-400 uppercase mb-2">Variance Profile (Relative to Streams)</p>
             <li className="flex justify-between">
-                <span>Steady:</span>
-                <span>{analysis.v_steady_count || 0} ({totalGaps > 0 ? (((analysis.v_steady_count || 0) / totalGaps) * 100).toFixed(1) : 0}%)</span>
+                <span>Steady patterns:</span>
+                <span>{analysis.v_steady_count || 0} ({totalPatterns > 0 ? (((analysis.v_steady_count || 0) / totalPatterns) * 100).toFixed(1) : 0}%)</span>
             </li>
             <li className="flex justify-between">
-                <span>Variable:</span>
-                <span>{analysis.v_variable_count || 0} ({totalGaps > 0 ? (((analysis.v_variable_count || 0) / totalGaps) * 100).toFixed(1) : 0}%)</span>
+                <span>Variable patterns:</span>
+                <span>{analysis.v_variable_count || 0} ({totalPatterns > 0 ? (((analysis.v_variable_count || 0) / totalPatterns) * 100).toFixed(1) : 0}%)</span>
             </li>
             <li className="flex justify-between mb-4">
-                <span>Dynamic:</span>
-                <span>{analysis.v_dynamic_count || 0} ({totalGaps > 0 ? (((analysis.v_dynamic_count || 0) / totalGaps) * 100).toFixed(1) : 0}%)</span>
+                <span>Dynamic patterns:</span>
+                <span>{analysis.v_dynamic_count || 0} ({totalPatterns > 0 ? (((analysis.v_dynamic_count || 0) / totalPatterns) * 100).toFixed(1) : 0}%)</span>
             </li>
-            
+
             <li title="The longest string of unbroken stream notes in the map">
                 Longest stream: {analysis.max_stream_length} notes
             </li>
@@ -507,25 +508,28 @@ function JumpDetails({ analysis }: { analysis: JumpAnalysis }) {
 
     return (
         <>
-            <li className="font-bold">Spacing: {spacingTag}</li>
-            <li>Avg. Jump Distance: {spacing.toFixed(1)} px</li>
-
-            <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Distance Profile (Individual Jumps)</p>
+            <li className="font-bold border-b border-gray-700 pb-1 mb-2">
+                Spacing: {spacingTag} ({spacing.toFixed(1)} px)
+            </li>
+            
+            <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
+                Distance Profile (Excluding Stream Notes)
+            </p>
             
             <li className="flex justify-between">
                 <span>Narrow (&lt;120px):</span>
-                <span className="font-mono">{analysis.narrow_count || 0} ({((analysis.narrow_dens || 0) * 100).toFixed(1)}%)</span>
+                <span>{analysis.narrow_count || 0} ({((analysis.narrow_dens || 0) * 100).toFixed(1)}%)</span>
             </li>
             <li className="flex justify-between">
                 <span>Moderate (120-190px):</span>
                 <span className="font-mono">{analysis.moderate_count || 0} ({((analysis.moderate_dens || 0) * 100).toFixed(1)}%)</span>
             </li>
             <li className="flex justify-between">
-                <span>Wide (190-280px):</span>
+                <span>Wide (200-340px):</span>
                 <span className="font-mono">{analysis.wide_count || 0} ({((analysis.wide_dens || 0) * 100).toFixed(1)}%)</span>
             </li>
             <li className="flex justify-between mb-3">
-                <span>Extreme (280px+):</span>
+                <span>Extreme (340px+):</span>
                 <span className="font-mono">{analysis.extreme_count || 0} ({((analysis.extreme_dens || 0) * 100).toFixed(1)}%)</span>
             </li>
 
