@@ -51,6 +51,15 @@ interface JumpAnalysis {
     jump_density: number;
     bpm_consistency: number;
     avg_spacing: number;
+    // Distance Profile Fields
+    narrow_count: number;
+    moderate_count: number;
+    wide_count: number;
+    extreme_count: number;
+    narrow_dens: number;
+    moderate_dens: number;
+    wide_dens: number;
+    extreme_dens: number;
 }
 
 interface StreamAnalysis {
@@ -425,6 +434,26 @@ function JumpDetails({ analysis }: { analysis: JumpAnalysis }) {
         <>
             <li className="font-bold">Spacing: {spacingTag}</li>
             <li>Avg. Jump Distance: {spacing.toFixed(1)} px</li>
+
+            <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Distance Profile (Individual Jumps)</p>
+            
+            <li className="flex justify-between">
+                <span>Narrow (&lt;120px):</span>
+                <span className="font-mono">{analysis.narrow_count || 0} ({((analysis.narrow_dens || 0) * 100).toFixed(1)}%)</span>
+            </li>
+            <li className="flex justify-between">
+                <span>Moderate (120-190px):</span>
+                <span className="font-mono">{analysis.moderate_count || 0} ({((analysis.moderate_dens || 0) * 100).toFixed(1)}%)</span>
+            </li>
+            <li className="flex justify-between">
+                <span>Wide (190-280px):</span>
+                <span className="font-mono">{analysis.wide_count || 0} ({((analysis.wide_dens || 0) * 100).toFixed(1)}%)</span>
+            </li>
+            <li className="flex justify-between mb-3">
+                <span>Extreme (280px+):</span>
+                <span className="font-mono">{analysis.extreme_count || 0} ({((analysis.extreme_dens || 0) * 100).toFixed(1)}%)</span>
+            </li>
+
             <li title="The longest string of unbroken jumps in the map">
                 Max jump chain: {analysis.max_jump_length} notes
             </li>

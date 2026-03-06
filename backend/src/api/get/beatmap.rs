@@ -213,53 +213,60 @@ pub async fn analyze_beatmap(
 
     match analyze_type.to_lowercase().as_str() {
         "all" => {
+            // Use rosu_pp to get the objects reliably
+            let path = Path::new("maps").join(format!("{}.osu", beatmap_id));
+            let pp_map = rosu_pp::Beatmap::from_path(path).unwrap();
+            
+            let mut n_count = 0;
+            let mut m_count = 0;
+            let mut w_count = 0;
+            let mut e_count = 0;
+            let mut t_dist = 0.0;
+            let mut j_total = 0;
+            let total_obj = pp_map.hit_objects.len() as f64;
+
+            for window in pp_map.hit_objects.windows(2) {
+                let p1 = window[0].pos;
+                let p2 = window[1].pos;
+                
+                let dx = (p2.x - p1.x) as f64;
+                let dy = (p2.y - p1.y) as f64;
+                let d = (dx * dx + dy * dy).sqrt();
+
+                if d > 0.0 {
+                    t_dist += d;
+                    j_total += 1;
+                    if d < 120.0 { n_count += 1; }
+                    else if d < 190.0 { m_count += 1; }
+                    else if d < 280.0 { w_count += 1; }
+                    else { e_count += 1; }
+                }
+            }
+
+            let avg = if j_total > 0 { t_dist / j_total as f64 } else { 0.0 };
+
             let mut stream_analyzer = analyze::Stream::new(map.clone());
             let stream_analysis = stream_analyzer.analyze();
 
-            let map_copy = map.clone();
-            let mut jump_analyzer = analyze::Jump::new(map_copy);
+            let mut jump_analyzer = analyze::Jump::new(map);
             let jump_analysis = jump_analyzer.analyze();
 
-            // Calculate spacing manually by matching on the object type (Circle/Slider)
-            let mut total_dist = 0.0;
-            let mut count = 0;
-            for window in map.hit_objects.windows(2) {
-                let p1 = match &window[0].kind {
-                    rosu_map::section::hit_objects::HitObjectKind::Circle(c) => Some(c.pos),
-                    rosu_map::section::hit_objects::HitObjectKind::Slider(s) => Some(s.pos),
-                    _ => None,
-                };
-                let p2 = match &window[1].kind {
-                    rosu_map::section::hit_objects::HitObjectKind::Circle(c) => Some(c.pos),
-                    rosu_map::section::hit_objects::HitObjectKind::Slider(s) => Some(s.pos),
-                    _ => None,
-                };
-
-                if let (Some(pos1), Some(pos2)) = (p1, p2) {
-                    let dx = pos2.x - pos1.x;
-                    let dy = pos2.y - pos1.y;
-                    let dist = (dx * dx + dy * dy).sqrt();
-                    if dist > 0.0 {
-                        total_dist += dist as f64;
-                        count += 1;
-                    }
-                }
-            }
-            let avg = if count > 0 { total_dist / count as f64 } else { 0.0 };
-
             let mut jump_val = serde_json::to_value(jump_analysis).unwrap();
-            jump_val.as_object_mut().unwrap().insert("avg_spacing".to_string(), serde_json::to_value(avg).unwrap());
+            let obj = jump_val.as_object_mut().unwrap();
+            obj.insert("avg_spacing".to_string(), serde_json::to_value(avg).unwrap());
+            obj.insert("narrow_count".to_string(), serde_json::to_value(n_count).unwrap());
+            obj.insert("moderate_count".to_string(), serde_json::to_value(m_count).unwrap());
+            obj.insert("wide_count".to_string(), serde_json::to_value(w_count).unwrap());
+            obj.insert("extreme_count".to_string(), serde_json::to_value(e_count).unwrap());
+            obj.insert("narrow_dens".to_string(), serde_json::to_value(n_count as f64 / total_obj).unwrap());
+            obj.insert("moderate_dens".to_string(), serde_json::to_value(m_count as f64 / total_obj).unwrap());
+            obj.insert("wide_dens".to_string(), serde_json::to_value(w_count as f64 / total_obj).unwrap());
+            obj.insert("extreme_dens".to_string(), serde_json::to_value(e_count as f64 / total_obj).unwrap());
 
             Ok(reply::with_status(
                 reply::json(&vec![
-                    AnalysisResult {
-                        analysis_type: String::from("jump"),
-                        analysis: jump_val,
-                    },
-                    AnalysisResult {
-                        analysis_type: String::from("stream"),
-                        analysis: serde_json::to_value(stream_analysis).unwrap(),
-                    },
+                    AnalysisResult { analysis_type: String::from("jump"), analysis: jump_val },
+                    AnalysisResult { analysis_type: String::from("stream"), analysis: serde_json::to_value(stream_analysis).unwrap() },
                 ]),
                 StatusCode::OK,
             ))
@@ -279,43 +286,53 @@ pub async fn analyze_beatmap(
         }
 
         "jump" => {
-            let mut total_dist = 0.0;
-            let mut count = 0;
-            for window in map.hit_objects.windows(2) {
-                let p1 = match &window[0].kind {
-                    rosu_map::section::hit_objects::HitObjectKind::Circle(c) => Some(c.pos),
-                    rosu_map::section::hit_objects::HitObjectKind::Slider(s) => Some(s.pos),
-                    _ => None,
-                };
-                let p2 = match &window[1].kind {
-                    rosu_map::section::hit_objects::HitObjectKind::Circle(c) => Some(c.pos),
-                    rosu_map::section::hit_objects::HitObjectKind::Slider(s) => Some(s.pos),
-                    _ => None,
-                };
+            let path_pp = Path::new("maps").join(format!("{}.osu", beatmap_id));
+            let pp_map = rosu_pp::Beatmap::from_path(path_pp).unwrap();
+            
+            let mut n_count = 0;
+            let mut m_count = 0;
+            let mut w_count = 0;
+            let mut e_count = 0;
+            let mut t_dist = 0.0;
+            let mut j_total = 0;
+            let total_obj = pp_map.hit_objects.len() as f64;
 
-                if let (Some(pos1), Some(pos2)) = (p1, p2) {
-                    let dx = pos2.x - pos1.x;
-                    let dy = pos2.y - pos1.y;
-                    let dist = (dx * dx + dy * dy).sqrt();
-                    if dist > 0.0 {
-                        total_dist += dist as f64;
-                        count += 1;
-                    }
+            for window in pp_map.hit_objects.windows(2) {
+                let p1 = window[0].pos;
+                let p2 = window[1].pos;
+                let dx = (p2.x - p1.x) as f64;
+                let dy = (p2.y - p1.y) as f64;
+                let d = (dx * dx + dy * dy).sqrt();
+
+                if d > 0.0 {
+                    t_dist += d;
+                    j_total += 1;
+                    if d < 120.0 { n_count += 1; }
+                    else if d < 190.0 { m_count += 1; }
+                    else if d < 280.0 { w_count += 1; }
+                    else { e_count += 1; }
                 }
             }
-            let avg_spacing = if count > 0 { total_dist / count as f64 } else { 0.0 };
+
+            let avg_spacing = if j_total > 0 { t_dist / j_total as f64 } else { 0.0 };
 
             let mut jump_analyzer = analyze::Jump::new(map);
             let jump_analysis = jump_analyzer.analyze();
 
             let mut val = serde_json::to_value(jump_analysis).unwrap();
-            val.as_object_mut().unwrap().insert("avg_spacing".to_string(), serde_json::to_value(avg_spacing).unwrap());
+            let obj = val.as_object_mut().unwrap();
+            obj.insert("avg_spacing".to_string(), serde_json::to_value(avg_spacing).unwrap());
+            obj.insert("narrow_count".to_string(), serde_json::to_value(n_count).unwrap());
+            obj.insert("moderate_count".to_string(), serde_json::to_value(m_count).unwrap());
+            obj.insert("wide_count".to_string(), serde_json::to_value(w_count).unwrap());
+            obj.insert("extreme_count".to_string(), serde_json::to_value(e_count).unwrap());
+            obj.insert("narrow_dens".to_string(), serde_json::to_value(n_count as f64 / total_obj).unwrap());
+            obj.insert("moderate_dens".to_string(), serde_json::to_value(m_count as f64 / total_obj).unwrap());
+            obj.insert("wide_dens".to_string(), serde_json::to_value(w_count as f64 / total_obj).unwrap());
+            obj.insert("extreme_dens".to_string(), serde_json::to_value(e_count as f64 / total_obj).unwrap());
 
             Ok(reply::with_status(
-                reply::json(&AnalysisResult {
-                    analysis_type: String::from("jump"),
-                    analysis: val,
-                }),
+                reply::json(&AnalysisResult { analysis_type: String::from("jump"), analysis: val }),
                 StatusCode::OK,
             ))
         }
