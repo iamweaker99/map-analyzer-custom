@@ -33,6 +33,7 @@ export interface BeatmapDetailsResult {
         cs: number;
         bpm: number;
         star_rating: number;
+        total_objects: number;
     };
 }
 
@@ -64,6 +65,21 @@ interface JumpAnalysis {
 
 interface StreamAnalysis {
     overall_confidence: number;
+    // Spacing Profile
+    s_stacked_count: number;
+    s_overlapping_count: number;
+    s_spaced_count: number;
+    s_extreme_count: number;
+    avg_stream_spacing: number;
+    s_stack_dens: number;
+    s_over_dens: number;
+    s_space_dens: number;
+    s_extr_dens: number;
+    // Variance Profile
+    v_steady_count: number;
+    v_variable_count: number;
+    v_dynamic_count: number;
+    // Length Profile
     short_streams: number;
     medium_streams: number;
     long_streams: number;
@@ -290,6 +306,7 @@ export default function Analysis({
                                                     <AnalysisCardDetails
                                                         key={`details-${i}`}
                                                         analysis={analysis}
+                                                        totalObjects={detailsResult.statistics.total_objects}
                                                     />
                                                 ),
                                             )}
@@ -362,8 +379,10 @@ function AnalysisCardClass({
 
 function AnalysisCardDetails({
     analysis,
+    totalObjects,
 }: {
     analysis: BeatmapAnalysisResult;
+    totalObjects: number;
 }) {
     const { analysis_type, analysis: details } = analysis;
     const capitalizedType =
@@ -380,6 +399,7 @@ function AnalysisCardDetails({
                         {analysis_type === "stream" ? (
                             <StreamDetails
                                 analysis={details as StreamAnalysis}
+                                totalObjects={totalObjects}
                             />
                         ) : (
                             <JumpDetails analysis={details as JumpAnalysis} />
@@ -399,9 +419,64 @@ function getSpacingTag(spacing: number) {
     return "Cross-Screen (Extreme)";
 }
 
-function StreamDetails({ analysis }: { analysis: StreamAnalysis }) {
+function getStreamSpacingTag(spacing: number) {
+    if (spacing === 0) return "N/A";
+    if (spacing < 10) return "Stacked";
+    if (spacing < 30) return "Overlapping";
+    if (spacing < 60) return "Spaced";
+    return "Extreme (Jump-Stream)";
+}
+
+function StreamDetails({ 
+    analysis, 
+    totalObjects 
+}: { 
+    analysis: StreamAnalysis; 
+    totalObjects: number; 
+}) {
+    const avg = analysis.avg_stream_spacing || 0;
+    const totalGaps = (analysis.v_steady_count || 0) + (analysis.v_variable_count || 0) + (analysis.v_dynamic_count || 0);
+
     return (
         <>
+            <li className="font-bold border-b border-blue-900 pb-1 mb-2">
+                Type: {getStreamSpacingTag(avg)} ({avg.toFixed(1)} px)
+            </li>
+
+            {/* --- NEW: DISTANCE PROFILE --- */}
+            <p className="text-xs font-semibold text-blue-400 uppercase mb-2">Distance Profile (Relative to Map)</p>
+            <li className="flex justify-between">
+                <span>Stacked (&lt;10px):</span>
+                <span>{analysis.s_stacked_count || 0} ({((analysis.s_stack_dens || 0) * 100).toFixed(1)}%)</span>
+            </li>
+            <li className="flex justify-between">
+                <span>Overlapping (10-30px):</span>
+                <span>{analysis.s_overlapping_count || 0} ({((analysis.s_over_dens || 0) * 100).toFixed(1)}%)</span>
+            </li>
+            <li className="flex justify-between">
+                <span>Spaced (30-60px):</span>
+                <span>{analysis.s_spaced_count || 0} ({((analysis.s_space_dens || 0) * 100).toFixed(1)}%)</span>
+            </li>
+            <li className="flex justify-between mb-4">
+                <span>Extreme (60px+):</span>
+                <span>{analysis.s_extreme_count || 0} ({((analysis.s_extr_dens || 0) * 100).toFixed(1)}%)</span>
+            </li>
+
+            {/* --- NEW: VARIANCE PROFILE --- */}
+            <p className="text-xs font-semibold text-blue-400 uppercase mb-2">Variance Profile (Relative to Streams)</p>
+            <li className="flex justify-between">
+                <span>Steady:</span>
+                <span>{analysis.v_steady_count || 0} ({totalGaps > 0 ? (((analysis.v_steady_count || 0) / totalGaps) * 100).toFixed(1) : 0}%)</span>
+            </li>
+            <li className="flex justify-between">
+                <span>Variable:</span>
+                <span>{analysis.v_variable_count || 0} ({totalGaps > 0 ? (((analysis.v_variable_count || 0) / totalGaps) * 100).toFixed(1) : 0}%)</span>
+            </li>
+            <li className="flex justify-between mb-4">
+                <span>Dynamic:</span>
+                <span>{analysis.v_dynamic_count || 0} ({totalGaps > 0 ? (((analysis.v_dynamic_count || 0) / totalGaps) * 100).toFixed(1) : 0}%)</span>
+            </li>
+            
             <li title="The longest string of unbroken stream notes in the map">
                 Longest stream: {analysis.max_stream_length} notes
             </li>

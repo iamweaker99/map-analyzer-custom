@@ -28,6 +28,7 @@ struct Statistics {
     od: f32,
     hp: f32,
     cs: f32,
+    total_objects: usize,
 }
 
 #[derive(Serialize)]
@@ -182,6 +183,7 @@ pub async fn beatmap_details(
         hp: map_calculate.hp,
         bpm: map_calculate.bpm(),
         star_rating: perf_attrs.stars(),
+        total_objects: map_calculate.hit_objects.len(), 
     };
 
     Ok(reply::with_status(
@@ -212,138 +214,118 @@ pub async fn analyze_beatmap(
     let map = rosu_map::from_path::<rosu_map::Beatmap>(path).unwrap();
 
     match analyze_type.to_lowercase().as_str() {
-        "all" => {
-            // Use rosu_pp to get the objects reliably
-            let path = Path::new("maps").join(format!("{}.osu", beatmap_id));
-            let pp_map = rosu_pp::Beatmap::from_path(path).unwrap();
+        "all" | "jump" | "stream" => {
+            let total_obj_count = map.hit_objects.len() as f64;
             
-            let mut n_count = 0;
-            let mut m_count = 0;
-            let mut w_count = 0;
-            let mut e_count = 0;
-            let mut t_dist = 0.0;
-            let mut j_total = 0;
-            let total_obj = pp_map.hit_objects.len() as f64;
+            // --- JUMP LOGIC ---
+            let mut j_total_dist = 0.0;
+            let mut j_count = 0;
+            let mut n_cnt = 0; let mut m_cnt = 0; let mut w_cnt = 0; let mut e_cnt = 0;
 
-            for window in pp_map.hit_objects.windows(2) {
-                let p1 = window[0].pos;
-                let p2 = window[1].pos;
+            // --- STREAM LOGIC ---
+            let mut s_stack = 0; let mut s_over = 0; let mut s_space = 0; let mut s_extr = 0;
+            let mut v_stead = 0; let mut v_vari = 0; let mut v_dyna = 0;
+            let mut s_total_dist = 0.0; let mut s_total_gaps = 0;
+            let mut s_buffer: Vec<f64> = Vec::new();
+
+            for window in map.hit_objects.windows(2) {
+                let time_diff = window[1].start_time - window[0].start_time;
                 
-                let dx = (p2.x - p1.x) as f64;
-                let dy = (p2.y - p1.y) as f64;
-                let d = (dx * dx + dy * dy).sqrt();
+                let p1 = match &window[0].kind {
+                    rosu_map::section::hit_objects::HitObjectKind::Circle(c) => Some(c.pos),
+                    rosu_map::section::hit_objects::HitObjectKind::Slider(s) => Some(s.pos),
+                    _ => None,
+                };
+                let p2 = match &window[1].kind {
+                    rosu_map::section::hit_objects::HitObjectKind::Circle(c) => Some(c.pos),
+                    rosu_map::section::hit_objects::HitObjectKind::Slider(s) => Some(s.pos),
+                    _ => None,
+                };
 
-                if d > 0.0 {
-                    t_dist += d;
-                    j_total += 1;
-                    if d < 120.0 { n_count += 1; }
-                    else if d < 190.0 { m_count += 1; }
-                    else if d < 280.0 { w_count += 1; }
-                    else { e_count += 1; }
+                if let (Some(pos1), Some(pos2)) = (p1, p2) {
+                    let dx = (pos2.x - pos1.x) as f64;
+                    let dy = (pos2.y - pos1.y) as f64;
+                    let d = (dx * dx + dy * dy).sqrt();
+
+                    if d > 0.0 {
+                        // JUMP PROCESSING
+                        j_total_dist += d;
+                        j_count += 1;
+                        if d < 120.0 { n_cnt += 1; }
+                        else if d < 190.0 { m_cnt += 1; }
+                        else if d < 280.0 { w_cnt += 1; }
+                        else { e_cnt += 1; }
+
+                        // STREAM PROCESSING (Time Threshold)
+                        if time_diff <= 125.0 {
+                            s_buffer.push(d);
+                            s_total_dist += d;
+                            s_total_gaps += 1;
+                            if d < 10.0 { s_stack += 1; }
+                            else if d < 30.0 { s_over += 1; }
+                            else if d < 60.0 { s_space += 1; }
+                            else { s_extr += 1; }
+                        } else {
+                            // End Stream Session
+                            if s_buffer.len() >= 2 {
+                                let count = s_buffer.len() as f64;
+                                let mean = s_buffer.iter().sum::<f64>() / count;
+                                let var = s_buffer.iter().map(|x| (x - mean).powi(2)).sum::<f64>() / count;
+                                let cv = if mean > 0.0 { var.sqrt() / mean } else { 0.0 };
+                                if cv < 0.15 { v_stead += s_buffer.len(); }
+                                else if cv < 0.40 { v_vari += s_buffer.len(); }
+                                else { v_dyna += s_buffer.len(); }
+                            }
+                            s_buffer.clear();
+                        }
+                    }
                 }
             }
 
-            let avg = if j_total > 0 { t_dist / j_total as f64 } else { 0.0 };
+            let avg_j = if j_count > 0 { j_total_dist / j_count as f64 } else { 0.0 };
+            let avg_s = if s_total_gaps > 0 { s_total_dist / s_total_gaps as f64 } else { 0.0 };
 
-            let mut stream_analyzer = analyze::Stream::new(map.clone());
-            let stream_analysis = stream_analyzer.analyze();
+            let jump_analysis = analyze::Jump::new(map.clone()).analyze();
+            let stream_analysis = analyze::Stream::new(map).analyze();
 
-            let mut jump_analyzer = analyze::Jump::new(map);
-            let jump_analysis = jump_analyzer.analyze();
+            let mut j_val = serde_json::to_value(jump_analysis).unwrap();
+            let j_obj = j_val.as_object_mut().unwrap();
+            j_obj.insert("avg_spacing".to_string(), serde_json::to_value(avg_j).unwrap());
+            j_obj.insert("narrow_count".to_string(), serde_json::to_value(n_cnt).unwrap());
+            j_obj.insert("moderate_count".to_string(), serde_json::to_value(m_cnt).unwrap());
+            j_obj.insert("wide_count".to_string(), serde_json::to_value(w_cnt).unwrap());
+            j_obj.insert("extreme_count".to_string(), serde_json::to_value(e_cnt).unwrap());
+            j_obj.insert("narrow_dens".to_string(), serde_json::to_value(n_cnt as f64 / total_obj_count).unwrap());
+            j_obj.insert("moderate_dens".to_string(), serde_json::to_value(m_cnt as f64 / total_obj_count).unwrap());
+            j_obj.insert("wide_dens".to_string(), serde_json::to_value(w_cnt as f64 / total_obj_count).unwrap());
+            j_obj.insert("extreme_dens".to_string(), serde_json::to_value(e_cnt as f64 / total_obj_count).unwrap());
 
-            let mut jump_val = serde_json::to_value(jump_analysis).unwrap();
-            let obj = jump_val.as_object_mut().unwrap();
-            obj.insert("avg_spacing".to_string(), serde_json::to_value(avg).unwrap());
-            obj.insert("narrow_count".to_string(), serde_json::to_value(n_count).unwrap());
-            obj.insert("moderate_count".to_string(), serde_json::to_value(m_count).unwrap());
-            obj.insert("wide_count".to_string(), serde_json::to_value(w_count).unwrap());
-            obj.insert("extreme_count".to_string(), serde_json::to_value(e_count).unwrap());
-            obj.insert("narrow_dens".to_string(), serde_json::to_value(n_count as f64 / total_obj).unwrap());
-            obj.insert("moderate_dens".to_string(), serde_json::to_value(m_count as f64 / total_obj).unwrap());
-            obj.insert("wide_dens".to_string(), serde_json::to_value(w_count as f64 / total_obj).unwrap());
-            obj.insert("extreme_dens".to_string(), serde_json::to_value(e_count as f64 / total_obj).unwrap());
+            let mut s_val = serde_json::to_value(stream_analysis).unwrap();
+            let s_obj = s_val.as_object_mut().unwrap();
+            s_obj.insert("avg_stream_spacing".to_string(), serde_json::to_value(avg_s).unwrap());
+            s_obj.insert("s_stacked_count".to_string(), serde_json::to_value(s_stack).unwrap());
+            s_obj.insert("s_overlapping_count".to_string(), serde_json::to_value(s_over).unwrap());
+            s_obj.insert("s_spaced_count".to_string(), serde_json::to_value(s_space).unwrap());
+            s_obj.insert("s_extreme_count".to_string(), serde_json::to_value(s_extr).unwrap());
+            s_obj.insert("s_stack_dens".to_string(), serde_json::to_value(s_stack as f64 / total_obj_count).unwrap());
+            s_obj.insert("s_over_dens".to_string(), serde_json::to_value(s_over as f64 / total_obj_count).unwrap());
+            s_obj.insert("s_space_dens".to_string(), serde_json::to_value(s_space as f64 / total_obj_count).unwrap());
+            s_obj.insert("s_extr_dens".to_string(), serde_json::to_value(s_extr as f64 / total_obj_count).unwrap());
+            s_obj.insert("v_steady_count".to_string(), serde_json::to_value(v_stead).unwrap());
+            s_obj.insert("v_variable_count".to_string(), serde_json::to_value(v_vari).unwrap());
+            s_obj.insert("v_dynamic_count".to_string(), serde_json::to_value(v_dyna).unwrap());
 
-            Ok(reply::with_status(
-                reply::json(&vec![
-                    AnalysisResult { analysis_type: String::from("jump"), analysis: jump_val },
-                    AnalysisResult { analysis_type: String::from("stream"), analysis: serde_json::to_value(stream_analysis).unwrap() },
-                ]),
-                StatusCode::OK,
-            ))
-        }
-
-        "stream" => {
-            let mut stream_analyzer = analyze::Stream::new(map);
-            let analysis = stream_analyzer.analyze();
-
-            Ok(reply::with_status(
-                reply::json(&AnalysisResult {
-                    analysis_type: String::from("stream"),
-                    analysis: serde_json::to_value(analysis).unwrap(),
-                }),
-                StatusCode::OK,
-            ))
-        }
-
-        "jump" => {
-            let path_pp = Path::new("maps").join(format!("{}.osu", beatmap_id));
-            let pp_map = rosu_pp::Beatmap::from_path(path_pp).unwrap();
-            
-            let mut n_count = 0;
-            let mut m_count = 0;
-            let mut w_count = 0;
-            let mut e_count = 0;
-            let mut t_dist = 0.0;
-            let mut j_total = 0;
-            let total_obj = pp_map.hit_objects.len() as f64;
-
-            for window in pp_map.hit_objects.windows(2) {
-                let p1 = window[0].pos;
-                let p2 = window[1].pos;
-                let dx = (p2.x - p1.x) as f64;
-                let dy = (p2.y - p1.y) as f64;
-                let d = (dx * dx + dy * dy).sqrt();
-
-                if d > 0.0 {
-                    t_dist += d;
-                    j_total += 1;
-                    if d < 120.0 { n_count += 1; }
-                    else if d < 190.0 { m_count += 1; }
-                    else if d < 280.0 { w_count += 1; }
-                    else { e_count += 1; }
-                }
+            if analyze_type.to_lowercase() == "jump" {
+                Ok(reply::with_status(reply::json(&AnalysisResult { analysis_type: String::from("jump"), analysis: j_val }), StatusCode::OK))
+            } else if analyze_type.to_lowercase() == "stream" {
+                Ok(reply::with_status(reply::json(&AnalysisResult { analysis_type: String::from("stream"), analysis: s_val }), StatusCode::OK))
+            } else {
+                Ok(reply::with_status(reply::json(&vec![
+                    AnalysisResult { analysis_type: String::from("jump"), analysis: j_val },
+                    AnalysisResult { analysis_type: String::from("stream"), analysis: s_val },
+                ]), StatusCode::OK))
             }
-
-            let avg_spacing = if j_total > 0 { t_dist / j_total as f64 } else { 0.0 };
-
-            let mut jump_analyzer = analyze::Jump::new(map);
-            let jump_analysis = jump_analyzer.analyze();
-
-            let mut val = serde_json::to_value(jump_analysis).unwrap();
-            let obj = val.as_object_mut().unwrap();
-            obj.insert("avg_spacing".to_string(), serde_json::to_value(avg_spacing).unwrap());
-            obj.insert("narrow_count".to_string(), serde_json::to_value(n_count).unwrap());
-            obj.insert("moderate_count".to_string(), serde_json::to_value(m_count).unwrap());
-            obj.insert("wide_count".to_string(), serde_json::to_value(w_count).unwrap());
-            obj.insert("extreme_count".to_string(), serde_json::to_value(e_count).unwrap());
-            obj.insert("narrow_dens".to_string(), serde_json::to_value(n_count as f64 / total_obj).unwrap());
-            obj.insert("moderate_dens".to_string(), serde_json::to_value(m_count as f64 / total_obj).unwrap());
-            obj.insert("wide_dens".to_string(), serde_json::to_value(w_count as f64 / total_obj).unwrap());
-            obj.insert("extreme_dens".to_string(), serde_json::to_value(e_count as f64 / total_obj).unwrap());
-
-            Ok(reply::with_status(
-                reply::json(&AnalysisResult { analysis_type: String::from("jump"), analysis: val }),
-                StatusCode::OK,
-            ))
         }
-
-        _ => {
-            return Ok(reply::with_status(
-                reply::json(&ApiError {
-                    error: "Bad request: `analyze_type` must be either: `stream`, `jump`, `all`.".to_string(),
-                }),
-                StatusCode::BAD_REQUEST,
-            ));
-        }
+        _ => Ok(reply::with_status(reply::json(&ApiError { error: "Bad request".to_string() }), StatusCode::BAD_REQUEST)),
     }
 }
