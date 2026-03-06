@@ -81,9 +81,12 @@ interface StreamAnalysis {
     v_variable_count: number;
     v_dynamic_count: number;
     // Length Profile
+    // Length Profile
+    bursts: number;
     short_streams: number;
     medium_streams: number;
     long_streams: number;
+    death_streams: number;
     max_stream_length: number;
     stream_density: number;
     bpm_consistency: number;
@@ -478,17 +481,26 @@ function StreamDetails({
                 <span>{analysis.v_dynamic_count || 0} ({totalPatterns > 0 ? (((analysis.v_dynamic_count || 0) / totalPatterns) * 100).toFixed(1) : 0}%)</span>
             </li>
 
+            <p className="text-xs font-semibold text-blue-400 uppercase mb-2">Length Profile</p>
+
             <li title="The longest string of unbroken stream notes in the map">
                 Longest stream: {analysis.max_stream_length} notes
             </li>
-            <li title="Bursts of 3 to 5 notes">
-                Short streams: {analysis.short_streams}
+
+            <li title="Bursts of 3 to 4 notes (Excluded from Spacing/Variance math)">
+                Bursts (3-4): {analysis.bursts || 0}
             </li>
-            <li title="Streams of 6 to 12 notes">
-                Medium streams: {analysis.medium_streams}
+            <li title="Streams of 5 to 12 notes">
+                Short streams (5-12): {analysis.short_streams || 0}
             </li>
-            <li title="Streams of 13 or more notes">
-                Long streams: {analysis.long_streams}
+            <li title="Streams of 13 to 24 notes">
+                Medium streams (13-24): {analysis.medium_streams || 0}
+            </li>
+            <li title="Streams of 25 to 48 notes">
+                Long streams (25-48): {analysis.long_streams || 0}
+            </li>
+            <li title="Deathstreams of 49 or more notes">
+                Deathstreams (49+): {analysis.death_streams || 0}
             </li>
             <li title="Ratio of stream notes to total objects. Higher = more constant rapid clicking.">
                 Stream Density: {analysis.stream_density.toFixed(3)}

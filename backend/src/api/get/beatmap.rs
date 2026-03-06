@@ -215,131 +215,170 @@ pub async fn analyze_beatmap(
     let pp_map = rosu_pp::Beatmap::from_path(&path).unwrap();
     
     let bpm = pp_map.bpm();
-    let stream_threshold = (60000.0 / bpm / 4.0) + 15.0;
+    let stream_threshold = (60000.0 / bpm / 4.0) * 1.5;
     let total_obj_count = map.hit_objects.len() as f64;
 
-    match analyze_type.to_lowercase().as_str() {
-        "all" => {
-            // --- ISOLATED JUMP LOGIC ---
-            let mut j_dist = 0.0; let mut j_count = 0;
-            let mut n_cnt = 0; let mut m_cnt = 0; let mut w_cnt = 0; let mut e_cnt = 0;
+    // --- SHARED MATH LOGIC ---
+    let mut j_dist = 0.0; let mut j_cnt = 0;
+    let mut n_cnt = 0; let mut m_cnt = 0; let mut w_cnt = 0; let mut e_cnt = 0;
+    
+    // Custom Length Profile Counters
+    let mut bursts = 0; 
+    let mut short_len = 0; 
+    let mut med_len = 0; 
+    let mut long_len = 0; 
+    let mut death_len = 0;
 
-            for window in pp_map.hit_objects.windows(2) {
-                let time_diff = window[1].start_time - window[0].start_time;
-                let d = {
-                    let dx = (window[1].pos.x - window[0].pos.x) as f64;
-                    let dy = (window[1].pos.y - window[0].pos.y) as f64;
-                    (dx * dx + dy * dy).sqrt()
-                };
+    let mut s_p_stack = 0; let mut s_p_over = 0; let mut s_p_space = 0; let mut s_p_extr = 0;
+    let mut s_n_stack = 0.0; let mut s_n_over = 0.0; let mut s_n_space = 0.0; let mut s_n_extr = 0.0;
+    let mut v_stead = 0; let mut v_vari = 0; let mut v_dyna = 0;
+    let mut s_total_dist = 0.0; let mut s_total_gaps = 0;
+    let mut s_buffer: Vec<f64> = Vec::new();
 
-                // A jump is any gap that is NOT a stream (Too slow OR Too wide)
-                if d > 0.0 && (time_diff > stream_threshold || d > 90.0) {
-                    j_dist += d; j_count += 1;
-                    if d < 120.0 { n_cnt += 1; }
-                    else if d < 200.0 { m_cnt += 1; }
-                    else if d < 340.0 { w_cnt += 1; }
-                    else { e_cnt += 1; }
-                }
-            }
+    for window in pp_map.hit_objects.windows(2) {
+        let time_diff = window[1].start_time - window[0].start_time;
+        let d = {
+            let dx = (window[1].pos.x - window[0].pos.x) as f64;
+            let dy = (window[1].pos.y - window[0].pos.y) as f64;
+            (dx * dx + dy * dy).sqrt()
+        };
 
-            // --- ISOLATED STREAM LOGIC ---
-            let mut s_p_stack = 0; let mut s_p_over = 0; let mut s_p_space = 0; let mut s_p_extr = 0;
-            let mut s_n_stack = 0.0; let mut s_n_over = 0.0; let mut s_n_space = 0.0; let mut s_n_extr = 0.0;
-            let mut v_stead = 0; let mut v_vari = 0; let mut v_dyna = 0;
-            let mut s_dist = 0.0; let mut s_gaps = 0;
-            let mut s_buffer: Vec<f64> = Vec::new();
+        // 1. JUMP LOGIC
+        if d > 0.0 && (time_diff > stream_threshold || d > 90.0) {
+            j_dist += d; j_cnt += 1;
+            if d < 120.0 { n_cnt += 1; }
+            else if d < 200.0 { m_cnt += 1; }
+            else if d < 340.0 { w_cnt += 1; }
+            else { e_cnt += 1; }
+        }
 
-            for window in pp_map.hit_objects.windows(2) {
-                let time_diff = window[1].start_time - window[0].start_time;
-                let d = {
-                    let dx = (window[1].pos.x - window[0].pos.x) as f64;
-                    let dy = (window[1].pos.y - window[0].pos.y) as f64;
-                    (dx * dx + dy * dy).sqrt()
-                };
-
-                if time_diff <= stream_threshold && d <= 90.0 && d > 0.0 {
-                    s_buffer.push(d);
+        // 2. STREAM LOGIC
+        if time_diff <= stream_threshold && d <= 90.0 && d > 0.0 {
+            s_buffer.push(d);
+        } else {
+            let note_count = s_buffer.len() + 1;
+            
+            if note_count >= 3 { 
+                // It is at least a burst
+                if note_count <= 4 {
+                    bursts += 1;
+                    // We STOP here for bursts. They are not counted in spacing/variance.
                 } else {
-                    if s_buffer.len() >= 4 { // At least 5 notes (4 gaps) to match author
-                        let count = s_buffer.len() as f64;
-                        let mean = s_buffer.iter().sum::<f64>() / count;
-                        
-                        if mean < 10.0 { s_p_stack += 1; } else if mean < 30.0 { s_p_over += 1; } else if mean < 60.0 { s_p_space += 1; } else { s_p_extr += 1; }
-                        let var = s_buffer.iter().map(|x| (x - mean).powi(2)).sum::<f64>() / count;
-                        let cv = if mean > 0.0 { var.sqrt() / mean } else { 0.0 };
-                        if cv < 0.15 { v_stead += 1; } else if cv < 0.40 { v_vari += 1; } else { v_dyna += 1; }
-                        
-                        for &dist in &s_buffer {
-                            s_dist += dist; s_gaps += 1;
-                            if dist < 10.0 { s_n_stack += 1.0; } else if dist < 30.0 { s_n_over += 1.0; } else if dist < 60.0 { s_n_space += 1.0; } else { s_n_extr += 1.0; }
-                        }
+                    // It is a TRUE STREAM (5+ notes). Categorize its length.
+                    if note_count <= 12 { short_len += 1; }
+                    else if note_count <= 24 { med_len += 1; }
+                    else if note_count <= 48 { long_len += 1; }
+                    else { death_len += 1; }
+
+                    // Process Spacing & Variance Profile (Streams ONLY)
+                    let count = s_buffer.len() as f64;
+                    let mean = s_buffer.iter().sum::<f64>() / count;
+                    
+                    if mean < 10.0 { s_p_stack += 1; } else if mean < 30.0 { s_p_over += 1; } else if mean < 60.0 { s_p_space += 1; } else { s_p_extr += 1; }
+                    
+                    let var = s_buffer.iter().map(|x| (x - mean).powi(2)).sum::<f64>() / count;
+                    let cv = if mean > 0.0 { var.sqrt() / mean } else { 0.0 };
+                    
+                    if cv < 0.15 { v_stead += 1; } else if cv < 0.40 { v_vari += 1; } else { v_dyna += 1; }
+                    
+                    for &dist in &s_buffer {
+                        s_total_dist += dist; s_total_gaps += 1;
+                        if dist < 10.0 { s_n_stack += 1.0; } else if dist < 30.0 { s_n_over += 1.0; } else if dist < 60.0 { s_n_space += 1.0; } else { s_n_extr += 1.0; }
                     }
-                    s_buffer.clear();
                 }
-            }
-            // Catch last stream
-            if s_buffer.len() >= 4 {
-                let count = s_buffer.len() as f64;
-                let mean = s_buffer.iter().sum::<f64>() / count;
-                if mean < 10.0 { s_p_stack += 1; } else if mean < 30.0 { s_p_over += 1; } else if mean < 60.0 { s_p_space += 1; } else { s_p_extr += 1; }
-                let var = s_buffer.iter().map(|x| (x - mean).powi(2)).sum::<f64>() / count;
-                let cv = if mean > 0.0 { var.sqrt() / mean } else { 0.0 };
-                if cv < 0.15 { v_stead += 1; } else if cv < 0.40 { v_vari += 1; } else { v_dyna += 1; }
+            } else {
+                // If it was only 2 notes (1 gap), it's just a fast jump.
                 for &dist in &s_buffer {
-                    s_dist += dist; s_gaps += 1;
-                    if dist < 10.0 { s_n_stack += 1.0; } else if dist < 30.0 { s_n_over += 1.0; } else if dist < 60.0 { s_n_space += 1.0; } else { s_n_extr += 1.0; }
+                    j_dist += dist; j_cnt += 1;
+                    if dist < 120.0 { n_cnt += 1; } else if dist < 200.0 { m_cnt += 1; } else if dist < 340.0 { w_cnt += 1; } else { e_cnt += 1; }
                 }
             }
-
-            // --- PACKAGING ---
-            let avg_j = if j_count > 0 { j_dist / j_count as f64 } else { 0.0 };
-            let avg_s = if s_gaps > 0 { s_dist / s_gaps as f64 } else { 0.0 };
-
-            let mut j_val = serde_json::to_value(analyze::Jump::new(map.clone()).analyze()).unwrap();
-            let j_obj = j_val.as_object_mut().unwrap();
-            j_obj.insert("avg_spacing".to_string(), serde_json::to_value(avg_j).unwrap());
-            j_obj.insert("narrow_count".to_string(), serde_json::to_value(n_cnt).unwrap());
-            j_obj.insert("moderate_count".to_string(), serde_json::to_value(m_cnt).unwrap());
-            j_obj.insert("wide_count".to_string(), serde_json::to_value(w_cnt).unwrap());
-            j_obj.insert("extreme_count".to_string(), serde_json::to_value(e_cnt).unwrap());
-            j_obj.insert("narrow_dens".to_string(), serde_json::to_value(n_cnt as f64 / total_obj_count).unwrap());
-            j_obj.insert("moderate_dens".to_string(), serde_json::to_value(m_cnt as f64 / total_obj_count).unwrap());
-            j_obj.insert("wide_dens".to_string(), serde_json::to_value(w_cnt as f64 / total_obj_count).unwrap());
-            j_obj.insert("extreme_dens".to_string(), serde_json::to_value(e_cnt as f64 / total_obj_count).unwrap());
-
-            let mut s_val = serde_json::to_value(analyze::Stream::new(map).analyze()).unwrap();
-            let s_obj = s_val.as_object_mut().unwrap();
-            s_obj.insert("avg_stream_spacing".to_string(), serde_json::to_value(avg_s).unwrap());
-            s_obj.insert("s_stacked_count".to_string(), serde_json::to_value(s_p_stack).unwrap());
-            s_obj.insert("s_overlapping_count".to_string(), serde_json::to_value(s_p_over).unwrap());
-            s_obj.insert("s_spaced_count".to_string(), serde_json::to_value(s_p_space).unwrap());
-            s_obj.insert("s_extreme_count".to_string(), serde_json::to_value(s_p_extr).unwrap());
-            s_obj.insert("s_stack_dens".to_string(), serde_json::to_value(s_n_stack / total_obj_count).unwrap());
-            s_obj.insert("s_over_dens".to_string(), serde_json::to_value(s_n_over / total_obj_count).unwrap());
-            s_obj.insert("s_space_dens".to_string(), serde_json::to_value(s_n_space / total_obj_count).unwrap());
-            s_obj.insert("s_extr_dens".to_string(), serde_json::to_value(s_n_extr / total_obj_count).unwrap());
-            s_obj.insert("v_steady_count".to_string(), serde_json::to_value(v_stead).unwrap());
-            s_obj.insert("v_variable_count".to_string(), serde_json::to_value(v_vari).unwrap());
-            s_obj.insert("v_dynamic_count".to_string(), serde_json::to_value(v_dyna).unwrap());
-            s_obj.insert("total_stream_patterns".to_string(), serde_json::to_value(v_stead + v_vari + v_dyna).unwrap());
-
-            Ok(reply::with_status(reply::json(&vec![
-                AnalysisResult { analysis_type: String::from("jump"), analysis: j_val },
-                AnalysisResult { analysis_type: String::from("stream"), analysis: s_val },
-            ]), StatusCode::OK))
+            s_buffer.clear();
         }
+    }
 
-        "jump" => {
-            // We can return early since the website calls "all" anyway.
-            let analysis = analyze::Jump::new(map).analyze();
-            Ok(reply::with_status(reply::json(&AnalysisResult { analysis_type: String::from("jump"), analysis: serde_json::to_value(analysis).unwrap() }), StatusCode::OK))
+    // Catch last buffer
+    let note_count = s_buffer.len() + 1;
+    if note_count >= 3 { 
+        if note_count <= 4 {
+            bursts += 1;
+        } else {
+            if note_count <= 12 { short_len += 1; }
+            else if note_count <= 24 { med_len += 1; }
+            else if note_count <= 48 { long_len += 1; }
+            else { death_len += 1; }
+
+            let count = s_buffer.len() as f64;
+            let mean = s_buffer.iter().sum::<f64>() / count;
+            if mean < 10.0 { s_p_stack += 1; } else if mean < 30.0 { s_p_over += 1; } else if mean < 60.0 { s_p_space += 1; } else { s_p_extr += 1; }
+            let var = s_buffer.iter().map(|x| (x - mean).powi(2)).sum::<f64>() / count;
+            let cv = if mean > 0.0 { var.sqrt() / mean } else { 0.0 };
+            if cv < 0.15 { v_stead += 1; } else if cv < 0.40 { v_vari += 1; } else { v_dyna += 1; }
+            
+            for &dist in &s_buffer {
+                s_total_dist += dist; s_total_gaps += 1;
+                if dist < 10.0 { s_n_stack += 1.0; } else if dist < 30.0 { s_n_over += 1.0; } else if dist < 60.0 { s_n_space += 1.0; } else { s_n_extr += 1.0; }
+            }
         }
-
-        "stream" => {
-            let analysis = analyze::Stream::new(map).analyze();
-            Ok(reply::with_status(reply::json(&AnalysisResult { analysis_type: String::from("stream"), analysis: serde_json::to_value(analysis).unwrap() }), StatusCode::OK))
+    } else {
+        for &dist in &s_buffer {
+            j_dist += dist; j_cnt += 1;
+            if dist < 120.0 { n_cnt += 1; } else if dist < 200.0 { m_cnt += 1; } else if dist < 340.0 { w_cnt += 1; } else { e_cnt += 1; }
         }
+    }
 
+    // --- PACKAGING ---
+    let avg_j = if j_cnt > 0 { j_dist / j_cnt as f64 } else { 0.0 };
+    let avg_s = if s_total_gaps > 0 { s_total_dist / s_total_gaps as f64 } else { 0.0 };
+
+    let mut j_val = serde_json::to_value(analyze::Jump::new(map.clone()).analyze()).unwrap();
+    {
+        let j_obj = j_val.as_object_mut().unwrap();
+        j_obj.insert("avg_spacing".to_string(), serde_json::to_value(avg_j).unwrap());
+        j_obj.insert("narrow_count".to_string(), serde_json::to_value(n_cnt).unwrap());
+        j_obj.insert("moderate_count".to_string(), serde_json::to_value(m_cnt).unwrap());
+        j_obj.insert("wide_count".to_string(), serde_json::to_value(w_cnt).unwrap());
+        j_obj.insert("extreme_count".to_string(), serde_json::to_value(e_cnt).unwrap());
+        j_obj.insert("narrow_dens".to_string(), serde_json::to_value(n_cnt as f64 / total_obj_count).unwrap());
+        j_obj.insert("moderate_dens".to_string(), serde_json::to_value(m_cnt as f64 / total_obj_count).unwrap());
+        j_obj.insert("wide_dens".to_string(), serde_json::to_value(w_cnt as f64 / total_obj_count).unwrap());
+        j_obj.insert("extreme_dens".to_string(), serde_json::to_value(e_cnt as f64 / total_obj_count).unwrap());
+    }
+
+    let mut s_val = serde_json::to_value(analyze::Stream::new(map).analyze()).unwrap();
+    {
+        let s_obj = s_val.as_object_mut().unwrap();
+        s_obj.insert("avg_stream_spacing".to_string(), serde_json::to_value(avg_s).unwrap());
+        s_obj.insert("s_stacked_count".to_string(), serde_json::to_value(s_p_stack).unwrap());
+        s_obj.insert("s_overlapping_count".to_string(), serde_json::to_value(s_p_over).unwrap());
+        s_obj.insert("s_spaced_count".to_string(), serde_json::to_value(s_p_space).unwrap());
+        s_obj.insert("s_extreme_count".to_string(), serde_json::to_value(s_p_extr).unwrap());
+        s_obj.insert("s_stack_dens".to_string(), serde_json::to_value(s_n_stack / total_obj_count).unwrap());
+        s_obj.insert("s_over_dens".to_string(), serde_json::to_value(s_n_over / total_obj_count).unwrap());
+        s_obj.insert("s_space_dens".to_string(), serde_json::to_value(s_n_space / total_obj_count).unwrap());
+        s_obj.insert("s_extr_dens".to_string(), serde_json::to_value(s_n_extr / total_obj_count).unwrap());
+        s_obj.insert("v_steady_count".to_string(), serde_json::to_value(v_stead).unwrap());
+        s_obj.insert("v_variable_count".to_string(), serde_json::to_value(v_vari).unwrap());
+        s_obj.insert("v_dynamic_count".to_string(), serde_json::to_value(v_dyna).unwrap());
+        
+        // Exact pattern count (Streams ONLY, no bursts)
+        s_obj.insert("total_stream_patterns".to_string(), serde_json::to_value(short_len + med_len + long_len + death_len).unwrap());
+        
+        // Custom Length Variables
+        s_obj.insert("bursts".to_string(), serde_json::to_value(bursts).unwrap());
+        s_obj.insert("short_streams".to_string(), serde_json::to_value(short_len).unwrap());
+        s_obj.insert("medium_streams".to_string(), serde_json::to_value(med_len).unwrap());
+        s_obj.insert("long_streams".to_string(), serde_json::to_value(long_len).unwrap());
+        s_obj.insert("death_streams".to_string(), serde_json::to_value(death_len).unwrap());
+    }
+
+    match analyze_type.to_lowercase().as_str() {
+        "all" => Ok(reply::with_status(reply::json(&vec![
+            AnalysisResult { analysis_type: String::from("jump"), analysis: j_val },
+            AnalysisResult { analysis_type: String::from("stream"), analysis: s_val },
+        ]), StatusCode::OK)),
+        "jump" => Ok(reply::with_status(reply::json(&AnalysisResult { analysis_type: String::from("jump"), analysis: j_val }), StatusCode::OK)),
+        "stream" => Ok(reply::with_status(reply::json(&AnalysisResult { analysis_type: String::from("stream"), analysis: s_val }), StatusCode::OK)),
         _ => Ok(reply::with_status(reply::json(&ApiError { error: "Bad request".to_string() }), StatusCode::BAD_REQUEST)),
     }
 }
