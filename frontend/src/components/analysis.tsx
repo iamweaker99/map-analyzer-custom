@@ -514,7 +514,7 @@ function JumpDetails({ analysis }: { analysis: JumpAnalysis }) {
             <li>Short chain: {analysis.short_jumps}</li>
             <li>Medium chain: {analysis.medium_jumps}</li>
             <li>Long chain: {analysis.long_jumps}</li>
-            <li>Jump Density: {analysis.jump_density.toFixed(3)}</li>
+            <li>Jump Density: {(analysis.jump_density * 100).toFixed(1)}%</li>
             <li>BPM Consistency: {(analysis.bpm_consistency * 100).toFixed(1)}%</li>
         </>
     );
