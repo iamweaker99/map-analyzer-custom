@@ -45,6 +45,7 @@ export interface BeatmapAnalysisResult {
 interface JumpAnalysis {
     overall_confidence: number;
     total_jump: number;
+    circle_diameter: number;
     max_jump_length: number;
     short_jumps: number;
     medium_jumps: number;
@@ -66,6 +67,7 @@ interface JumpAnalysis {
 interface StreamAnalysis {
     overall_confidence: number;
     total_stream_patterns: number;
+    circle_diameter: number;
     // Spacing Profile
     s_stacked_count: number;
     s_overlapping_count: number;
@@ -415,108 +417,74 @@ function AnalysisCardDetails({
     );
 }
 
-function getSpacingTag(spacing: number) {
+function getSpacingTag(spacing: number, d: number) {
     if (spacing === 0) return "N/A";
-    if (spacing < 120) return "Narrow";
-    if (spacing < 200) return "Moderate";
-    if (spacing < 340) return "Wide";
+    if (spacing < 2.0 * d) return "Narrow";
+    if (spacing < 3.5 * d) return "Moderate";
+    if (spacing < 5.0 * d) return "Wide";
     return "Cross-Screen (Extreme)";
 }
 
-function getStreamSpacingTag(spacing: number) {
+function getStreamSpacingTag(spacing: number, d: number) {
     if (spacing === 0) return "N/A";
-    if (spacing < 10) return "Stacked";
-    if (spacing < 30) return "Overlapping";
-    if (spacing < 60) return "Spaced";
+    if (spacing < 0.5 * d) return "Stacked";
+    if (spacing < 1.0 * d) return "Overlapping";
+    if (spacing < 2.0 * d) return "Spaced";
     return "Extreme (Jump-Stream)";
 }
 
-function StreamDetails({ 
-    analysis, 
-    totalObjects
-}: { 
-    analysis: StreamAnalysis; 
-    totalObjects: number;
-}) {
+function StreamDetails({ analysis, totalObjects }: { analysis: StreamAnalysis; totalObjects: number; }) {
     const avg = analysis.avg_stream_spacing || 0;
+    const d = analysis.circle_diameter || 73; // Fallback to CS4 if missing
     const totalPatterns = analysis.total_stream_patterns || 0;
 
     return (
         <>
             <li className="font-bold border-b border-blue-900 pb-1 mb-2">
-                Type: {getStreamSpacingTag(avg)} ({avg.toFixed(1)} px)
+                Type: {getStreamSpacingTag(avg, d)} ({avg.toFixed(1)} px)
             </li>
 
-            <p className="text-xs font-semibold text-blue-400 uppercase mb-2">
-                Spacing Profile (Density by Notes)
-            </p>
+            <p className="text-xs font-semibold text-blue-400 uppercase mb-2">Distance Profile (Density by Notes)</p>
             <li className="flex justify-between">
-                <span>Stacked patterns:</span>
+                <span>Stacked (&lt; 0.5x D):</span>
                 <span>{analysis.s_stacked_count || 0} ({((analysis.s_stack_dens || 0) * 100).toFixed(1)}%)</span>
             </li>
             <li className="flex justify-between">
-                <span>Overlapping patterns:</span>
+                <span>Overlapping (0.5 - 1x D):</span>
                 <span>{analysis.s_overlapping_count || 0} ({((analysis.s_over_dens || 0) * 100).toFixed(1)}%)</span>
             </li>
             <li className="flex justify-between">
-                <span>Spaced patterns:</span>
+                <span>Spaced (1 - 2x D):</span>
                 <span>{analysis.s_spaced_count || 0} ({((analysis.s_space_dens || 0) * 100).toFixed(1)}%)</span>
             </li>
             <li className="flex justify-between mb-4">
-                <span>Extreme patterns:</span>
+                <span>Extreme (2 - 2.5x D):</span>
                 <span>{analysis.s_extreme_count || 0} ({((analysis.s_extr_dens || 0) * 100).toFixed(1)}%)</span>
             </li>
 
             <p className="text-xs font-semibold text-blue-400 uppercase mb-2">Variance Profile (Relative to Streams)</p>
-            <li className="flex justify-between">
-                <span>Steady patterns:</span>
-                <span>{analysis.v_steady_count || 0} ({totalPatterns > 0 ? (((analysis.v_steady_count || 0) / totalPatterns) * 100).toFixed(1) : 0}%)</span>
-            </li>
-            <li className="flex justify-between">
-                <span>Variable patterns:</span>
-                <span>{analysis.v_variable_count || 0} ({totalPatterns > 0 ? (((analysis.v_variable_count || 0) / totalPatterns) * 100).toFixed(1) : 0}%)</span>
-            </li>
-            <li className="flex justify-between mb-4">
-                <span>Dynamic patterns:</span>
-                <span>{analysis.v_dynamic_count || 0} ({totalPatterns > 0 ? (((analysis.v_dynamic_count || 0) / totalPatterns) * 100).toFixed(1) : 0}%)</span>
-            </li>
+            <li className="flex justify-between"><span>Steady patterns:</span><span>{analysis.v_steady_count || 0} ({totalPatterns > 0 ? (((analysis.v_steady_count || 0) / totalPatterns) * 100).toFixed(1) : 0}%)</span></li>
+            <li className="flex justify-between"><span>Variable patterns:</span><span>{analysis.v_variable_count || 0} ({totalPatterns > 0 ? (((analysis.v_variable_count || 0) / totalPatterns) * 100).toFixed(1) : 0}%)</span></li>
+            <li className="flex justify-between mb-4"><span>Dynamic patterns:</span><span>{analysis.v_dynamic_count || 0} ({totalPatterns > 0 ? (((analysis.v_dynamic_count || 0) / totalPatterns) * 100).toFixed(1) : 0}%)</span></li>
 
             <p className="text-xs font-semibold text-blue-400 uppercase mb-2">Length Profile</p>
-
-            <li title="The longest string of unbroken stream notes in the map">
-                Longest stream: {analysis.max_stream_length} notes
-            </li>
-
-            <li title="Bursts of 3 to 4 notes (Excluded from Spacing/Variance math)">
-                Bursts (3-4): {analysis.bursts || 0}
-            </li>
-            <li title="Streams of 5 to 12 notes">
-                Short streams (5-12): {analysis.short_streams || 0}
-            </li>
-            <li title="Streams of 13 to 24 notes">
-                Medium streams (13-24): {analysis.medium_streams || 0}
-            </li>
-            <li title="Streams of 25 to 48 notes">
-                Long streams (25-48): {analysis.long_streams || 0}
-            </li>
-            <li title="Deathstreams of 49 or more notes">
-                Deathstreams (49+): {analysis.death_streams || 0}
-            </li>
-            <li title="Ratio of stream notes to total objects. Higher = more constant rapid clicking.">
-                Stream Density: {analysis.stream_density.toFixed(3)}
-            </li>
-            <li title="Rhythmic regularity. 100% is perfectly steady; lower means complex rhythms or variable spacing.">
-                BPM Consistency: {(analysis.bpm_consistency * 100).toFixed(1)}%
-            </li>
+            <li>Bursts (3-4): {analysis.bursts || 0}</li>
+            <li>Short streams (5-12): {analysis.short_streams || 0}</li>
+            <li>Medium streams (13-24): {analysis.medium_streams || 0}</li>
+            <li>Long streams (25-48): {analysis.long_streams || 0}</li>
+            <li className="text-red-400 font-semibold mb-2">Deathstreams (49+): {analysis.death_streams || 0}</li>
+            
+            <li className="border-t border-blue-900 pt-2">Max stream: {analysis.max_stream_length} notes</li>
+            <li>Stream Density: {(analysis.stream_density * 100).toFixed(1)}%</li>
+            <li>BPM Consistency: {(analysis.bpm_consistency * 100).toFixed(1)}%</li>
         </>
     );
 }
 
 function JumpDetails({ analysis }: { analysis: JumpAnalysis }) {
-    // We use (analysis.avg_spacing || 0) so that if the backend 
-    // hasn't sent the data yet, it just uses 0 instead of crashing.
     const spacing = analysis.avg_spacing || 0;
-    const spacingTag = getSpacingTag(spacing);
+    const d = analysis.circle_diameter || 73;
+    const spacingTag = getSpacingTag(spacing, d);
 
     return (
         <>
@@ -524,45 +492,30 @@ function JumpDetails({ analysis }: { analysis: JumpAnalysis }) {
                 Spacing: {spacingTag} ({spacing.toFixed(1)} px)
             </li>
             
-            <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
-                Distance Profile (Excluding Stream Notes)
-            </p>
-            
+            <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Distance Profile (Excluding Streams)</p>
             <li className="flex justify-between">
-                <span>Narrow (&lt;120px):</span>
+                <span>Narrow (&lt; 2.0x D):</span>
                 <span>{analysis.narrow_count || 0} ({((analysis.narrow_dens || 0) * 100).toFixed(1)}%)</span>
             </li>
             <li className="flex justify-between">
-                <span>Moderate (120-190px):</span>
-                <span className="font-mono">{analysis.moderate_count || 0} ({((analysis.moderate_dens || 0) * 100).toFixed(1)}%)</span>
+                <span>Moderate (2 - 3.5x D):</span>
+                <span>{analysis.moderate_count || 0} ({((analysis.moderate_dens || 0) * 100).toFixed(1)}%)</span>
             </li>
             <li className="flex justify-between">
-                <span>Wide (200-340px):</span>
-                <span className="font-mono">{analysis.wide_count || 0} ({((analysis.wide_dens || 0) * 100).toFixed(1)}%)</span>
+                <span>Wide (3.5 - 5x D):</span>
+                <span>{analysis.wide_count || 0} ({((analysis.wide_dens || 0) * 100).toFixed(1)}%)</span>
             </li>
             <li className="flex justify-between mb-3">
-                <span>Extreme (340px+):</span>
-                <span className="font-mono">{analysis.extreme_count || 0} ({((analysis.extreme_dens || 0) * 100).toFixed(1)}%)</span>
+                <span>Extreme (5.0x+ D):</span>
+                <span>{analysis.extreme_count || 0} ({((analysis.extreme_dens || 0) * 100).toFixed(1)}%)</span>
             </li>
 
-            <li title="The longest string of unbroken jumps in the map">
-                Max jump chain: {analysis.max_jump_length} notes
-            </li>
-            <li title="Patterns with 3 to 5 jumps">
-                Short chain: {analysis.short_jumps}
-            </li>
-            <li title="Patterns with 6 to 11 jumps">
-                Medium chain: {analysis.medium_jumps}
-            </li>
-            <li title="Patterns with 12+ jumps">
-                Long chain: {analysis.long_jumps}
-            </li>
-            <li title="Ratio of jumps to total objects. Higher = more constant jumping, less rest.">
-                Jump Density: {analysis.jump_density.toFixed(3)}
-            </li>
-            <li title="Rhythmic regularity. 100% is perfectly steady; lower means complex/changing rhythms.">
-                BPM Consistency: {(analysis.bpm_consistency * 100).toFixed(1)}%
-            </li>
+            <li className="border-t border-gray-700 pt-2">Max jump chain: {analysis.max_jump_length} notes</li>
+            <li>Short chain: {analysis.short_jumps}</li>
+            <li>Medium chain: {analysis.medium_jumps}</li>
+            <li>Long chain: {analysis.long_jumps}</li>
+            <li>Jump Density: {analysis.jump_density.toFixed(3)}</li>
+            <li>BPM Consistency: {(analysis.bpm_consistency * 100).toFixed(1)}%</li>
         </>
     );
 }
