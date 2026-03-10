@@ -232,17 +232,32 @@ pub async fn analyze_beatmap(
 
     // 2. Logic Router
     match analyze_type.to_lowercase().as_str() {
+        // Replace the "all" block and add "fingercontrol"
         "all" => {
             let j_val = analysis::jumps::analyze(&movements, cs, bpm, total_obj);
             let s_val = analysis::streams::analyze(&movements, cs, bpm, total_obj);
             let sl_val = analysis::sliders::analyze(&map, cs, total_obj);
+            
+            // New Finger Control Logic
+            let fc_raw = analysis::finger_control::analyze(&pp_map);
+            let fc_val = serde_json::to_value(fc_raw).unwrap_or(serde_json::Value::Null);
 
             Ok(reply::with_status(reply::json(&vec![
                 AnalysisResult { analysis_type: String::from("jump"), analysis: j_val },
                 AnalysisResult { analysis_type: String::from("stream"), analysis: s_val },
                 AnalysisResult { analysis_type: String::from("slider"), analysis: sl_val },
+                AnalysisResult { analysis_type: String::from("fingercontrol"), analysis: fc_val },
             ]), StatusCode::OK))
         }
+        "fingercontrol" => {
+            let fc_raw = analysis::finger_control::analyze(&pp_map);
+            let fc_val = serde_json::to_value(fc_raw).unwrap_or(serde_json::Value::Null);
+            Ok(reply::with_status(reply::json(&AnalysisResult { 
+                analysis_type: String::from("fingercontrol"), 
+                analysis: fc_val 
+            }), StatusCode::OK))
+        }
+        // ... update the error message in the _ case to include fingercontrol ...
         "jump" => {
             let j_val = analysis::jumps::analyze(&movements, cs, bpm, total_obj);
             Ok(reply::with_status(reply::json(&AnalysisResult { analysis_type: String::from("jump"), analysis: j_val }), StatusCode::OK))

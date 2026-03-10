@@ -5,8 +5,9 @@ export interface BeatmapDetailsResult {
 }
 
 export interface BeatmapAnalysisResult {
-    analysis_type: "jump" | "stream" | "slider";
-    analysis: JumpAnalysis | StreamAnalysis | SliderAnalysis;
+    // Ensure "fingercontrol" is exactly as it appears in the backend JSON
+    analysis_type: "jump" | "stream" | "slider" | "fingercontrol"; 
+    analysis: JumpAnalysis | StreamAnalysis | SliderAnalysis | FingerControlAnalysis;
 }
 
 export interface JumpAnalysis {
@@ -33,4 +34,17 @@ export interface SliderAnalysis {
     b_buzz_count: number; b_buzz_dens: number; b_static_count: number; b_static_dens: number;
     a_simple_count: number; a_simple_dens: number; a_curved_count: number; a_curved_dens: number;
     a_complex_count: number; a_complex_dens: number; a_artistic_count: number; a_artistic_dens: number;
+}
+
+// Add these interfaces to the file
+export interface SnapBucket {
+  label: string;
+  percentage: number;
+}
+
+export interface FingerControlAnalysis {
+  complexityScore: number;
+  morphologyIndex: number;
+  snapDistribution: SnapBucket[];
+  evenBurstRatio: number;
 }

@@ -32,3 +32,5 @@ pub fn create_movements(map: &Beatmap) -> Vec<Movement> {
     }
     movements
 }
+
+pub mod finger_control;

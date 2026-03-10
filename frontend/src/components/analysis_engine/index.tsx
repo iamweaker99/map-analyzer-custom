@@ -3,21 +3,20 @@ import {
     AccordionContent, 
     AccordionItem, 
     AccordionTrigger 
-} from "@/components/ui/accordion"; // Fixes Accordion errors
+} from "@/components/ui/accordion";
 
-import { JumpProfile } from "./JumpProfile"; // Matches your file name
-import { StreamProfile } from "./StreamProfile"; // Matches your file name
-import { SliderProfile } from "./SliderProfile"; // Matches your file name
+import { JumpProfile } from "./JumpProfile";
+import { StreamProfile } from "./StreamProfile";
+import { SliderProfile } from "./SliderProfile";
+import { FingerControlProfile } from "./FingerControlProfile"; // This is the COMPONENT
 
 import { 
     BeatmapAnalysisResult, 
-    BeatmapDetailsResult, 
     JumpAnalysis, 
     StreamAnalysis, 
-    SliderAnalysis 
-} from "./types"; // Fixes Interface errors
-
-// ... rest of your code ...
+    SliderAnalysis,
+    FingerControlAnalysis,
+} from "./types";
 
 export function AnalysisCardDetails({
     analysis,
@@ -27,28 +26,37 @@ export function AnalysisCardDetails({
     totalObjects: number;
 }) {
     const { analysis_type, analysis: details } = analysis;
-    const capitalizedType =
-        analysis_type.charAt(0).toUpperCase() + analysis_type.slice(1);
+    
+    // Custom label logic for the Accordion
+    const displayType = analysis_type === "fingercontrol" 
+        ? "Finger Control Analysis" 
+        : analysis_type.charAt(0).toUpperCase() + analysis_type.slice(1);
 
     return (
         <Accordion type="single" collapsible>
             <AccordionItem value="item-1">
                 <AccordionTrigger className="font-semibold">
-                    {capitalizedType} Details:
+                    {displayType}:
                 </AccordionTrigger>
                 <AccordionContent>
-                    <ul className="list-disc list-inside text-sm">
-                        {analysis_type === "stream" ? (
+                    {/* Removed <ul> for better layout nesting */}
+                    <div className="text-sm">
+                        {analysis_type === "stream" && (
                             <StreamProfile
                                 analysis={details as StreamAnalysis}
                                 totalObjects={totalObjects} 
                             />
-                        ) : analysis_type === "slider" ? (
+                        )}
+                        {analysis_type === "slider" && (
                             <SliderProfile analysis={details as SliderAnalysis} />
-                        ) : (
+                        )}
+                        {analysis_type === "jump" && (
                             <JumpProfile analysis={details as JumpAnalysis} />
                         )}
-                    </ul>
+                        {analysis_type === "fingercontrol" && (
+                            <FingerControlProfile analysis={details as FingerControlAnalysis} />
+                        )}
+                    </div>
                 </AccordionContent>
             </AccordionItem>
         </Accordion>

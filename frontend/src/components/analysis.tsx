@@ -39,8 +39,8 @@ export interface BeatmapDetailsResult {
 }
 
 export interface BeatmapAnalysisResult {
-    analysis_type: "jump" | "stream" | "slider"; // Added slider
-    analysis: JumpAnalysis | StreamAnalysis | SliderAnalysis; // Added SliderAnalysis
+    analysis_type: "jump" | "stream" | "slider" | "fingercontrol";
+    analysis: JumpAnalysis | StreamAnalysis | SliderAnalysis | FingerControlAnalysis;
 }
 
 interface JumpAnalysis {
@@ -114,9 +114,17 @@ interface SliderAnalysis {
     a_artistic_count: number; a_artistic_dens: number;
 }
 
+interface FingerControlAnalysis {
+    overall_confidence: number; // Matches the progress bar logic
+    complexityScore: number;
+    morphologyIndex: number;
+    snapDistribution: { label: string, percentage: number }[];
+    evenBurstRatio: number;
+}
+
 type AnalysisProps = {
     getBeatmapDetails(beatmapId: number): Promise<BeatmapDetailsResult>;
-    getBeatmapAnalysis<T extends "stream" | "jump" | "all">(
+    getBeatmapAnalysis<T extends "stream" | "jump" | "slider" | "fingercontrol" | "all">(
         beatmapId: number,
         analysisType: T,
     ): Promise<
@@ -378,6 +386,7 @@ function AnalysisCardClass({
         jump: "bg-pink-500",
         stream: "bg-blue-500",
         slider: "bg-green-500",
+        fingercontrol: "bg-purple-500", // Finger control is Purple
     };
 
     return (
