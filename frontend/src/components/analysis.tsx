@@ -491,14 +491,35 @@ function StreamDetails({ analysis, totalObjects }: { analysis: StreamAnalysis; t
             <li className="flex justify-between mb-4"><span>Dynamic patterns:</span><span>{analysis.v_dynamic_count || 0} ({totalPatterns > 0 ? (((analysis.v_dynamic_count || 0) / totalPatterns) * 100).toFixed(1) : 0}%)</span></li>
 
             <p className="text-xs font-semibold text-blue-400 uppercase mb-2">Length Profile</p>
-            <li>Bursts (3-4): {analysis.bursts || 0}</li>
-            <li>Short streams (5-12): {analysis.short_streams || 0}</li>
-            <li>Medium streams (13-24): {analysis.medium_streams || 0}</li>
-            <li>Long streams (25-48): {analysis.long_streams || 0}</li>
-            <li className="text-red-400 font-semibold mb-2">Deathstreams (49+): {analysis.death_streams || 0}</li>
+            <li className="flex justify-between" title="Bursts of 3 to 4 notes (Excluded from Spacing/Variance math)">
+                <span>Bursts (3-4):</span>
+                <span>{analysis.bursts || 0}</span>
+            </li>
+            <li className="flex justify-between" title="Streams of 5 to 12 notes">
+                <span>Short streams (5-12):</span>
+                <span>{analysis.short_streams || 0}</span>
+            </li>
+            <li className="flex justify-between" title="Streams of 13 to 24 notes">
+                <span>Medium streams (13-24):</span>
+                <span>{analysis.medium_streams || 0}</span>
+            </li>
+            <li className="flex justify-between" title="Streams of 25 to 48 notes">
+                <span>Long streams (25-48):</span>
+                <span>{analysis.long_streams || 0}</span>
+            </li>
+            <li className="flex justify-between text-blue-300 font-semibold mb-2" title="Deathstreams of 49 or more notes">
+                <span>Deathstreams (49+):</span>
+                <span>{analysis.death_streams || 0}</span>
+            </li>
             
-            <li className="border-t border-blue-900 pt-2">Max stream: {analysis.max_stream_length} notes</li>
-            <li>BPM Consistency: {(analysis.bpm_consistency * 100).toFixed(1)}%</li>
+            <li className="flex justify-between border-t border-blue-900 pt-2">
+                <span>Max stream:</span>
+                <span>{analysis.max_stream_length} notes</span>
+            </li>
+            <li className="flex justify-between">
+                <span>BPM Consistency:</span>
+                <span>{(analysis.bpm_consistency * 100).toFixed(1)}%</span>
+            </li>
         </>
     );
 }
@@ -514,29 +535,33 @@ function JumpDetails({ analysis }: { analysis: JumpAnalysis }) {
                 Spacing: {spacingTag} ({spacing.toFixed(1)} px)
             </li>
             
-            <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Distance Profile (Excluding Streams)</p>
-            <li className="flex justify-between">
-                <span>Narrow (&lt; 2.0x D):</span>
-                <span>{analysis.narrow_count || 0} ({((analysis.narrow_dens || 0) * 100).toFixed(1)}%)</span>
-            </li>
-            <li className="flex justify-between">
-                <span>Moderate (2 - 3.5x D):</span>
-                <span>{analysis.moderate_count || 0} ({((analysis.moderate_dens || 0) * 100).toFixed(1)}%)</span>
-            </li>
-            <li className="flex justify-between">
-                <span>Wide (3.5 - 5x D):</span>
-                <span>{analysis.wide_count || 0} ({((analysis.wide_dens || 0) * 100).toFixed(1)}%)</span>
-            </li>
-            <li className="flex justify-between mb-3">
-                <span>Extreme (5.0x+ D):</span>
-                <span>{analysis.extreme_count || 0} ({((analysis.extreme_dens || 0) * 100).toFixed(1)}%)</span>
-            </li>
+            <p className="text-xs font-semibold text-red-400 uppercase mb-2">Distance Profile (Excluding Streams)</p>
+            <li className="flex justify-between"><span>Narrow (&lt; 2.0x D):</span><span>{analysis.narrow_count || 0} ({((analysis.narrow_dens || 0) * 100).toFixed(1)}%)</span></li>
+            <li className="flex justify-between"><span>Moderate (2 - 3.5x D):</span><span>{analysis.moderate_count || 0} ({((analysis.moderate_dens || 0) * 100).toFixed(1)}%)</span></li>
+            <li className="flex justify-between"><span>Wide (3.5 - 5x D):</span><span>{analysis.wide_count || 0} ({((analysis.wide_dens || 0) * 100).toFixed(1)}%)</span></li>
+            <li className="flex justify-between mb-3"><span>Extreme (5.0x+ D):</span><span>{analysis.extreme_count || 0} ({((analysis.extreme_dens || 0) * 100).toFixed(1)}%)</span></li>
 
-            <li className="border-t border-gray-700 pt-2">Max jump chain: {analysis.max_jump_length} notes</li>
-            <li>Short chain: {analysis.short_jumps}</li>
-            <li>Medium chain: {analysis.medium_jumps}</li>
-            <li>Long chain: {analysis.long_jumps}</li>
-            <li>BPM Consistency: {(analysis.bpm_consistency * 100).toFixed(1)}%</li>
+            <p className="text-xs font-semibold text-red-400 uppercase mb-2">Jump Chain Profile</p>
+            <li className="flex justify-between" title="Patterns with 3 to 5 jumps">
+                <span>Short chains (3-5):</span>
+                <span>{analysis.short_jumps || 0}</span>
+            </li>
+            <li className="flex justify-between" title="Patterns with 6 to 11 jumps">
+                <span>Medium chains (6-11):</span>
+                <span>{analysis.medium_jumps || 0}</span>
+            </li>
+            <li className="flex justify-between mb-2" title="Patterns with 12+ jumps">
+                <span>Long chains (12+):</span>
+                <span>{analysis.long_jumps || 0}</span>
+            </li>
+            <li className="flex justify-between border-t border-red-400 pt-2" title="The longest string of unbroken jumps in the map">
+                <span>Max jump chain:</span>
+                <span>{analysis.max_jump_length} notes</span>
+            </li>
+            <li className="flex justify-between">
+                <span>BPM Consistency:</span>
+                <span>{(analysis.bpm_consistency * 100).toFixed(1)}%</span>
+            </li>
         </>
     );
 }

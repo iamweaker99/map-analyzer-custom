@@ -2,6 +2,7 @@ mod api;
 mod models;
 mod routes;
 mod utils;
+mod analysis; // Add this line
 
 use dotenvy::from_filename;
 use std::{env, sync::Arc};
