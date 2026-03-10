@@ -38,8 +38,8 @@ export interface BeatmapDetailsResult {
 }
 
 export interface BeatmapAnalysisResult {
-    analysis_type: "jump" | "stream";
-    analysis: JumpAnalysis | StreamAnalysis;
+    analysis_type: "jump" | "stream" | "slider"; // Added slider
+    analysis: JumpAnalysis | StreamAnalysis | SliderAnalysis; // Added SliderAnalysis
 }
 
 interface JumpAnalysis {
@@ -92,6 +92,25 @@ interface StreamAnalysis {
     max_stream_length: number;
     stream_density: number;
     bpm_consistency: number;
+}
+
+interface SliderAnalysis {
+    overall_confidence: number;
+    avg_velocity: number;
+    slider_ratio: number;
+    // Length Profile (Relative to Map)
+    l_short_count: number; l_short_dens: number;
+    l_med_count: number;   l_med_dens: number;
+    l_long_count: number;  l_long_dens: number;
+    l_ext_count: number;   l_ext_dens: number;
+    // Buzz Profile (Relative to Sliders)
+    b_buzz_count: number;   b_buzz_dens: number;
+    b_static_count: number; b_static_dens: number;
+    // Artistic Profile (Relative to Sliders)
+    a_simple_count: number; a_simple_dens: number;
+    a_curved_count: number; a_curved_dens: number;
+    a_complex_count: number; a_complex_dens: number;
+    a_artistic_count: number; a_artistic_dens: number;
 }
 
 type AnalysisProps = {
@@ -351,33 +370,30 @@ function AnalysisCardClass({
     analysis: BeatmapAnalysisResult;
     index: number;
 }) {
-    let indexString = "";
-    switch (index) {
-        case 0:
-            indexString = "Primary";
-            break;
-        case 1:
-            indexString = "Secondary";
-            break;
-    }
+    const type = analysis.analysis_type;
+    
+    // Assign colors based on the analysis type
+    const colors: Record<string, string> = {
+        jump: "bg-pink-500",
+        stream: "bg-blue-500",
+        slider: "bg-green-500",
+    };
 
     return (
         <div className="mb-4">
-            <h3 className="font-semibold">
-                {indexString}: {analysis.analysis_type.charAt(0).toUpperCase()}
-                {analysis.analysis_type.slice(1)}
+            <h3 className="font-bold text-lg uppercase tracking-tight">
+                {type}
             </h3>
-            <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 mt-2">
+            <div className="w-full bg-gray-200 rounded-full h-3 dark:bg-gray-700 mt-1">
                 <div
-                    className="bg-primary h-2.5 rounded-full"
+                    className={`${colors[type] || "bg-primary"} h-3 rounded-full transition-all duration-500`}
                     style={{
-                        width: `${analysis.analysis.overall_confidence * 100}%`,
+                        width: `${(analysis.analysis.overall_confidence || 0) * 100}%`,
                     }}
                 ></div>
             </div>
-            <p className="text-sm mt-1">
-                Confidence:{" "}
-                {(analysis.analysis.overall_confidence * 100).toFixed(1)}%
+            <p className="text-xs font-semibold mt-1 text-gray-400">
+                Map Presence: {((analysis.analysis.overall_confidence || 0) * 100).toFixed(1)}%
             </p>
         </div>
     );
@@ -405,8 +421,9 @@ function AnalysisCardDetails({
                         {analysis_type === "stream" ? (
                             <StreamDetails
                                 analysis={details as StreamAnalysis}
-                                totalObjects={totalObjects}
-                            />
+                                totalObjects={totalObjects} />
+                        ) : analysis_type === "slider" ? (
+                            <SliderDetails analysis={details as SliderAnalysis} />
                         ) : (
                             <JumpDetails analysis={details as JumpAnalysis} />
                         )}
@@ -431,6 +448,12 @@ function getStreamSpacingTag(spacing: number, d: number) {
     if (spacing < 1.0 * d) return "Overlapping";
     if (spacing < 2.0 * d) return "Spaced";
     return "Extreme (Jump-Stream)";
+}
+
+function getSliderTag(ratio: number) {
+    if (ratio < 0.30) return "Mechanical Tech";
+    if (ratio < 0.60) return "Technical";
+    return "Slider Tech";
 }
 
 function StreamDetails({ analysis, totalObjects }: { analysis: StreamAnalysis; totalObjects: number; }) {
@@ -475,7 +498,6 @@ function StreamDetails({ analysis, totalObjects }: { analysis: StreamAnalysis; t
             <li className="text-red-400 font-semibold mb-2">Deathstreams (49+): {analysis.death_streams || 0}</li>
             
             <li className="border-t border-blue-900 pt-2">Max stream: {analysis.max_stream_length} notes</li>
-            <li>Stream Density: {(analysis.stream_density * 100).toFixed(1)}%</li>
             <li>BPM Consistency: {(analysis.bpm_consistency * 100).toFixed(1)}%</li>
         </>
     );
@@ -514,8 +536,35 @@ function JumpDetails({ analysis }: { analysis: JumpAnalysis }) {
             <li>Short chain: {analysis.short_jumps}</li>
             <li>Medium chain: {analysis.medium_jumps}</li>
             <li>Long chain: {analysis.long_jumps}</li>
-            <li>Jump Density: {(analysis.jump_density * 100).toFixed(1)}%</li>
             <li>BPM Consistency: {(analysis.bpm_consistency * 100).toFixed(1)}%</li>
+        </>
+    );
+}
+
+function SliderDetails({ analysis }: { analysis: SliderAnalysis }) {
+    const totalSliders = (analysis.l_short_count + analysis.l_med_count + analysis.l_long_count + analysis.l_ext_count) || 1;
+
+    return (
+        <>
+            <li className="font-bold border-b border-green-900 pb-1 mb-2">
+                Style: {getSliderTag(analysis.slider_ratio)} (Avg SV: {analysis.avg_velocity.toFixed(2)})
+            </li>
+
+            <p className="text-xs font-semibold text-green-400 uppercase mb-2">Slider Length Profile (Relative to Map)</p>
+            <li className="flex justify-between"><span>Short (&lt;1.5x D):</span><span>{analysis.l_short_count} ({(analysis.l_short_dens * 100).toFixed(1)}%)</span></li>
+            <li className="flex justify-between"><span>Medium (1.5-3x D):</span><span>{analysis.l_med_count} ({(analysis.l_med_dens * 100).toFixed(1)}%)</span></li>
+            <li className="flex justify-between"><span>Long (3-4.5x D):</span><span>{analysis.l_long_count} ({(analysis.l_long_dens * 100).toFixed(1)}%)</span></li>
+            <li className="flex justify-between mb-4"><span>Extended (&gt;4.5x D):</span><span>{analysis.l_ext_count} ({(analysis.l_ext_dens * 100).toFixed(1)}%)</span></li>
+
+            <p className="text-xs font-semibold text-green-400 uppercase mb-2">Buzz Slider Profile (Relative to Sliders)</p>
+            <li className="flex justify-between"><span>Buzz Sliders:</span><span>{analysis.b_buzz_count} ({(analysis.b_buzz_dens * 100).toFixed(1)}%)</span></li>
+            <li className="flex justify-between mb-4"><span>Static Buzz:</span><span>{analysis.b_static_count} ({(analysis.b_static_dens * 100).toFixed(1)}%)</span></li>
+
+            <p className="text-xs font-semibold text-green-400 uppercase mb-2">Artistic Profile (Relative to Sliders)</p>
+            <li className="flex justify-between"><span>Simple (Linear):</span><span>{analysis.a_simple_count} ({(analysis.a_simple_dens * 100).toFixed(1)}%)</span></li>
+            <li className="flex justify-between"><span>Curved:</span><span>{analysis.a_curved_count} ({(analysis.a_curved_dens * 100).toFixed(1)}%)</span></li>
+            <li className="flex justify-between"><span>Complex:</span><span>{analysis.a_complex_count} ({(analysis.a_complex_dens * 100).toFixed(1)}%)</span></li>
+            <li className="flex justify-between"><span>Artistic/Tech:</span><span>{analysis.a_artistic_count} ({(analysis.a_artistic_dens * 100).toFixed(1)}%)</span></li>
         </>
     );
 }
