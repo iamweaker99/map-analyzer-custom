@@ -42,10 +42,18 @@ export interface SnapBucket {
   percentage: number;
 }
 
+export interface OffGridNote {
+  time: number;
+  delta: number;
+}
+
 export interface FingerControlAnalysis {
+  snapDistribution: SnapBucket[];
+  burstHistogram: Record<number, number>;
+  offGridDetails: OffGridNote[];
+  offGridBuckets: number[]; // Ensure this is exactly 'offGridBuckets'
   overall_confidence: number;
   complexityScore: number;
   morphologyIndex: number;
-  snapDistribution: SnapBucket[];
   evenBurstRatio: number;
 }
