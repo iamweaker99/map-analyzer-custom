@@ -43,6 +43,7 @@ export interface SnapBucket {
 }
 
 export interface FingerControlAnalysis {
+  overall_confidence: number;
   complexityScore: number;
   morphologyIndex: number;
   snapDistribution: SnapBucket[];

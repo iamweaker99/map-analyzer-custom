@@ -12,6 +12,7 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useToast } from "@/hooks/use-toast";
+import { RadarChartComponent } from "./analysis_engine/RadarChartComponent";
 
 import { useState } from "react";
 import { AlertTriangle, BarChart, Music } from "lucide-react";
@@ -115,7 +116,7 @@ interface SliderAnalysis {
 }
 
 interface FingerControlAnalysis {
-    overall_confidence: number; // Matches the progress bar logic
+    overall_confidence: number; // This is the value the progress bar uses
     complexityScore: number;
     morphologyIndex: number;
     snapDistribution: { label: string, percentage: number }[];
@@ -315,6 +316,12 @@ export default function Analysis({
                                     </div>
                                 </CardContent>
                             </Card>
+
+                            <RadarChartComponent 
+                                jump={analysisResult.find(a => a.analysis_type === "jump")?.analysis as JumpAnalysis}
+                                stream={analysisResult.find(a => a.analysis_type === "stream")?.analysis as StreamAnalysis}
+                                fingerControl={analysisResult.find(a => a.analysis_type === "fingercontrol")?.analysis as FingerControlAnalysis}
+                            />
 
                             <Card>
                                 <CardHeader>
