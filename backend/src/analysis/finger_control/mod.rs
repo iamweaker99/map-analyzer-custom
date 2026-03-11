@@ -3,8 +3,8 @@ use serde::Serialize;
 use std::collections::HashMap;
 
 pub mod snap_filter;
-pub mod morphology;
-pub mod complexity;
+pub mod patterns;
+pub mod transitions;
 
 #[derive(Debug, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -13,10 +13,9 @@ pub struct FingerControlAnalysis {
     pub snap_distribution: Vec<SnapBucket>,
     pub burst_histogram: HashMap<u32, u32>,
     pub off_grid_details: Vec<snap_filter::OffGridNote>,
-    pub off_grid_buckets: [u32; 10], // New array of 10
-    pub complexity_score: f32,
-    pub morphology_index: f32,
-    pub even_burst_ratio: f32,
+    pub off_grid_buckets: [u32; 10],
+    // Stage 2
+    pub transition_matrix: transitions::TransitionMatrix,
 }
 
 #[derive(Debug, Serialize, Clone)]
@@ -27,21 +26,20 @@ pub struct SnapBucket {
 }
 
 pub fn analyze(map: &Beatmap) -> FingerControlAnalysis {
-    // Stage 1: Rhythmic Foundation
-    // We must capture all 4 values: snaps, bursts, off_grid, AND buckets
     let (snaps, bursts, off_grid, buckets) = snap_filter::analyze_foundation(map);
     
+    // Stage 2 Pipeline
+    let pattern_list = patterns::extract_patterns(map);
+    let matrix = transitions::analyze(&pattern_list);
+
     let total_snaps: u32 = snaps.values().sum();
-    let technical_density: f32 = snaps.iter()
-        .filter(|(label, _)| *label != "1/1" && *label != "1/2")
-        .map(|(_, count)| *count as f32 / total_snaps.max(1) as f32)
+    let technical_density = snaps.iter()
+        .filter(|(l, _)| *l != "1/1" && *l != "1/2")
+        .map(|(_, c)| *c as f32 / total_snaps.max(1) as f32)
         .sum();
 
     let snap_dist = snaps.into_iter().map(|(label, count)| {
-        SnapBucket { 
-            label, 
-            percentage: count as f32 / total_snaps.max(1) as f32 
-        }
+        SnapBucket { label, percentage: count as f32 / total_snaps.max(1) as f32 }
     }).collect();
 
     FingerControlAnalysis {
@@ -49,9 +47,7 @@ pub fn analyze(map: &Beatmap) -> FingerControlAnalysis {
         snap_distribution: snap_dist,
         burst_histogram: bursts,
         off_grid_details: off_grid,
-        off_grid_buckets: buckets, // This was likely causing the "not found in this scope" error
-        complexity_score: 0.0,
-        morphology_index: 0.0,
-        even_burst_ratio: 0.0,
+        off_grid_buckets: buckets,
+        transition_matrix: matrix,
     }
 }

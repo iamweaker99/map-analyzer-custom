@@ -37,9 +37,19 @@ export interface SliderAnalysis {
 }
 
 // Add these interfaces to the file
-export interface SnapBucket {
+export interface TransitionOccurrence {
   label: string;
   percentage: number;
+}
+
+export interface TransitionMatrix {
+  topTransitions: TransitionOccurrence[];
+  deltaGroups: Record<number, TransitionOccurrence[]>; // This handles Δ0, Δ1, Δ2, Δ3
+  categoryCounts: {
+    oddToOdd: number;
+    evenToEven: number;
+    oddToEven: number;
+  };
 }
 
 export interface OffGridNote {
@@ -47,12 +57,19 @@ export interface OffGridNote {
   delta: number;
 }
 
+export interface SnapBucket {
+  label: string;
+  percentage: number;
+}
+
 export interface FingerControlAnalysis {
   snapDistribution: SnapBucket[];
   burstHistogram: Record<number, number>;
   offGridDetails: OffGridNote[];
-  offGridBuckets: number[]; // Ensure this is exactly 'offGridBuckets'
+  offGridBuckets: number[];
   overall_confidence: number;
+  transitionMatrix: TransitionMatrix;
+  // Placeholders for legacy compatibility
   complexityScore: number;
   morphologyIndex: number;
   evenBurstRatio: number;
