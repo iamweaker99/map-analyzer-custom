@@ -44,15 +44,35 @@ export interface TransitionOccurrence {
 
 export interface TransitionMatrix {
   bpmTransitions: TransitionOccurrence[];
+  bpmOrdinary: TransitionOccurrence[];
+  bpmMinor: TransitionOccurrence[];
+  bpmMajor: TransitionOccurrence[];
+  
   topTransitions: TransitionOccurrence[];
-  rhythmicResets: TransitionOccurrence[]; // NEW
+  rhythmicResets: TransitionOccurrence[];
   deltaGroups: Record<number, TransitionOccurrence[]>;
   categoryCounts: {
     oddToOdd: number;
     evenToEven: number;
     oddToEven: number;
-    rhythmicResets: number; // NEW
+    rhythmicResets: number;
   };
+}
+
+export interface TimelinePoint {
+  time: number;
+  patternSma: number;
+  bpmSma: number;
+  
+  bpmOrdinarySma: number;
+  bpmMinorSma: number;
+  bpmMajorSma: number;
+
+  noteDelta0ConsSma: number;
+  noteDelta0ResetSma: number;
+  noteDelta1Sma: number;
+  noteDelta2Sma: number;
+  noteDelta3Sma: number;
 }
 
 export interface OffGridNote {
@@ -63,12 +83,6 @@ export interface OffGridNote {
 export interface SnapBucket {
   label: string;
   percentage: number;
-}
-
-export interface TimelinePoint {
-  time: number;
-  patternSma: number;
-  bpmSma: number;
 }
 
 export interface FingerControlAnalysis {

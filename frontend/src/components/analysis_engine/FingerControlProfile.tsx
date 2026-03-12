@@ -142,7 +142,6 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
                     <div className="text-[9px] text-muted-foreground font-medium uppercase">Odd - Even</div>
                     <div className="text-sm font-bold text-red-400">{analysis.transitionMatrix.categoryCounts.oddToEven}</div>
                 </div>
-                {/* NEW: Rhythmic Resets Card */}
                 <div className="bg-orange-500/10 p-2 rounded text-center border border-orange-500/20">
                     <div className="text-[9px] text-orange-500 font-medium uppercase">Rhythmic Resets</div>
                     <div className="text-sm font-bold text-orange-400">{analysis.transitionMatrix.categoryCounts.rhythmicResets}</div>
@@ -153,81 +152,95 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
           <div className="space-y-4">
             <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">BPM / Snap Switching Profile</h3>
             {renderTransitionTable("Top 10 Snap-to-Snap Transitions", analysis.transitionMatrix.bpmTransitions)}
-          </div>
-
-          <div className="space-y-4">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Pattern Morphology</h3>
-            {renderTransitionTable("Overall Top Transitions", analysis.transitionMatrix.topTransitions)}
             
             <div className="space-y-3 pt-2">
-                <h4 className="text-[11px] font-bold text-muted-foreground border-l-2 border-purple-500 pl-2">Transition based on Δ</h4>
+                <h4 className="text-[11px] font-bold text-muted-foreground border-l-2 border-yellow-500 pl-2">Transition Based on Δ of BPM/Snap</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Updated Titles to reflect Advanced Delta Logic */}
+                    {renderTransitionTable("Ordinary Switch", analysis.transitionMatrix.bpmOrdinary || [])}
+                    {renderTransitionTable("Minor Switch", analysis.transitionMatrix.bpmMinor || [])}
+                    {renderTransitionTable("Major Switch", analysis.transitionMatrix.bpmMajor || [])}
+                </div>
+            </div>
+          </div>
+
+          <div className="space-y-4 pt-4 border-t border-muted/20">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Pattern Morphology</h3>
+            {renderTransitionTable("Top 10 Pattern Transitions", analysis.transitionMatrix.topTransitions)}
+            
+            <div className="space-y-3 pt-2">
+                <h4 className="text-[11px] font-bold text-muted-foreground border-l-2 border-purple-500 pl-2">Transition Based on Δ of Notes</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {renderTransitionTable("Consistency (Δ0 / Same Snap)", analysis.transitionMatrix.deltaGroups[0] || [])}
                     {renderTransitionTable("Rhythmic Resets (Δ0 / Speed Shift)", analysis.transitionMatrix.rhythmicResets || [])}
                     {renderTransitionTable("Compound Friction (Δ1)", analysis.transitionMatrix.deltaGroups[1] || [])}
                     {renderTransitionTable("Compound Friction (Δ2)", analysis.transitionMatrix.deltaGroups[2] || [])}
-                    {renderTransitionTable("Major Transition (Δ3)", analysis.transitionMatrix.deltaGroups[3] || [])}
+                    {renderTransitionTable("Compound Friction (Δ3)", analysis.transitionMatrix.deltaGroups[3] || [])}
                 </div>
             </div>
           </div>
         </div>
 
-      {/* 5. Timeline SMA Curves */}
-        <div className="space-y-4 pt-4 border-t border-muted/20">
-          <div className="flex justify-between items-end">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              Technical Density Curves (SMA)
-            </h3>
+        {/* 5. Triple Timeline SMA Curves */}
+        <div className="space-y-6 pt-4 border-t border-muted/20">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Technical Density Curves (SMA)</h3>
+          
+          {/* Graph 1: Overall */}
+          <div className="space-y-2">
+            <h4 className="text-[11px] font-bold text-muted-foreground">Overall Switching</h4>
+            <div className="h-48 w-full bg-secondary/10 rounded-lg p-2 border border-muted/10">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={analysis.timeline} syncId="fingerControl">
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                  <XAxis dataKey="time" tickFormatter={formatTime} stroke="rgba(255,255,255,0.2)" tick={{ fontSize: 10 }} />
+                  <YAxis stroke="rgba(255,255,255,0.2)" tick={{ fontSize: 10 }} width={30} />
+                  <Tooltip labelFormatter={(l) => formatTime(l as number)} contentStyle={{ backgroundColor: '#0f172a', fontSize: '12px' }} />
+                  <Legend iconType="circle" wrapperStyle={{ fontSize: '11px' }} />
+                  <Line type="monotone" name="Pattern Switches" dataKey="patternSma" stroke="#a855f7" strokeWidth={2} dot={false} />
+                  <Line type="monotone" name="BPM/Snap Switches" dataKey="bpmSma" stroke="#eab308" strokeWidth={2} dot={false} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-          <div className="h-64 w-full bg-secondary/10 rounded-lg p-4 border border-muted/10">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={analysis.timeline}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                <XAxis 
-                  dataKey="time" 
-                  tickFormatter={formatTime} 
-                  stroke="rgba(255,255,255,0.2)" 
-                  tick={{ fontSize: 10, fill: 'gray' }} 
-                  minTickGap={30}
-                />
-                <YAxis 
-                  stroke="rgba(255,255,255,0.2)" 
-                  tick={{ fontSize: 10, fill: 'gray' }} 
-                  width={30}
-                />
-                <Tooltip 
-                  labelFormatter={(label) => `Time: ${formatTime(label as number)}`}
-                  contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', fontSize: '12px' }}
-                />
-                <Legend iconType="circle" wrapperStyle={{ fontSize: '11px' }} />
-                
-                {/* Pattern Switching Curve (Purple) */}
-                <Line 
-                  type="monotone" 
-                  name="Pattern Switches"
-                  dataKey="patternSma" 
-                  stroke="#a855f7" 
-                  strokeWidth={2} 
-                  dot={false} 
-                  activeDot={{ r: 4 }} 
-                />
-                {/* BPM Switching Curve (Yellow) */}
-                <Line 
-                  type="monotone" 
-                  name="BPM/Snap Switches"
-                  dataKey="bpmSma" 
-                  stroke="#eab308" 
-                  strokeWidth={2} 
-                  dot={false} 
-                  activeDot={{ r: 4 }} 
-                />
-              </LineChart>
-            </ResponsiveContainer>
+
+          {/* Graph 2: BPM Delta */}
+          <div className="space-y-2">
+            <h4 className="text-[11px] font-bold text-muted-foreground">Transition based on Δ of BPM/Snap</h4>
+            <div className="h-48 w-full bg-secondary/10 rounded-lg p-2 border border-muted/10">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={analysis.timeline} syncId="fingerControl">
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                  <XAxis dataKey="time" tickFormatter={formatTime} stroke="rgba(255,255,255,0.2)" tick={{ fontSize: 10 }} />
+                  <YAxis stroke="rgba(255,255,255,0.2)" tick={{ fontSize: 10 }} width={30} />
+                  <Tooltip labelFormatter={(l) => formatTime(l as number)} contentStyle={{ backgroundColor: '#0f172a', fontSize: '12px' }} />
+                  <Legend iconType="circle" wrapperStyle={{ fontSize: '11px' }} />
+                  <Line type="monotone" name="Ordinary" dataKey="bpmOrdinarySma" stroke="#22c55e" strokeWidth={2} dot={false} />
+                  <Line type="monotone" name="Minor" dataKey="bpmMinorSma" stroke="#eab308" strokeWidth={2} dot={false} />
+                  <Line type="monotone" name="Major" dataKey="bpmMajorSma" stroke="#ef4444" strokeWidth={2} dot={false} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-          <p className="text-[10px] text-muted-foreground italic px-1">
-            * Curves represent the local density of switches based on a dynamic moving window. The curve drops to 0 during map breaks.
-          </p>
+
+          {/* Graph 3: Notes Delta */}
+          <div className="space-y-2">
+            <h4 className="text-[11px] font-bold text-muted-foreground">Transition based on Δ of Notes</h4>
+            <div className="h-48 w-full bg-secondary/10 rounded-lg p-2 border border-muted/10">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={analysis.timeline} syncId="fingerControl">
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                  <XAxis dataKey="time" tickFormatter={formatTime} stroke="rgba(255,255,255,0.2)" tick={{ fontSize: 10 }} />
+                  <YAxis stroke="rgba(255,255,255,0.2)" tick={{ fontSize: 10 }} width={30} />
+                  <Tooltip labelFormatter={(l) => formatTime(l as number)} contentStyle={{ backgroundColor: '#0f172a', fontSize: '12px' }} />
+                  <Legend iconType="circle" wrapperStyle={{ fontSize: '11px' }} />
+                  <Line type="monotone" name="Consistency (Δ0)" dataKey="noteDelta0ConsSma" stroke="#94a3b8" strokeWidth={1.5} dot={false} />
+                  <Line type="monotone" name="Rhythmic Reset (Δ0)" dataKey="noteDelta0ResetSma" stroke="#f97316" strokeWidth={2} dot={false} />
+                  <Line type="monotone" name="Compound Friction (Δ1)" dataKey="noteDelta1Sma" stroke="#3b82f6" strokeWidth={2} dot={false} />
+                  <Line type="monotone" name="Compound Friction (Δ2)" dataKey="noteDelta2Sma" stroke="#8b5cf6" strokeWidth={2} dot={false} />
+                  <Line type="monotone" name="Compound Friction (Δ3)" dataKey="noteDelta3Sma" stroke="#ec4899" strokeWidth={2} dot={false} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
         </div>
 
       </CardContent>
