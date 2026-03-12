@@ -140,6 +140,12 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
             </div>
           </div>
 
+          {/* NEW: BPM / Snap Switching Profile */}
+          <div className="space-y-4">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">BPM / Snap Switching Profile</h3>
+            {renderTransitionTable("Top 10 Snap-to-Snap Transitions", analysis.transitionMatrix.bpmTransitions)}
+          </div>
+
           <div className="space-y-4">
             <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Pattern Morphology</h3>
             {renderTransitionTable("Overall Top Transitions", analysis.transitionMatrix.topTransitions)}

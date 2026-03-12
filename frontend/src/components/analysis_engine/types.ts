@@ -43,8 +43,9 @@ export interface TransitionOccurrence {
 }
 
 export interface TransitionMatrix {
+  bpmTransitions: TransitionOccurrence[]; // NEW field
   topTransitions: TransitionOccurrence[];
-  deltaGroups: Record<number, TransitionOccurrence[]>; // This handles Δ0, Δ1, Δ2, Δ3
+  deltaGroups: Record<number, TransitionOccurrence[]>;
   categoryCounts: {
     oddToOdd: number;
     evenToEven: number;

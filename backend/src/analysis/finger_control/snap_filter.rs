@@ -66,7 +66,7 @@ pub fn analyze_foundation(map: &Beatmap) -> (HashMap<String, u32>, HashMap<u32, 
     (snap_counts, burst_histogram, off_grid_notes, buckets)
 }
 
-fn identify_snap(delta: f64, beat_len: f64) -> Option<String> {
+pub fn identify_snap(delta: f64, beat_len: f64) -> Option<String> {
     let snaps = [(1.0, "1/1"), (0.5, "1/2"), (0.3333, "1/3"), (0.25, "1/4"), (0.1666, "1/6"), (0.125, "1/8")];
     for (fraction, label) in snaps {
         if (delta - (beat_len * fraction)).abs() <= 12.0 {
