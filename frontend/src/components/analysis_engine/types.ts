@@ -43,13 +43,15 @@ export interface TransitionOccurrence {
 }
 
 export interface TransitionMatrix {
-  bpmTransitions: TransitionOccurrence[]; // NEW field
+  bpmTransitions: TransitionOccurrence[];
   topTransitions: TransitionOccurrence[];
+  rhythmicResets: TransitionOccurrence[]; // NEW
   deltaGroups: Record<number, TransitionOccurrence[]>;
   categoryCounts: {
     oddToOdd: number;
     evenToEven: number;
     oddToEven: number;
+    rhythmicResets: number; // NEW
   };
 }
 

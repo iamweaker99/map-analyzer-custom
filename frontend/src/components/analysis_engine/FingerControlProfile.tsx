@@ -129,23 +129,27 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
             <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground border-b border-muted/20 pb-1">
                 Transition between Numbered Bursts
             </h3>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-4 gap-2">
                 <div className="bg-secondary/20 p-2 rounded text-center border border-muted/10">
-                    <div className="text-[9px] text-muted-foreground font-medium">Odd - Odd Bursts</div>
+                    <div className="text-[9px] text-muted-foreground font-medium uppercase">Odd - Odd</div>
                     <div className="text-sm font-bold text-green-400">{analysis.transitionMatrix.categoryCounts.oddToOdd}</div>
                 </div>
                 <div className="bg-secondary/20 p-2 rounded text-center border border-muted/10">
-                    <div className="text-[9px] text-muted-foreground font-medium">Even - Even Bursts</div>
+                    <div className="text-[9px] text-muted-foreground font-medium uppercase">Even - Even</div>
                     <div className="text-sm font-bold text-blue-400">{analysis.transitionMatrix.categoryCounts.evenToEven}</div>
                 </div>
                 <div className="bg-secondary/20 p-2 rounded text-center border border-muted/10">
-                    <div className="text-[9px] text-muted-foreground font-medium">Odd - Even Bursts</div>
+                    <div className="text-[9px] text-muted-foreground font-medium uppercase">Odd - Even</div>
                     <div className="text-sm font-bold text-red-400">{analysis.transitionMatrix.categoryCounts.oddToEven}</div>
+                </div>
+                {/* NEW: Rhythmic Resets Card */}
+                <div className="bg-orange-500/10 p-2 rounded text-center border border-orange-500/20">
+                    <div className="text-[9px] text-orange-500 font-medium uppercase">Rhythmic Resets</div>
+                    <div className="text-sm font-bold text-orange-400">{analysis.transitionMatrix.categoryCounts.rhythmicResets}</div>
                 </div>
             </div>
           </div>
 
-          {/* NEW: BPM / Snap Switching Profile */}
           <div className="space-y-4">
             <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">BPM / Snap Switching Profile</h3>
             {renderTransitionTable("Top 10 Snap-to-Snap Transitions", analysis.transitionMatrix.bpmTransitions)}
@@ -158,10 +162,12 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
             <div className="space-y-3 pt-2">
                 <h4 className="text-[11px] font-bold text-muted-foreground border-l-2 border-purple-500 pl-2">Transition based on Δ</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {renderTransitionTable("Transition with Δ0", analysis.transitionMatrix.deltaGroups[0] || [])}
-                    {renderTransitionTable("Transition with Δ1", analysis.transitionMatrix.deltaGroups[1] || [])}
-                    {renderTransitionTable("Transition with Δ2", analysis.transitionMatrix.deltaGroups[2] || [])}
-                    {renderTransitionTable("Transition with Δ3", analysis.transitionMatrix.deltaGroups[3] || [])}
+                    {/* Updated Titles to reflect Advanced Delta Logic */}
+                    {renderTransitionTable("Consistency (Δ0 / Same Snap)", analysis.transitionMatrix.deltaGroups[0] || [])}
+                    {renderTransitionTable("Rhythmic Resets (Δ0 / Speed Shift)", analysis.transitionMatrix.rhythmicResets || [])}
+                    {renderTransitionTable("Compound Friction (Δ1)", analysis.transitionMatrix.deltaGroups[1] || [])}
+                    {renderTransitionTable("Compound Friction (Δ2)", analysis.transitionMatrix.deltaGroups[2] || [])}
+                    {renderTransitionTable("Major Transition (Δ3)", analysis.transitionMatrix.deltaGroups[3] || [])}
                 </div>
             </div>
           </div>
