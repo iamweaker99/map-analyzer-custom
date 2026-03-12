@@ -63,6 +63,12 @@ export interface SnapBucket {
   percentage: number;
 }
 
+export interface TimelinePoint {
+  time: number;
+  patternSma: number;
+  bpmSma: number;
+}
+
 export interface FingerControlAnalysis {
   snapDistribution: SnapBucket[];
   burstHistogram: Record<number, number>;
@@ -70,8 +76,5 @@ export interface FingerControlAnalysis {
   offGridBuckets: number[];
   overall_confidence: number;
   transitionMatrix: TransitionMatrix;
-  // Placeholders for legacy compatibility
-  complexityScore: number;
-  morphologyIndex: number;
-  evenBurstRatio: number;
+  timeline: TimelinePoint[]; // NEW
 }

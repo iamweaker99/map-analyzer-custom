@@ -1,9 +1,7 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
-import { 
-  FingerControlAnalysis as FingerControlInterface, 
-  TransitionOccurrence // Import the type we just added
-} from "./types";
+import { FingerControlAnalysis as FingerControlInterface, TransitionOccurrence } from "./types";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts';
 
 interface Props {
   analysis: FingerControlInterface;
@@ -21,6 +19,13 @@ const snapColors: Record<string, string> = {
 
 export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
   const burstSizes = [2, 3, 4, 5, 6];
+
+  // Add this block back! It formats the X-Axis labels on the graph
+  const formatTime = (ms: number) => {
+    const mins = Math.floor(ms / 60000);
+    const secs = Math.floor((ms % 60000) / 1000);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
   // Helper to render the categorized tables
   const renderTransitionTable = (title: string, data: TransitionOccurrence[]) => (
@@ -160,6 +165,63 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
                 </div>
             </div>
           </div>
+        </div>
+
+      {/* 5. Timeline SMA Curves */}
+        <div className="space-y-4 pt-4 border-t border-muted/20">
+          <div className="flex justify-between items-end">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              Technical Density Curves (SMA)
+            </h3>
+          </div>
+          <div className="h-64 w-full bg-secondary/10 rounded-lg p-4 border border-muted/10">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={analysis.timeline}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                <XAxis 
+                  dataKey="time" 
+                  tickFormatter={formatTime} 
+                  stroke="rgba(255,255,255,0.2)" 
+                  tick={{ fontSize: 10, fill: 'gray' }} 
+                  minTickGap={30}
+                />
+                <YAxis 
+                  stroke="rgba(255,255,255,0.2)" 
+                  tick={{ fontSize: 10, fill: 'gray' }} 
+                  width={30}
+                />
+                <Tooltip 
+                  labelFormatter={(label) => `Time: ${formatTime(label as number)}`}
+                  contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', fontSize: '12px' }}
+                />
+                <Legend iconType="circle" wrapperStyle={{ fontSize: '11px' }} />
+                
+                {/* Pattern Switching Curve (Purple) */}
+                <Line 
+                  type="monotone" 
+                  name="Pattern Switches"
+                  dataKey="patternSma" 
+                  stroke="#a855f7" 
+                  strokeWidth={2} 
+                  dot={false} 
+                  activeDot={{ r: 4 }} 
+                />
+                {/* BPM Switching Curve (Yellow) */}
+                <Line 
+                  type="monotone" 
+                  name="BPM/Snap Switches"
+                  dataKey="bpmSma" 
+                  stroke="#eab308" 
+                  strokeWidth={2} 
+                  dot={false} 
+                  activeDot={{ r: 4 }} 
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <p className="text-[10px] text-muted-foreground italic px-1">
+            * Curves represent the local density of switches based on a dynamic moving window. The curve drops to 0 during map breaks.
+          </p>
         </div>
 
       </CardContent>
