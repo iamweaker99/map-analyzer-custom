@@ -14,3 +14,4 @@ rosu-pp = "1.1.0"
 reqwest = { version = "0.12.8", features = ["rustls-tls", "json"] }
 serde_json = "1.0.128"
 itertools = "0.14.0"
+md5 = "0.8.0"

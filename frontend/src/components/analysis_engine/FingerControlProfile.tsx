@@ -20,6 +20,10 @@ const snapColors: Record<string, string> = {
 export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
   const burstSizes = [2, 3, 4, 5, 6];
 
+  // --- ADD THIS LINE HERE ---
+  // This unique key will force all charts to destroy and recreate when the map changes
+  const chartResetKey = analysis.beatmapMd5 || "default-key";
+
   // Add this block back! It formats the X-Axis labels on the graph
   const formatTime = (ms: number) => {
     const mins = Math.floor(ms / 60000);
@@ -97,9 +101,10 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
           <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
             Rhythmic Instability by Map Section
           </h3>
-          <div className="rounded border border-muted/20 overflow-hidden">
+          {/* SCROLLABLE WRAPPER */}
+          <div className="max-h-48 overflow-y-auto rounded border border-muted/20 bg-black/10 custom-scrollbar">
             <table className="w-full text-[10px] text-left border-collapse">
-              <thead className="bg-secondary text-muted-foreground">
+              <thead className="bg-secondary text-muted-foreground sticky top-0 z-20 shadow-sm">
                 <tr>
                   <th className="p-2 border-r border-muted/10">Map Section</th>
                   <th className="p-2">Unstable Notes</th>
@@ -107,7 +112,7 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
               </thead>
               <tbody className="divide-y divide-muted/10">
                 {analysis.offGridBuckets.map((count, i) => (
-                  <tr key={i} className={count > 0 ? "bg-yellow-500/5" : ""}>
+                  <tr key={i} className={count > 0 ? "bg-yellow-500/5 hover:bg-yellow-500/10 transition-colors" : "hover:bg-white/5 transition-colors"}>
                     <td className="p-2 border-r border-muted/10 font-mono text-muted-foreground">
                       Section {i + 1} ({i * 10}% - {(i + 1) * 10}%)
                     </td>
@@ -115,6 +120,12 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
                       <span className={count > 0 ? "font-bold text-yellow-500" : "text-muted-foreground"}>
                         {count}
                       </span>
+                      {count > 0 && (
+                        <div 
+                          className="h-1 bg-yellow-500 rounded-full" 
+                          style={{ width: `${Math.min(count * 2, 100)}px` }} 
+                        />
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -181,8 +192,9 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
         </div>
 
         {/* 5. Triple Timeline SMA Curves */}
-        <div className="space-y-6 pt-4 border-t border-muted/20">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Technical Density Curves (SMA)</h3>
+        <div className="space-y-6 pt-4 border-t border-muted/20" key={chartResetKey}>
+        {/* Adding the key here forces the entire graph section to re-render from scratch on map change */}
+        <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Technical Density Curves (SMA)</h3>
           
           {/* Graph 1: Overall */}
           <div className="space-y-2">
@@ -191,12 +203,12 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={analysis.timeline} syncId="fingerControl">
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                  <XAxis dataKey="time" tickFormatter={formatTime} stroke="rgba(255,255,255,0.2)" tick={{ fontSize: 10 }} />
+                  <XAxis dataKey="time" type="number" domain={['dataMin', 'dataMax']} tickFormatter={formatTime} stroke="rgba(255,255,255,0.2)" tick={{ fontSize: 10 }} />
                   <YAxis stroke="rgba(255,255,255,0.2)" tick={{ fontSize: 10 }} width={30} />
                   <Tooltip labelFormatter={(l) => formatTime(l as number)} contentStyle={{ backgroundColor: '#0f172a', fontSize: '12px' }} />
                   <Legend iconType="circle" wrapperStyle={{ fontSize: '11px' }} />
-                  <Line type="monotone" name="Pattern Switches" dataKey="patternSma" stroke="#a855f7" strokeWidth={2} dot={false} />
-                  <Line type="monotone" name="BPM/Snap Switches" dataKey="bpmSma" stroke="#eab308" strokeWidth={2} dot={false} />
+                  <Line type="monotone" name="Pattern Switches" dataKey="patternSma" stroke="#a855f7" strokeWidth={2} dot={false} isAnimationActive={false} connectNulls={true} animateNewValues={false}/>
+                  <Line type="monotone" name="BPM/Snap Switches" dataKey="bpmSma" stroke="#eab308" strokeWidth={2} dot={false} isAnimationActive={false} connectNulls={true} animateNewValues={false}/>
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -209,13 +221,13 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={analysis.timeline} syncId="fingerControl">
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                  <XAxis dataKey="time" tickFormatter={formatTime} stroke="rgba(255,255,255,0.2)" tick={{ fontSize: 10 }} />
+                  <XAxis dataKey="time" type="number" domain={['dataMin', 'dataMax']} tickFormatter={formatTime} stroke="rgba(255,255,255,0.2)" tick={{ fontSize: 10 }} />
                   <YAxis stroke="rgba(255,255,255,0.2)" tick={{ fontSize: 10 }} width={30} />
                   <Tooltip labelFormatter={(l) => formatTime(l as number)} contentStyle={{ backgroundColor: '#0f172a', fontSize: '12px' }} />
                   <Legend iconType="circle" wrapperStyle={{ fontSize: '11px' }} />
-                  <Line type="monotone" name="Ordinary" dataKey="bpmOrdinarySma" stroke="#22c55e" strokeWidth={2} dot={false} />
-                  <Line type="monotone" name="Minor" dataKey="bpmMinorSma" stroke="#eab308" strokeWidth={2} dot={false} />
-                  <Line type="monotone" name="Major" dataKey="bpmMajorSma" stroke="#ef4444" strokeWidth={2} dot={false} />
+                  <Line type="monotone" name="Ordinary" dataKey="bpmOrdinarySma" stroke="#22c55e" strokeWidth={2} dot={false} isAnimationActive={false} connectNulls={true} animateNewValues={false}/>
+                  <Line type="monotone" name="Minor" dataKey="bpmMinorSma" stroke="#eab308" strokeWidth={2} dot={false} isAnimationActive={false} connectNulls={true} animateNewValues={false}/>
+                  <Line type="monotone" name="Major" dataKey="bpmMajorSma" stroke="#ef4444" strokeWidth={2} dot={false} isAnimationActive={false} connectNulls={true} animateNewValues={false}/>
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -228,15 +240,15 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={analysis.timeline} syncId="fingerControl">
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                  <XAxis dataKey="time" tickFormatter={formatTime} stroke="rgba(255,255,255,0.2)" tick={{ fontSize: 10 }} />
+                  <XAxis dataKey="time" type="number" domain={['dataMin', 'dataMax']} tickFormatter={formatTime} stroke="rgba(255,255,255,0.2)" tick={{ fontSize: 10 }} />
                   <YAxis stroke="rgba(255,255,255,0.2)" tick={{ fontSize: 10 }} width={30} />
                   <Tooltip labelFormatter={(l) => formatTime(l as number)} contentStyle={{ backgroundColor: '#0f172a', fontSize: '12px' }} />
                   <Legend iconType="circle" wrapperStyle={{ fontSize: '11px' }} />
-                  <Line type="monotone" name="Consistency (Δ0)" dataKey="noteDelta0ConsSma" stroke="#94a3b8" strokeWidth={1.5} dot={false} />
-                  <Line type="monotone" name="Rhythmic Reset (Δ0)" dataKey="noteDelta0ResetSma" stroke="#f97316" strokeWidth={2} dot={false} />
-                  <Line type="monotone" name="Compound Friction (Δ1)" dataKey="noteDelta1Sma" stroke="#3b82f6" strokeWidth={2} dot={false} />
-                  <Line type="monotone" name="Compound Friction (Δ2)" dataKey="noteDelta2Sma" stroke="#8b5cf6" strokeWidth={2} dot={false} />
-                  <Line type="monotone" name="Compound Friction (Δ3)" dataKey="noteDelta3Sma" stroke="#ec4899" strokeWidth={2} dot={false} />
+                  <Line type="monotone" name="Consistency (Δ0)" dataKey="noteDelta0ConsSma" stroke="#94a3b8" strokeWidth={1.5} dot={false} isAnimationActive={false} connectNulls={true} animateNewValues={false}/>
+                  <Line type="monotone" name="Rhythmic Reset (Δ0)" dataKey="noteDelta0ResetSma" stroke="#f97316" strokeWidth={2} dot={false} isAnimationActive={false} connectNulls={true} animateNewValues={false}/>
+                  <Line type="monotone" name="Compound Friction (Δ1)" dataKey="noteDelta1Sma" stroke="#3b82f6" strokeWidth={2} dot={false} isAnimationActive={false} connectNulls={true} animateNewValues={false}/>
+                  <Line type="monotone" name="Compound Friction (Δ2)" dataKey="noteDelta2Sma" stroke="#8b5cf6" strokeWidth={2} dot={false} isAnimationActive={false} connectNulls={true} animateNewValues={false}/>
+                  <Line type="monotone" name="Compound Friction (Δ3)" dataKey="noteDelta3Sma" stroke="#ec4899" strokeWidth={2} dot={false} isAnimationActive={false} connectNulls={true} animateNewValues={false}/>
                 </LineChart>
               </ResponsiveContainer>
             </div>

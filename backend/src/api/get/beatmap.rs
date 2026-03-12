@@ -1,6 +1,7 @@
 use osu_map_analyzer::rosu_map;
 use rosu_pp::{Beatmap, Difficulty};
 use serde_json::Value;
+use md5;
 
 use rosu_v2::{prelude::RankStatus, Osu as OsuClient};
 use serde::Serialize;
@@ -214,7 +215,12 @@ pub async fn analyze_beatmap(
 ) -> Result<impl Reply, Rejection> {
     let path = Path::new("maps").join(format!("{}.osu", beatmap_id));
     
-    // Attempt to load the map files
+    // 1. Calculate MD5 for the Chart Reset Key
+    let md5_string = match std::fs::read(&path) {
+        Ok(bytes) => format!("{:x}", md5::compute(bytes)),
+        Err(_) => "unknown-md5".to_string(),
+    };
+
     let map = match rosu_map::from_path::<rosu_map::Beatmap>(&path) {
         Ok(m) => m,
         Err(_) => return Ok(reply::with_status(reply::json(&ApiError { error: "Failed to parse map".to_string() }), StatusCode::INTERNAL_SERVER_ERROR)),
@@ -224,22 +230,20 @@ pub async fn analyze_beatmap(
         Err(_) => return Ok(reply::with_status(reply::json(&ApiError { error: "Failed to parse PP map".to_string() }), StatusCode::INTERNAL_SERVER_ERROR)),
     };
 
-    // 1. Data Pipeline
     let movements = analysis::create_movements(&pp_map);
     let total_obj = pp_map.hit_objects.len() as f64;
     let bpm = pp_map.bpm();
     let cs = pp_map.cs;
 
-    // 2. Logic Router
     match analyze_type.to_lowercase().as_str() {
-        // Replace the "all" block and add "fingercontrol"
         "all" => {
             let j_val = analysis::jumps::analyze(&movements, cs, bpm, total_obj);
             let s_val = analysis::streams::analyze(&movements, cs, bpm, total_obj);
             let sl_val = analysis::sliders::analyze(&map, cs, total_obj);
             
-            // New Finger Control Logic
-            let fc_raw = analysis::finger_control::analyze(&pp_map);
+            // FIX: Point to the full path 'analysis::finger_control' 
+            // and use the correct variable 'pp_map'
+            let fc_raw = analysis::finger_control::analyze(&pp_map, md5_string.clone());
             let fc_val = serde_json::to_value(fc_raw).unwrap_or(serde_json::Value::Null);
 
             Ok(reply::with_status(reply::json(&vec![
@@ -250,14 +254,14 @@ pub async fn analyze_beatmap(
             ]), StatusCode::OK))
         }
         "fingercontrol" => {
-            let fc_raw = analysis::finger_control::analyze(&pp_map);
+            // FIX: Full path here as well
+            let fc_raw = analysis::finger_control::analyze(&pp_map, md5_string);
             let fc_val = serde_json::to_value(fc_raw).unwrap_or(serde_json::Value::Null);
             Ok(reply::with_status(reply::json(&AnalysisResult { 
                 analysis_type: String::from("fingercontrol"), 
                 analysis: fc_val 
             }), StatusCode::OK))
         }
-        // ... update the error message in the _ case to include fingercontrol ...
         "jump" => {
             let j_val = analysis::jumps::analyze(&movements, cs, bpm, total_obj);
             Ok(reply::with_status(reply::json(&AnalysisResult { analysis_type: String::from("jump"), analysis: j_val }), StatusCode::OK))
@@ -272,7 +276,7 @@ pub async fn analyze_beatmap(
         }
         _ => {
             Ok(reply::with_status(
-                reply::json(&ApiError { error: "Bad request: analyze_type must be all, jump, stream, or slider".to_string() }),
+                reply::json(&ApiError { error: "Bad request: analyze_type must be all, jump, stream, slider, or fingercontrol".to_string() }),
                 StatusCode::BAD_REQUEST
             ))
         }

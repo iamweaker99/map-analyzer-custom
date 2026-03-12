@@ -86,11 +86,12 @@ export interface SnapBucket {
 }
 
 export interface FingerControlAnalysis {
+  beatmapMd5: string; // Add this line
   snapDistribution: SnapBucket[];
   burstHistogram: Record<number, number>;
   offGridDetails: OffGridNote[];
   offGridBuckets: number[];
   overall_confidence: number;
   transitionMatrix: TransitionMatrix;
-  timeline: TimelinePoint[]; // NEW
+  timeline: TimelinePoint[];
 }

@@ -35,6 +35,7 @@ version = "0.1.0"
 dependencies = [
  "dotenvy",
  "itertools",
+ "md5",
  "osu-map-analyzer",
  "reqwest",
  "rosu-pp",
@@ -708,6 +709,12 @@ name = "log"
 version = "0.4.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a7a70ba024b9dc04c27ea2f0c0548feb474ec5c54bba33a7f72f873a39d07b24"
+
+[[package]]
+name = "md5"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ae960838283323069879657ca3de837e9f7bbb4c7bf6ea7f1b290d5e9476d2e0"
 
 [[package]]
 name = "memchr"
