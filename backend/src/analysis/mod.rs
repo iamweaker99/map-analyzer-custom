@@ -1,6 +1,8 @@
 pub mod jumps;
 pub mod streams;
 pub mod sliders;
+pub mod finger_control;
+pub mod aim_control;    // <-- ADD THIS LINE
 
 use rosu_pp::Beatmap;
 
@@ -32,5 +34,3 @@ pub fn create_movements(map: &Beatmap) -> Vec<Movement> {
     }
     movements
 }
-
-pub mod finger_control;

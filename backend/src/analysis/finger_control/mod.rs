@@ -7,6 +7,7 @@ pub mod patterns;
 pub mod transitions;
 pub mod timeline; // NEW: Register timeline
 
+
 #[derive(Debug, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct FingerControlAnalysis {
