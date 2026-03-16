@@ -1,6 +1,7 @@
 use rosu_pp::Beatmap;
 use super::super::get_diameter;
 
+#[allow(dead_code)]
 #[derive(Clone, Debug)]
 pub struct AimVector {
     pub start_time: f64,

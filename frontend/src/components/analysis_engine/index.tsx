@@ -8,7 +8,8 @@ import {
 import { JumpProfile } from "./JumpProfile";
 import { StreamProfile } from "./StreamProfile";
 import { SliderProfile } from "./SliderProfile";
-import { FingerControlProfile } from "./FingerControlProfile"; // This is the COMPONENT
+import { FingerControlProfile } from "./FingerControlProfile";
+import { AimControlProfile } from './AimControlProfile';
 
 import { 
     BeatmapAnalysisResult, 
@@ -16,6 +17,7 @@ import {
     StreamAnalysis, 
     SliderAnalysis,
     FingerControlAnalysis,
+    AimControlResult // Imported the new type
 } from "./types";
 
 export function AnalysisCardDetails({
@@ -28,9 +30,9 @@ export function AnalysisCardDetails({
     const { analysis_type, analysis: details } = analysis;
     
     // Custom label logic for the Accordion
-    const displayType = analysis_type === "fingercontrol" 
-        ? "Finger Control Analysis" 
-        : analysis_type.charAt(0).toUpperCase() + analysis_type.slice(1);
+    let displayType = analysis_type.charAt(0).toUpperCase() + analysis_type.slice(1);
+    if (analysis_type === "fingercontrol") displayType = "Finger Control Analysis";
+    if (analysis_type === "aimcontrol") displayType = "Aim Control Analysis";
 
     return (
         <Accordion type="single" collapsible>
@@ -39,7 +41,6 @@ export function AnalysisCardDetails({
                     {displayType}:
                 </AccordionTrigger>
                 <AccordionContent>
-                    {/* Removed <ul> for better layout nesting */}
                     <div className="text-sm">
                         {analysis_type === "stream" && (
                             <StreamProfile
@@ -55,6 +56,11 @@ export function AnalysisCardDetails({
                         )}
                         {analysis_type === "fingercontrol" && (
                             <FingerControlProfile analysis={details as FingerControlAnalysis} />
+                        )}
+                        {analysis_type === "aimcontrol" && (
+                            // Note: We use `data=` here because our AimControlProfile 
+                            // interface specifically expects a prop named `data`
+                            <AimControlProfile data={details as AimControlResult} />
                         )}
                     </div>
                 </AccordionContent>

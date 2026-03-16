@@ -6,42 +6,91 @@ pub mod endurance;
 use rosu_pp::Beatmap;
 use serde_json::{json, Value};
 
+fn calculate_std_dev(data: &[f64], mean: f64) -> f64 {
+    if data.is_empty() { return 0.0; }
+    let variance: f64 = data.iter().map(|value| {
+        let diff = mean - value;
+        diff * diff
+    }).sum::<f64>() / data.len() as f64;
+    variance.sqrt()
+}
+
 pub fn analyze(map: &Beatmap) -> Value {
-    // 1. Spatial Geometry
     let spatial_vectors = spatial::calculate_spatial_vectors(map);
     
     if spatial_vectors.is_empty() {
         return json!({ "error": "Not enough objects for aim analysis" });
     }
 
-    // 2. Base Kinematics
     let kinematics = kinematics::calculate_kinematics(&spatial_vectors);
-
-    // 3. Advanced Vector Mechanics (Flips, Chirps, Alignment)
     let vector_data = vectors::calculate_vector_mechanics(&spatial_vectors);
-
-    // 4. Endurance & Sustained Strain (EMA)
     let endurance_data = endurance::calculate_endurance(&spatial_vectors, &kinematics);
 
-    // Prepare arrays for distribution grouping (to be handled in stage 3/4)
-    let mut spacing_array: Vec<f64> = spatial_vectors.iter().map(|v| v.norm_distance).collect();
-    let mut angle_array: Vec<f64> = spatial_vectors.iter().filter_map(|v| v.deflection_angle).collect();
-    let mut velocity_array: Vec<f64> = kinematics.iter().map(|k| k.velocity).collect();
+    let spacing_array: Vec<f64> = spatial_vectors.iter().map(|v| v.norm_distance).collect();
+    let angle_array: Vec<f64> = spatial_vectors.iter().filter_map(|v| v.deflection_angle).collect();
+    let velocity_array: Vec<f64> = kinematics.iter().map(|k| k.velocity).collect();
 
-    // Sort for safe basic stat extraction (medians/percentiles)
-    spacing_array.sort_by(|a, b| a.partial_cmp(b).unwrap());
-    angle_array.sort_by(|a, b| a.partial_cmp(b).unwrap());
-    velocity_array.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    let avg_spacing = spacing_array.iter().sum::<f64>() / spacing_array.len() as f64;
+    let avg_angle = if !angle_array.is_empty() { angle_array.iter().sum::<f64>() / angle_array.len() as f64 } else { 0.0 };
+    let avg_velocity = velocity_array.iter().sum::<f64>() / velocity_array.len() as f64;
 
-    // Assemble Stage 2 finalized payload
+    let velocity_std_dev = calculate_std_dev(&velocity_array, avg_velocity);
+
+    let mut stacked = 0; let mut micro = 0; let mut flow = 0; let mut standard = 0; let mut large = 0;
+    for &d in &spacing_array {
+        if d <= 0.5 { stacked += 1; }
+        else if d <= 1.25 { micro += 1; }
+        else if d <= 2.5 { flow += 1; }
+        else if d <= 4.5 { standard += 1; }
+        else { large += 1; }
+    }
+
+    let mut snap_backs = 0; let mut acute = 0; let mut wide = 0; let mut linear = 0;
+    for &a in &angle_array {
+        if a <= 60.0 { snap_backs += 1; }
+        else if a <= 90.0 { acute += 1; }
+        else if a <= 135.0 { wide += 1; }
+        else { linear += 1; }
+    }
+
+    let mut v_sig_slower = 0; let mut v_slower = 0; let mut v_mean = 0; let mut v_faster = 0; let mut v_sig_faster = 0;
+    for &v in &velocity_array {
+        if v < avg_velocity - (1.5 * velocity_std_dev) { v_sig_slower += 1; }
+        else if v < avg_velocity - (0.5 * velocity_std_dev) { v_slower += 1; }
+        else if v <= avg_velocity + (0.5 * velocity_std_dev) { v_mean += 1; }
+        else if v <= avg_velocity + (1.5 * velocity_std_dev) { v_faster += 1; }
+        else { v_sig_faster += 1; }
+    }
+
     json!({
         "spatial": {
             "total_movements": spatial_vectors.len(),
-            "avg_spacing_d": spacing_array.iter().sum::<f64>() / spacing_array.len() as f64,
-            "avg_angle": if !angle_array.is_empty() { angle_array.iter().sum::<f64>() / angle_array.len() as f64 } else { 0.0 },
+            "avg_spacing_d": avg_spacing,
+            "avg_angle": avg_angle,
+            "spacing_distribution": {
+                "stacked": stacked,
+                "micro": micro,
+                "flow": flow,
+                "standard": standard,
+                "large": large
+            },
+            "angle_distribution": {
+                "snap_backs": snap_backs,
+                "acute": acute,
+                "wide": wide,
+                "linear": linear
+            }
         },
         "kinematics": {
-            "avg_velocity": velocity_array.iter().sum::<f64>() / velocity_array.len() as f64,
+            "avg_velocity": avg_velocity,
+            "velocity_std_dev": velocity_std_dev,
+            "velocity_distribution": {
+                "significantly_slower": v_sig_slower,
+                "slower": v_slower,
+                "mean": v_mean,
+                "faster": v_faster,
+                "significantly_faster": v_sig_faster
+            }
         },
         "vectors": {
             "directional_flips": vector_data.flips,
@@ -55,7 +104,6 @@ pub fn analyze(map: &Beatmap) -> Value {
         "endurance": {
             "peak_strain": endurance_data.peak_strain,
             "time_under_tension_ms": endurance_data.time_under_tension,
-            // We pass the raw EMA curve to the frontend to plot a line chart
             "strain_curve": endurance_data.ema_strain,
         }
     })

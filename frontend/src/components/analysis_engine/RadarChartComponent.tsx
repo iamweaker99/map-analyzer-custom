@@ -16,8 +16,8 @@ export const RadarChartComponent: React.FC<Props> = ({ jump, stream, fingerContr
   const data = [
     { name: 'Aim (Jumps)', value: (jump?.overall_confidence || 0) * 10 },
     { name: 'Speed (Streams)', value: (stream?.overall_confidence || 0) * 10 },
-    { name: 'Complexity', value: fingerControl?.complexityScore || 0 },
-    { name: 'Switching', value: fingerControl?.morphologyIndex || 0 },
+    //{ name: 'Complexity', value: fingerControl?.complexityScore || 0 },
+    //{ name: 'Switching', value: fingerControl?.morphologyIndex || 0 },
     { name: 'Rhythm', value: (fingerControl?.overall_confidence || 0) * 10 },
   ];
 

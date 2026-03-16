@@ -6,8 +6,8 @@ export interface BeatmapDetailsResult {
 
 export interface BeatmapAnalysisResult {
     // Ensure "fingercontrol" is exactly as it appears in the backend JSON
-    analysis_type: "jump" | "stream" | "slider" | "fingercontrol"; 
-    analysis: JumpAnalysis | StreamAnalysis | SliderAnalysis | FingerControlAnalysis;
+    analysis_type: "jump" | "stream" | "slider" | "fingercontrol" | "aimcontrol"; 
+    analysis: JumpAnalysis | StreamAnalysis | SliderAnalysis | FingerControlAnalysis | AimControlResult;
 }
 
 export interface JumpAnalysis {
@@ -94,4 +94,50 @@ export interface FingerControlAnalysis {
   overall_confidence: number;
   transitionMatrix: TransitionMatrix;
   timeline: TimelinePoint[];
+}
+
+export interface AimControlResult {
+    spatial: {
+        total_movements: number;
+        avg_spacing_d: number;
+        avg_angle: number;
+        spacing_distribution: {
+            stacked: number;
+            micro: number;
+            flow: number;
+            standard: number;
+            large: number;
+        };
+        angle_distribution: {
+            snap_backs: number;
+            acute: number;
+            wide: number;
+            linear: number;
+        };
+    };
+    kinematics: {
+        avg_velocity: number;
+        velocity_std_dev: number;
+        velocity_distribution: {
+            significantly_slower: number;
+            slower: number;
+            mean: number;
+            faster: number;
+            significantly_faster: number;
+        };
+    };
+    vectors: {
+        directional_flips: number;
+        directional_chirps: number;
+        alignment: {
+            parallel: number;
+            orthogonal: number;
+            anti_symmetric: number;
+        };
+    };
+    endurance: {
+        peak_strain: number;
+        time_under_tension_ms: number;
+        strain_curve: { time: number; strain: number }[]; // Changed this line
+    };
 }

@@ -1,5 +1,6 @@
 use super::spatial::AimVector;
 
+#[allow(dead_code)]
 #[derive(Clone, Debug)]
 pub struct KinematicData {
     pub velocity: f64, // Pixels per ms
