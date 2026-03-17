@@ -42,7 +42,7 @@ pub fn calculate_endurance(vectors: &[AimVector], kinematics: &[KinematicData]) 
         }
     }
 
-    let threshold = peak_strain * 0.8;
+    let threshold = peak_strain * 0.5;
     let mut time_under_tension = 0.0;
 
     for i in 0..vectors.len() {

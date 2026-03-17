@@ -45,12 +45,12 @@ pub fn analyze(map: &Beatmap) -> Value {
         else { large += 1; }
     }
 
-    let mut snap_backs = 0; let mut acute = 0; let mut wide = 0; let mut linear = 0;
+    let mut linear = 0; let mut wide = 0; let mut acute = 0; let mut snap_backs = 0;
     for &a in &angle_array {
-        if a <= 60.0 { snap_backs += 1; }
-        else if a <= 90.0 { acute += 1; }
-        else if a <= 135.0 { wide += 1; }
-        else { linear += 1; }
+        if a <= 45.0 { linear += 1; } // 0-45 deg: Straight lines/gentle curves
+        else if a <= 90.0 { wide += 1; } // 45-90 deg: Wide flow aim
+        else if a <= 135.0 { acute += 1; } // 90-135 deg: Sharp tech angles
+        else { snap_backs += 1; } // 135-180 deg: Reversing direction/1-2s
     }
 
     let mut v_sig_slower = 0; let mut v_slower = 0; let mut v_mean = 0; let mut v_faster = 0; let mut v_sig_faster = 0;
