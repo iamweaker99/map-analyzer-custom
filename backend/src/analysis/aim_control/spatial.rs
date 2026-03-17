@@ -1,5 +1,5 @@
 use rosu_pp::Beatmap;
-use super::super::get_diameter;
+use crate::analysis::get_diameter;
 
 #[allow(dead_code)]
 #[derive(Clone, Debug)]
