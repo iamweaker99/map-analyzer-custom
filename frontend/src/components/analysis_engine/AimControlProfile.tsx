@@ -162,11 +162,34 @@ export const AimControlProfile: React.FC<AimControlProfileProps> = ({ data }) =>
                 <Card className="border-gray-800 p-4">
                     <h3 className="text-sm font-semibold mb-4">Aim Complexity & Volatility</h3>
                     <div className="space-y-6">
+                         {/* NEW: Relative Velocity Distribution */}
                         <div>
-                            <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 border-b border-gray-800 pb-1">Relative Velocity Switches</h4>
+                            <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 border-b border-gray-800 pb-1">Relative Velocity Distribution</h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1 mt-2">
-                                {/* Access key updated to relativeVelocity */}
-                                {renderDistribution(aimVolatility.relativeVelocity)}
+                                <StatBar label="Significantly Slower" percentage={aimVolatility.velocityBuckets.switches0} colorClass="bg-blue-500" />
+                                <StatBar label="Slower" percentage={aimVolatility.velocityBuckets.switches12} colorClass="bg-blue-300" />
+                                <StatBar label="Standard (Mean)" percentage={aimVolatility.velocityBuckets.switches34} colorClass="bg-emerald-400" />
+                                <StatBar label="Faster" percentage={aimVolatility.velocityBuckets.switches56} colorClass="bg-orange-300" />
+                                <StatBar label="Significantly Faster" percentage={aimVolatility.velocityBuckets.switches7} colorClass="bg-red-500" />
+                            </div>
+                        </div>
+
+                        {/* NEW: Velocity Switch Intensity */}
+                        <div>
+                            <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 border-b border-gray-800 pb-1">Velocity Switch Intensity</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1 mt-2">
+                                <StatBar label="Major Adjustment (2+ Step)" percentage={aimVolatility.velocityIntensity.majorAdjustment} colorClass="bg-red-500" />
+                                <StatBar label="Minor Adjustment (1 Step)" percentage={aimVolatility.velocityIntensity.minorAdjustment} colorClass="bg-orange-400" />
+                                <StatBar label="Steady Velocity" percentage={aimVolatility.velocityIntensity.steady} colorClass="bg-emerald-400" />
+                            </div>
+                        </div>
+
+                        {/* NEW: Aim Style (Snap vs Flow) */}
+                        <div>
+                            <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 border-b border-gray-800 pb-1">Aim Style Balance</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1 mt-2">
+                                <StatBar label="Snap Aim Bias" percentage={aimVolatility.snapFlow.snapAim} colorClass="bg-red-400" />
+                                <StatBar label="Flow Aim Bias" percentage={aimVolatility.snapFlow.flowAim} colorClass="bg-emerald-400" />
                             </div>
                         </div>
                         <div>

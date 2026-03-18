@@ -150,9 +150,28 @@ export interface VolatilityDistribution {
   switches56: number;
   switches7: number;
 }
+export interface VelocityIntensityDistribution {
+  majorAdjustment: number;
+  minorAdjustment: number;
+  steady: number;
+}
+
+export interface SnapFlowRatio {
+  snapAim: number;
+  flowAim: number;
+}
 
 export interface AimVolatilitySummary {
-  relative_velocity: VolatilityDistribution;
+  velocityBuckets: VolatilityDistribution; // 5 buckets: Sig Slower to Sig Faster
+  velocityIntensity: VelocityIntensityDistribution;
   angle: VolatilityDistribution;
   direction: VolatilityDistribution;
+  textureMatrix: TextureMatrix;
+  snapFlow: SnapFlowRatio;
+}
+export interface TextureMatrix {
+  consistent: number;
+  flowTech: number;
+  rhythmicTech: number;
+  chaoticTech: number;
 }
