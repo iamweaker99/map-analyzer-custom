@@ -2,6 +2,7 @@ export interface BeatmapDetailsResult {
     title: string; artist: string; creator: string; creator_id: number;
     version: string; set_id: number;
     statistics: { ar: number; od: number; hp: number; cs: number; bpm: number; star_rating: number; total_objects: number; };
+    aim_volatility?: AimVolatilitySummary;
 }
 
 export interface BeatmapAnalysisResult {
@@ -140,4 +141,18 @@ export interface AimControlResult {
         time_under_tension_ms: number;
         strain_curve: { time: number; strain: number }[]; // Changed this line
     };
+}
+
+export interface VolatilityDistribution {
+  switches_0: number;
+  switches_1: number;
+  switches_2: number;
+  switches_3: number;
+  switches_more_than_3: number;
+}
+
+export interface AimVolatilitySummary {
+  relative_velocity: VolatilityDistribution;
+  angle: VolatilityDistribution;
+  direction: VolatilityDistribution;
 }

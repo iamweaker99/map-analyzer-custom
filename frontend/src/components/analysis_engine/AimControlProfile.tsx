@@ -16,25 +16,29 @@ const formatTime = (ms: any) => {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 };
 
+// UPDATED: Now supports passing 'percentage' directly for our new Volatility metrics,
+// while still supporting 'value' and 'total' for your old metrics.
 const StatBar = ({ 
-    label, value = 0, total = 0, colorClass = "bg-blue-500" 
+    label, value, total, percentage, colorClass = "bg-blue-500" 
 }: { 
-    label: string; value?: number; total?: number; colorClass?: string; 
+    label: string; value?: number; total?: number; percentage?: number; colorClass?: string; 
 }) => {
-    const safeValue = value || 0;
-    const safeTotal = total || 0;
-    const percentage = safeTotal > 0 ? (safeValue / safeTotal) * 100 : 0;
+    // If percentage is provided directly, use it. Otherwise calculate it.
+    const displayPercentage = percentage !== undefined 
+        ? percentage 
+        : (total && total > 0 ? ((value || 0) / total) * 100 : 0);
     
     return (
         <div className="mb-2">
             <div className="flex justify-between text-xs mb-0.5">
                 <span className="text-gray-300">{label}</span>
                 <span className="font-mono text-gray-400">
-                    {safeValue} <span className="text-[10px]">({percentage.toFixed(1)}%)</span>
+                    {value !== undefined && `${value} `}
+                    <span className="text-[10px]">({displayPercentage.toFixed(1)}%)</span>
                 </span>
             </div>
             <div className="h-1 w-full bg-gray-800 rounded-full overflow-hidden">
-                <div className={`h-full ${colorClass}`} style={{ width: `${percentage}%` }} />
+                <div className={`h-full ${colorClass}`} style={{ width: `${displayPercentage}%` }} />
             </div>
         </div>
     );
@@ -73,6 +77,23 @@ export const AimControlProfile: React.FC<AimControlProfileProps> = ({ data }) =>
     const totalSpacing = Object.values(data.spatial.spacing_distribution).reduce((a: any, b: any) => a + b, 0) as number;
     const totalAngles = Object.values(data.spatial.angle_distribution).reduce((a: any, b: any) => a + b, 0) as number;
     const totalAlignment = Object.values(data.vectors.alignment).reduce((a: any, b: any) => a + b, 0) as number;
+
+    // Helper to map volatility distribution into the 5 colored StatBars
+    const renderDistribution = (dist: any) => {
+        if (!dist) return null;
+        return (
+            <>
+                <StatBar label="0 Switches (Stable)" percentage={dist.switches_0} colorClass="bg-emerald-400" />
+                <StatBar label="1 Switch" percentage={dist.switches_1} colorClass="bg-blue-400" />
+                <StatBar label="2 Switches" percentage={dist.switches_2} colorClass="bg-yellow-400" />
+                <StatBar label="3 Switches" percentage={dist.switches_3} colorClass="bg-orange-400" />
+                <StatBar label="3+ Switches (Chaotic)" percentage={dist.switches_more_than_3} colorClass="bg-red-500" />
+            </>
+        );
+    };
+
+    // Safely extract aim_volatility if it exists on the data object
+    const aimVolatility = (data as any).aim_volatility;
 
     return (
         <div className="space-y-4 mt-2">
@@ -135,6 +156,42 @@ export const AimControlProfile: React.FC<AimControlProfileProps> = ({ data }) =>
                 </div>
             </Card>
 
+            {/* NEW SECTION: Volatility & Complexity */}
+            {aimVolatility && (
+                <Card className="border-gray-800 p-4">
+                    <h3 className="text-sm font-semibold mb-4">Aim Complexity & Volatility</h3>
+                    <div className="space-y-6">
+                        <div>
+                            <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 border-b border-gray-800 pb-1">Relative Velocity Switches</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1 mt-2">
+                                {renderDistribution(aimVolatility.relative_velocity)}
+                            </div>
+                        </div>
+                        <div>
+                            <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 border-b border-gray-800 pb-1">Angle Switches</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1 mt-2">
+                                {renderDistribution(aimVolatility.angle)}
+                            </div>
+                        </div>
+                        <div>
+                            <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 border-b border-gray-800 pb-1">Alignment Switches</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1 mt-2">
+                                {renderDistribution(aimVolatility.direction)}
+                            </div>
+                        </div>
+                        <div>
+                            <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 border-b border-gray-800 pb-1">Aim Texture Matrix</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1 mt-2">
+                                <StatBar label="Consistent (Flow/Farm)" percentage={0.0} colorClass="bg-emerald-400" />
+                                <StatBar label="Flow Tech" percentage={0.0} colorClass="bg-blue-400" />
+                                <StatBar label="Rhythmic Tech" percentage={0.0} colorClass="bg-purple-400" />
+                                <StatBar label="Chaotic Tech" percentage={0.0} colorClass="bg-pink-500" />
+                            </div>
+                        </div>
+                    </div>
+                </Card>
+            )}
+
             <Card className="border-gray-800 p-4">
                 <div className="flex flex-row items-center justify-between mb-3">
                     <div>
@@ -148,7 +205,6 @@ export const AimControlProfile: React.FC<AimControlProfileProps> = ({ data }) =>
                 </div>
                 <div className="h-48">
                     <ResponsiveContainer width="100%" height="100%">
-                        {/* Margin added to fix graph cut-offs */}
                         <LineChart data={strainChartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
                             <XAxis 
                                 dataKey="timeMs" 
