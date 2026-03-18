@@ -2,6 +2,9 @@ pub mod spatial;
 pub mod kinematics;
 pub mod vectors;
 pub mod endurance;
+pub mod buckets;
+pub mod volatility;
+pub mod statistics;
 
 use rosu_pp::Beatmap;
 use serde_json::{json, Value};
