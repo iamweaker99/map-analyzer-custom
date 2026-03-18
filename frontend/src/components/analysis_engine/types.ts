@@ -144,11 +144,11 @@ export interface AimControlResult {
 }
 
 export interface VolatilityDistribution {
-  switches_0: number;
-  switches_1: number;
-  switches_2: number;
-  switches_3: number;
-  switches_more_than_3: number;
+  switches0: number;
+  switches12: number;
+  switches34: number;
+  switches56: number;
+  switches7: number;
 }
 
 export interface AimVolatilitySummary {

@@ -125,7 +125,7 @@ interface FingerControlAnalysis {
 
 type AnalysisProps = {
     getBeatmapDetails(beatmapId: number): Promise<BeatmapDetailsResult>;
-    getBeatmapAnalysis<T extends "stream" | "jump" | "slider" | "fingercontrol" | "all">(
+    getBeatmapAnalysis<T extends "stream" | "jump" | "slider" | "fingercontrol" | "aimcontrol" | "all">(
         beatmapId: number,
         analysisType: T,
     ): Promise<
@@ -320,7 +320,7 @@ export default function Analysis({
                             <RadarChartComponent 
                                 jump={analysisResult.find(a => a.analysis_type === "jump")?.analysis as JumpAnalysis}
                                 stream={analysisResult.find(a => a.analysis_type === "stream")?.analysis as StreamAnalysis}
-                                fingerControl={analysisResult.find(a => a.analysis_type === "fingercontrol")?.analysis as FingerControlAnalysis}
+                                fingerControl={analysisResult.find(a => a.analysis_type === "fingercontrol")?.analysis as any}
                             />
 
                             <Card>
@@ -346,7 +346,7 @@ export default function Analysis({
                                                 (analysis, i) => (
                                                     <AnalysisCardDetails
                                                         key={`details-${i}`}
-                                                        analysis={analysis}
+                                                        analysis={analysis as any}
                                                         totalObjects={detailsResult.statistics.total_objects}
                                                     />
                                                 ),

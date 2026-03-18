@@ -41,6 +41,7 @@ struct DetailsResult {
     version: String,
     set_id: u32,
     statistics: Statistics,
+    pub aim_volatility: crate::analysis::aim_control::statistics::AimVolatilitySummary,
 }
 
 pub async fn beatmap_details(
@@ -187,6 +188,9 @@ pub async fn beatmap_details(
         total_objects: map_calculate.hit_objects.len(), 
     };
 
+    let spatial_vectors = crate::analysis::aim_control::spatial::calculate_spatial_vectors(&map_calculate);
+    let aim_volatility = crate::analysis::aim_control::statistics::generate_aim_complexity_report(&spatial_vectors);
+
     Ok(reply::with_status(
         reply::json(&DetailsResult {
             title: beatmapset.title,
@@ -196,6 +200,7 @@ pub async fn beatmap_details(
             version: beatmap.version,
             set_id: beatmapset.mapset_id,
             statistics,
+            aim_volatility,
         }),
         StatusCode::OK,
     ))

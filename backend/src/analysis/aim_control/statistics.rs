@@ -1,16 +1,19 @@
+use serde::Serialize;
 use super::spatial::AimVector;
 use super::volatility::{calculate_volatilities, WindowVolatility};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)] // Added Serialize here
+#[serde(rename_all = "camelCase")] // Matches your project's naming convention
 pub struct VolatilityDistribution {
     pub switches_0: f64,
-    pub switches_1: f64,
-    pub switches_2: f64,
-    pub switches_3: f64,
-    pub switches_more_than_3: f64, // Represents 4, 5, 6, 7
+    pub switches_1_2: f64,
+    pub switches_3_4: f64,
+    pub switches_5_6: f64,
+    pub switches_7: f64,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)] // Added Serialize here
+#[serde(rename_all = "camelCase")] // Matches your project's naming convention
 pub struct AimVolatilitySummary {
     pub relative_velocity: VolatilityDistribution,
     pub angle: VolatilityDistribution,
@@ -21,40 +24,37 @@ pub struct AimVolatilitySummary {
 fn to_distribution(counts: &[usize; 5], total_windows: f64) -> VolatilityDistribution {
     VolatilityDistribution {
         switches_0: (counts[0] as f64 / total_windows) * 100.0,
-        switches_1: (counts[1] as f64 / total_windows) * 100.0,
-        switches_2: (counts[2] as f64 / total_windows) * 100.0,
-        switches_3: (counts[3] as f64 / total_windows) * 100.0,
-        switches_more_than_3: (counts[4] as f64 / total_windows) * 100.0,
+        switches_1_2: (counts[1] as f64 / total_windows) * 100.0,
+        switches_3_4: (counts[2] as f64 / total_windows) * 100.0,
+        switches_5_6: (counts[3] as f64 / total_windows) * 100.0,
+        switches_7: (counts[4] as f64 / total_windows) * 100.0,
     }
 }
 
 /// Takes the raw volatilities and calculates the distribution ratios (0 to 100%).
 pub fn calculate_distributions(volatilities: &[WindowVolatility]) -> AimVolatilitySummary {
     let total = volatilities.len() as f64;
+    // ... same safety check as before ...
 
-    // Safety check: if map is too short to have any windows
-    if total == 0.0 {
-        let empty_dist = VolatilityDistribution {
-            switches_0: 0.0, switches_1: 0.0, switches_2: 0.0,
-            switches_3: 0.0, switches_more_than_3: 0.0,
-        };
-        return AimVolatilitySummary {
-            relative_velocity: empty_dist.clone(),
-            angle: empty_dist.clone(),
-            direction: empty_dist,
-        };
-    }
-
-    // Indices: 0, 1, 2, 3, 4 (where 4 represents > 3)
     let mut vel_counts = [0; 5];
     let mut ang_counts = [0; 5];
     let mut dir_counts = [0; 5];
 
+    let map_to_index = |switches: u8| -> usize {
+        match switches {
+            0 => 0,
+            1..=2 => 1,
+            3..=4 => 2,
+            5..=6 => 3,
+            7 => 4,
+            _ => 4, // Safety fallback
+        }
+    };
+
     for w in volatilities {
-        // .min(4) caps the value at 4, so 4, 5, 6, 7 all go into index 4
-        vel_counts[(w.velocity_switches as usize).min(4)] += 1;
-        ang_counts[(w.angle_switches as usize).min(4)] += 1;
-        dir_counts[(w.alignment_switches as usize).min(4)] += 1;
+        vel_counts[map_to_index(w.velocity_switches)] += 1;
+        ang_counts[map_to_index(w.angle_switches)] += 1;
+        dir_counts[map_to_index(w.alignment_switches)] += 1;
     }
 
     AimVolatilitySummary {

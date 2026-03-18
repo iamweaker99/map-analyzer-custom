@@ -83,17 +83,18 @@ export const AimControlProfile: React.FC<AimControlProfileProps> = ({ data }) =>
         if (!dist) return null;
         return (
             <>
-                <StatBar label="0 Switches (Stable)" percentage={dist.switches_0} colorClass="bg-emerald-400" />
-                <StatBar label="1 Switch" percentage={dist.switches_1} colorClass="bg-blue-400" />
-                <StatBar label="2 Switches" percentage={dist.switches_2} colorClass="bg-yellow-400" />
-                <StatBar label="3 Switches" percentage={dist.switches_3} colorClass="bg-orange-400" />
-                <StatBar label="3+ Switches (Chaotic)" percentage={dist.switches_more_than_3} colorClass="bg-red-500" />
+                {/* Note: switches_0 becomes switches0, switches_more_than_3 becomes switchesMoreThan3 */}
+                <StatBar label="0 Switches (Stable)" percentage={dist.switches0} colorClass="bg-emerald-400" />
+                <StatBar label="1 - 2 Switches" percentage={dist.switches12} colorClass="bg-blue-400" />
+                <StatBar label="3 - 4 Switches" percentage={dist.switches34} colorClass="bg-yellow-400" />
+                <StatBar label="5 - 6 Switches" percentage={dist.switches56} colorClass="bg-orange-400" />
+                <StatBar label="7 Switches (Chaotic)" percentage={dist.switches7} colorClass="bg-red-500" />
             </>
         );
     };
 
     // Safely extract aim_volatility if it exists on the data object
-    const aimVolatility = (data as any).aim_volatility;
+    const aimVolatility = (data as any).aimVolatility;
 
     return (
         <div className="space-y-4 mt-2">
@@ -164,7 +165,8 @@ export const AimControlProfile: React.FC<AimControlProfileProps> = ({ data }) =>
                         <div>
                             <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 border-b border-gray-800 pb-1">Relative Velocity Switches</h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1 mt-2">
-                                {renderDistribution(aimVolatility.relative_velocity)}
+                                {/* Access key updated to relativeVelocity */}
+                                {renderDistribution(aimVolatility.relativeVelocity)}
                             </div>
                         </div>
                         <div>
@@ -174,8 +176,9 @@ export const AimControlProfile: React.FC<AimControlProfileProps> = ({ data }) =>
                             </div>
                         </div>
                         <div>
-                            <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 border-b border-gray-800 pb-1">Alignment Switches</h4>
+                            <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 border-b border-gray-800 pb-1">Direction Switches</h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1 mt-2">
+                                {/* Access key updated to direction */}
                                 {renderDistribution(aimVolatility.direction)}
                             </div>
                         </div>

@@ -22,7 +22,7 @@ export default function Main() {
         return await response.json();
     }
 
-    async function getBeatmapAnalysis<T extends "stream" | "jump" | "all">(
+    async function getBeatmapAnalysis<T extends "stream" | "jump" | "slider" | "fingercontrol" | "aimcontrol" | "all">(
         beatmapId: number,
         analysisType: T,
     ): Promise<

@@ -25,6 +25,7 @@ pub fn analyze(map: &Beatmap) -> Value {
         return json!({ "error": "Not enough objects for aim analysis" });
     }
 
+    let aim_volatility = statistics::generate_aim_complexity_report(&spatial_vectors);
     let kinematics = kinematics::calculate_kinematics(&spatial_vectors);
     let vector_data = vectors::calculate_vector_mechanics(&spatial_vectors);
     let endurance_data = endurance::calculate_endurance(&spatial_vectors, &kinematics);
@@ -84,6 +85,9 @@ pub fn analyze(map: &Beatmap) -> Value {
                 "linear": linear
             }
         },
+        
+        "aimVolatility": aim_volatility,
+
         "kinematics": {
             "avg_velocity": avg_velocity,
             "velocity_std_dev": velocity_std_dev,
