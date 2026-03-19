@@ -138,6 +138,14 @@ export interface AimControlResult {
     endurance: {
         peak_strain: number;
         time_under_tension_ms: number;
-        strain_curve: { time: number; strain: number }[]; // Changed this line
+        strain_curve: { time: number; strain: number }[]; 
+    };
+    // NEW: Phase 3 ACCV Metrics
+    accv?: {
+        peak_complexity: number;
+        sustained_complexity: number;
+        peak_spatial_cv: number;
+        peak_temporal_cv: number;
+        peak_kinetic_var: number;
     };
 }

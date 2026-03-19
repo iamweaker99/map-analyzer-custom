@@ -2,6 +2,7 @@ pub mod spatial;
 pub mod kinematics;
 pub mod vectors;
 pub mod endurance;
+pub mod accv;
 
 use rosu_pp::Beatmap;
 use serde_json::{json, Value};
@@ -25,6 +26,8 @@ pub fn analyze(map: &Beatmap) -> Value {
     let kinematics = kinematics::calculate_kinematics(&spatial_vectors);
     let vector_data = vectors::calculate_vector_mechanics(&spatial_vectors);
     let endurance_data = endurance::calculate_endurance(&spatial_vectors, &kinematics);
+    let accv_states = accv::calculate_accv(&spatial_vectors);
+    let accv_metrics = accv::aggregate_accv(&accv_states);
 
     let spacing_array: Vec<f64> = spatial_vectors.iter().map(|v| v.norm_distance).collect();
     let angle_array: Vec<f64> = spatial_vectors.iter().filter_map(|v| v.deflection_angle).collect();
@@ -105,6 +108,7 @@ pub fn analyze(map: &Beatmap) -> Value {
             "peak_strain": endurance_data.peak_strain,
             "time_under_tension_ms": endurance_data.time_under_tension,
             "strain_curve": endurance_data.ema_strain,
-        }
+        },
+        "accv": accv_metrics
     })
 }
