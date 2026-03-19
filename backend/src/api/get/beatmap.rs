@@ -15,6 +15,8 @@ use std::{
 use warp::{http::StatusCode, reply, Rejection, Reply};
 
 use crate::utils::download_beatmap;
+use crate::analysis::aim_control::statistics::AimVolatilitySummary;
+use crate::analysis::aim_control::burst_aim::BurstAimAnalysis;
 
 #[derive(Serialize)]
 struct ApiError {
@@ -190,9 +192,15 @@ pub async fn beatmap_details(
     };
 
     let spatial_vectors = crate::analysis::aim_control::spatial::calculate_spatial_vectors(&map_calculate);
-    let aim_volatility = crate::analysis::aim_control::statistics::generate_aim_complexity_report(&spatial_vectors);
-    let patterns: Vec<crate::analysis::finger_control::patterns::Pattern> = 
-    crate::analysis::finger_control::patterns::extract_patterns(&map_calculate);
+    // 1. Extract Patterns
+    let patterns: Vec<crate::analysis::finger_control::patterns::Pattern> = crate::analysis::finger_control::patterns::extract_patterns(&map_calculate);
+
+    // 2. Analyze Burst Aim
+    let burst_aim: BurstAimAnalysis = crate::analysis::aim_control::burst_aim::analyze_burst_aim(&patterns, &spatial_vectors);
+
+    // 3. Generate Complexity Report (now that burst_aim is available)
+    let aim_volatility: AimVolatilitySummary = crate::analysis::aim_control::statistics::generate_aim_complexity_report(&spatial_vectors, burst_aim.clone());
+    let patterns: Vec<crate::analysis::finger_control::patterns::Pattern> = crate::analysis::finger_control::patterns::extract_patterns(&map_calculate);
     let burst_aim = crate::analysis::aim_control::burst_aim::analyze_burst_aim(&patterns, &spatial_vectors);
 
     Ok(reply::with_status(

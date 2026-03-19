@@ -46,6 +46,7 @@ pub struct AimVolatilitySummary {
     pub direction: VolatilityDistribution,
     pub texture_matrix: TextureMatrix,
     pub snap_flow: SnapFlowRatio,
+    pub burst_aim: super::burst_aim::BurstAimAnalysis,
 }
 
 fn to_distribution(counts: &[usize; 5], total_windows: f64) -> VolatilityDistribution {
@@ -58,22 +59,34 @@ fn to_distribution(counts: &[usize; 5], total_windows: f64) -> VolatilityDistrib
     }
 }
 
-pub fn calculate_distributions(volatilities: &[WindowVolatility], vectors: &[AimVector]) -> AimVolatilitySummary {
+// FIX: Added 'burst_aim' to the parameters list here
+pub fn calculate_distributions(
+    volatilities: &[WindowVolatility], 
+    vectors: &[AimVector], 
+    burst_aim: super::burst_aim::BurstAimAnalysis
+) -> AimVolatilitySummary {
     let total = volatilities.len() as f64;
 
-    if total == 0.0 {
-        let empty_dist = VolatilityDistribution { switches_0: 0.0, switches_1_2: 0.0, switches_3_4: 0.0, switches_5_6: 0.0, switches_7: 0.0 };
+     if total == 0.0 {
+        let empty_dist = VolatilityDistribution {
+            switches_0: 0.0, switches_1_2: 0.0, switches_3_4: 0.0,
+            switches_5_6: 0.0, switches_7: 0.0,
+        };
         return AimVolatilitySummary {
             velocity_buckets: empty_dist.clone(),
-            velocity_intensity: VelocityIntensityDistribution { major_adjustment: 0.0, minor_adjustment: 0.0, steady: 0.0 },
+            velocity_intensity: VelocityIntensityDistribution {
+                major_adjustment: 0.0, minor_adjustment: 0.0, steady: 0.0
+            },
             angle: empty_dist.clone(),
             direction: empty_dist,
-            texture_matrix: TextureMatrix { consistent: 0.0, flow_tech: 0.0, rhythmic_tech: 0.0, chaotic_tech: 0.0 },
+            texture_matrix: TextureMatrix {
+                consistent: 0.0, flow_tech: 0.0, rhythmic_tech: 0.0, chaotic_tech: 0.0
+            },
             snap_flow: SnapFlowRatio { snap_aim: 0.0, flow_aim: 0.0 },
+            burst_aim, 
         };
     }
 
-    // 1. Calculate Global Velocity Distribution (Per Note)
     let mut vel_bucket_counts = [0; 5];
     let v_all: Vec<f64> = vectors.iter().map(|v| if v.dt > 0.0 { v.norm_distance / v.dt } else { 0.0 }).collect();
     let v_mean = v_all.iter().sum::<f64>() / v_all.len() as f64;
@@ -84,7 +97,6 @@ pub fn calculate_distributions(volatilities: &[WindowVolatility], vectors: &[Aim
         vel_bucket_counts[bucket as usize] += 1;
     }
 
-    // 2. Window-based calculations
     let mut ang_counts = [0; 5];
     let mut dir_counts = [0; 5];
     let mut major = 0; let mut minor = 0; let mut steady = 0;
@@ -99,7 +111,6 @@ pub fn calculate_distributions(volatilities: &[WindowVolatility], vectors: &[Aim
         ang_counts[map_to_index(w.angle_switches)] += 1;
         dir_counts[map_to_index(w.alignment_switches)] += 1;
 
-        // Intensity Logic (simplified to window average)
         if w.velocity_switches == 0 { steady += 1; }
         else if w.velocity_switches <= 3 { minor += 1; }
         else { major += 1; }
@@ -136,10 +147,16 @@ pub fn calculate_distributions(volatilities: &[WindowVolatility], vectors: &[Aim
             snap_aim: (snap_count as f64 / total) * 100.0,
             flow_aim: (flow_count as f64 / total) * 100.0,
         },
+        burst_aim, 
     }
 }
 
-pub fn generate_aim_complexity_report(vectors: &[AimVector]) -> AimVolatilitySummary {
+// FIX: Added 'burst_aim' to the parameters list here
+pub fn generate_aim_complexity_report(
+    vectors: &[AimVector], 
+    burst_aim: super::burst_aim::BurstAimAnalysis
+) -> AimVolatilitySummary {
     let volatilities = calculate_volatilities(vectors);
-    calculate_distributions(&volatilities, vectors)
+    // FIX: This now correctly passes the 3rd argument to a 3-parameter function
+    calculate_distributions(&volatilities, vectors, burst_aim) 
 }

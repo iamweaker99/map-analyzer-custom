@@ -33,7 +33,7 @@ pub fn analyze(map: &Beatmap) -> Value {
     // 2. Run our new burst aim analysis
     let burst_aim = burst_aim::analyze_burst_aim(&patterns, &spatial_vectors);
 
-    let aim_volatility = statistics::generate_aim_complexity_report(&spatial_vectors);
+    let aim_volatility = statistics::generate_aim_complexity_report(&spatial_vectors, burst_aim.clone());
     let kinematics = kinematics::calculate_kinematics(&spatial_vectors);
     let vector_data = vectors::calculate_vector_mechanics(&spatial_vectors);
     let endurance_data = endurance::calculate_endurance(&spatial_vectors, &kinematics);

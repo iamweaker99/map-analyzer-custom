@@ -184,8 +184,16 @@ export interface BurstAimDistribution {
   high: number;
 }
 
+export interface BurstChirpBias {
+  noChirpBursts: number;
+  chirpBursts: number;
+}
+
 export interface BurstAimAnalysis {
   avgSpacing: BurstAimDistribution;
   variance: BurstAimDistribution;
   spikes: BurstAimDistribution;
+  angleVariance: BurstAimDistribution;     // NEW
+  alignmentStability: BurstAimDistribution; // NEW
+  chirpBias: BurstChirpBias;                // NEW
 }

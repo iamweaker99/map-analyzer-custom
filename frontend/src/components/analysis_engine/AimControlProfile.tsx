@@ -247,6 +247,29 @@ export const AimControlProfile: React.FC<AimControlProfileProps> = ({ data }) =>
                                 <StatBar label="Kick-Gap" percentage={data.burst_aim.spikes.high} colorClass="bg-red-500" />
                             </div>
                         </div>
+                        <div>
+                            <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 border-b border-gray-800 pb-1">Burst Angle Variance</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-1 mt-2">
+                                <StatBar label="Constant" percentage={data.burst_aim.angleVariance.low} colorClass="bg-emerald-400" />
+                                <StatBar label="Adaptive" percentage={data.burst_aim.angleVariance.mid} colorClass="bg-orange-400" />
+                                <StatBar label="Erratic" percentage={data.burst_aim.angleVariance.high} colorClass="bg-red-500" />
+                            </div>
+                        </div>
+                        <div>
+                            <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 border-b border-gray-800 pb-1">Burst Alignment Stability</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-1 mt-2">
+                                <StatBar label="Stable" percentage={data.burst_aim.alignmentStability.low} colorClass="bg-emerald-400" />
+                                <StatBar label="Transition" percentage={data.burst_aim.alignmentStability.mid} colorClass="bg-orange-400" />
+                                <StatBar label="Chaotic" percentage={data.burst_aim.alignmentStability.high} colorClass="bg-red-500" />
+                            </div>
+                        </div>
+                        <div>
+                            <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 border-b border-gray-800 pb-1">Burst Directional Bias</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1 mt-2">
+                                <StatBar label="No Chirp Bursts" percentage={data.burst_aim.chirpBias.noChirpBursts} colorClass="bg-emerald-400" />
+                                <StatBar label="Chirp Bursts" percentage={data.burst_aim.chirpBias.chirpBursts} colorClass="bg-red-400" />
+                            </div>
+                        </div>
                     </div>
                 </Card>
             )}
