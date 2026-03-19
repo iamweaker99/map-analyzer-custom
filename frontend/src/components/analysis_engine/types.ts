@@ -185,7 +185,10 @@ export interface ReadingResult {
         spaghetti_pct: number;
     };
     traps: {
-        total_deceleration_traps: number;
+        count: number;
+        trap_index: number;
+        peak_magnitude: number;
+        notable_traps: { time: number; magnitude: number }[];
     };
     topography: {
         klines: KLineData[];

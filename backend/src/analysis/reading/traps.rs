@@ -7,42 +7,38 @@ pub struct TrapState {
     pub is_deceleration_trap: bool,
     pub distance: f64,
     pub time_gap: f64,
+    pub magnitude: f64
 }
 
 pub fn calculate_traps(nodes: &[VisualNode]) -> Vec<TrapState> {
     let mut states = Vec::new();
-    let window_size = 3; // We need previous movement vs current movement
+    if nodes.len() < 3 { return states; }
 
-    if nodes.len() < window_size {
-        return states;
-    }
-
-    for window in nodes.windows(window_size) {
+    for window in nodes.windows(3) {
         let prev_node = &window[0];
         let curr_node = &window[1];
         let next_node = &window[2];
 
-        // Previous Movement (A -> B)
-        let dt_prev = curr_node.start_time - prev_node.start_time;
-
-        // Current Movement (B -> C)
+        let dt_prev = (curr_node.start_time - prev_node.start_time).max(1.0);
         let dx = next_node.x - curr_node.x;
         let dy = next_node.y - curr_node.y;
         let distance = (dx * dx + dy * dy).sqrt();
         let dt_curr = next_node.start_time - curr_node.start_time;
 
-        // Deceleration Trap Logic:
-        // 1. The physical jump is significant (> 100 pixels)
-        // 2. The rhythm suddenly slows down significantly (current gap is 1.5x larger than previous gap)
-        let is_deceleration_trap = distance > 100.0 && dt_curr >= (dt_prev * 1.5);
+        // NEW: Calculate Magnitude (Rhythmic Shock * Spatial Distance)
+        let rhythmic_shock = dt_curr / dt_prev;
+        let magnitude = rhythmic_shock * (distance / 100.0);
 
-        states.push(TrapState {
-            time: curr_node.start_time,
-            is_deceleration_trap,
-            distance,
-            time_gap: dt_curr,
-        });
+        // A trap is significant if magnitude > 1.5
+        if magnitude > 1.5 && dt_curr > dt_prev {
+            states.push(TrapState {
+                time: curr_node.start_time,
+                is_deceleration_trap: true,
+                distance,
+                time_gap: dt_curr,
+                magnitude, // Ensure you add this field to your TrapState struct
+            });
+        }
     }
-
     states
 }

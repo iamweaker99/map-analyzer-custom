@@ -58,6 +58,16 @@ pub fn analyze(map: &Beatmap) -> Value {
 
     // Traps
     let total_decel_traps = trap_states.iter().filter(|t| t.is_deceleration_trap).count();
+    let mut sorted_traps = trap_states.clone();
+    sorted_traps.sort_by(|a, b| b.magnitude.partial_cmp(&a.magnitude).unwrap());
+    
+    let top_traps = sorted_traps.iter().take(5).map(|t| json!({
+        "time": t.time,
+        "magnitude": t.magnitude
+    })).collect::<Vec<_>>();
+
+    // Normalize: Traps per 1000 objects
+    let trap_index = (trap_states.len() as f64 / total_nodes) * 1000.0;
 
     // 5. SERIALIZATION
     json!({
@@ -79,6 +89,9 @@ pub fn analyze(map: &Beatmap) -> Value {
         },
         "traps": {
             "total_deceleration_traps": total_decel_traps,
+            "trap_index": trap_index, // "Story" metric: Traps per 1k notes
+            "peak_magnitude": sorted_traps.first().map(|t| t.magnitude).unwrap_or(0.0),
+            "notable_traps": top_traps // Localized data
         },
         "topography": {
             "klines": klines
