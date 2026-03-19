@@ -244,15 +244,18 @@ pub async fn analyze_beatmap(
             let fc_raw = analysis::finger_control::analyze(&pp_map, md5_string.clone());
             let fc_val = serde_json::to_value(fc_raw).unwrap_or(serde_json::Value::Null);
 
-            // Fetch the Aim Control analysis payload
             let ac_val = analysis::aim_control::analyze(&pp_map);
+            
+            // Fetch the Reading Analysis payload
+            let reading_val = analysis::reading::analyze(&pp_map);
 
             Ok(reply::with_status(reply::json(&vec![
                 AnalysisResult { analysis_type: String::from("jump"), analysis: j_val },
                 AnalysisResult { analysis_type: String::from("stream"), analysis: s_val },
                 AnalysisResult { analysis_type: String::from("slider"), analysis: sl_val },
                 AnalysisResult { analysis_type: String::from("fingercontrol"), analysis: fc_val },
-                AnalysisResult { analysis_type: String::from("aimcontrol"), analysis: ac_val }, // <-- INJECTED HERE
+                AnalysisResult { analysis_type: String::from("aimcontrol"), analysis: ac_val },
+                AnalysisResult { analysis_type: String::from("reading"), analysis: reading_val }, // <-- INJECTED HERE
             ]), StatusCode::OK))
         }
         "aimcontrol" => {
@@ -270,6 +273,13 @@ pub async fn analyze_beatmap(
                 analysis: fc_val 
             }), StatusCode::OK))
         }
+        "reading" => { // <-- NEW ENDPOINT
+            let reading_val = analysis::reading::analyze(&pp_map);
+            Ok(reply::with_status(reply::json(&AnalysisResult { 
+                analysis_type: String::from("reading"), 
+                analysis: reading_val 
+            }), StatusCode::OK))
+        }
         "jump" => {
             let j_val = analysis::jumps::analyze(&movements, cs, bpm, total_obj);
             Ok(reply::with_status(reply::json(&AnalysisResult { analysis_type: String::from("jump"), analysis: j_val }), StatusCode::OK))
@@ -284,7 +294,8 @@ pub async fn analyze_beatmap(
         }
         _ => {
             Ok(reply::with_status(
-                reply::json(&ApiError { error: "Bad request: analyze_type must be all, jump, stream, slider, fingercontrol, or aimcontrol".to_string() }),
+                // Updated error message
+                reply::json(&ApiError { error: "Bad request: analyze_type must be all, jump, stream, slider, fingercontrol, aimcontrol, or reading".to_string() }),
                 StatusCode::BAD_REQUEST
             ))
         }

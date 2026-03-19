@@ -40,8 +40,9 @@ export interface BeatmapDetailsResult {
 }
 
 export interface BeatmapAnalysisResult {
-    analysis_type: "jump" | "stream" | "slider" | "fingercontrol";
-    analysis: JumpAnalysis | StreamAnalysis | SliderAnalysis | FingerControlAnalysis;
+    // Strictly limited to these three
+    analysis_type: "jump" | "stream" | "slider";
+    analysis: JumpAnalysis | StreamAnalysis | SliderAnalysis;
 }
 
 interface JumpAnalysis {
@@ -125,7 +126,7 @@ interface FingerControlAnalysis {
 
 type AnalysisProps = {
     getBeatmapDetails(beatmapId: number): Promise<BeatmapDetailsResult>;
-    getBeatmapAnalysis<T extends "stream" | "jump" | "slider" | "fingercontrol" | "all">(
+    getBeatmapAnalysis<T extends "stream" | "jump" | "slider" | "all">(
         beatmapId: number,
         analysisType: T,
     ): Promise<
@@ -320,7 +321,7 @@ export default function Analysis({
                             <RadarChartComponent 
                                 jump={analysisResult.find(a => a.analysis_type === "jump")?.analysis as JumpAnalysis}
                                 stream={analysisResult.find(a => a.analysis_type === "stream")?.analysis as StreamAnalysis}
-                                fingerControl={analysisResult.find(a => a.analysis_type === "fingercontrol")?.analysis as FingerControlAnalysis}
+                                //fingerControl={analysisResult.find(a => a.analysis_type === "fingercontrol")?.analysis as FingerControlAnalysis}
                             />
 
                             <Card>
@@ -388,13 +389,14 @@ function AnalysisCardClass({
 }) {
     const type = analysis.analysis_type;
     
-    // Assign colors based on the analysis type
     const colors: Record<string, string> = {
         jump: "bg-pink-500",
         stream: "bg-blue-500",
         slider: "bg-green-500",
-        fingercontrol: "bg-purple-500", // Finger control is Purple
     };
+
+    // Use type assertion to safely access the field, defaulting to 0
+    const confidence = (analysis.analysis as any).overall_confidence ?? 0;
 
     return (
         <div className="mb-4">
@@ -405,12 +407,12 @@ function AnalysisCardClass({
                 <div
                     className={`${colors[type] || "bg-primary"} h-3 rounded-full transition-all duration-500`}
                     style={{
-                        width: `${(analysis.analysis.overall_confidence || 0) * 100}%`,
+                        width: `${confidence * 100}%`,
                     }}
                 ></div>
             </div>
             <p className="text-xs font-semibold mt-1 text-gray-400">
-                Map Presence: {((analysis.analysis.overall_confidence || 0) * 100).toFixed(1)}%
+                Map Presence: {(confidence * 100).toFixed(1)}%
             </p>
         </div>
     );

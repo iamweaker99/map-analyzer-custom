@@ -3,6 +3,7 @@ pub mod streams;
 pub mod sliders;
 pub mod finger_control;
 pub mod aim_control;    // <-- ADD THIS LINE
+pub mod reading;
 
 use rosu_pp::Beatmap;
 

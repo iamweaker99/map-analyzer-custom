@@ -5,9 +5,17 @@ export interface BeatmapDetailsResult {
 }
 
 export interface BeatmapAnalysisResult {
-    // Ensure "fingercontrol" is exactly as it appears in the backend JSON
-    analysis_type: "jump" | "stream" | "slider" | "fingercontrol" | "aimcontrol"; 
-    analysis: JumpAnalysis | StreamAnalysis | SliderAnalysis | FingerControlAnalysis | AimControlResult;
+    // We MUST add "reading" to this string union
+    analysis_type: "jump" | "stream" | "slider" | "fingercontrol" | "aimcontrol" | "reading";
+    
+    // We MUST add ReadingResult to this data union
+    analysis: 
+        | JumpAnalysis 
+        | StreamAnalysis 
+        | SliderAnalysis 
+        | FingerControlAnalysis 
+        | AimControlResult 
+        | ReadingResult; 
 }
 
 export interface JumpAnalysis {
@@ -147,5 +155,39 @@ export interface AimControlResult {
         peak_spatial_cv: number;
         peak_temporal_cv: number;
         peak_kinetic_var: number;
+    };
+}
+
+export interface KLineData {
+    window_start: number;
+    open: number;
+    high: number;
+    low: number;
+    close: number;
+    volume: number;
+}
+
+export interface ReadingResult {
+    summary: {
+        peak_strain: number;
+        ar_preempt_ms: number;
+    };
+    density: {
+        isolated_pct: number;
+        chunking_pct: number;
+        clutter_pct: number;
+        overload_pct: number;
+    };
+    trajectory: {
+        linear_pct: number;
+        mild_shifts_pct: number;
+        sharp_kinks_pct: number;
+        spaghetti_pct: number;
+    };
+    traps: {
+        total_deceleration_traps: number;
+    };
+    topography: {
+        klines: KLineData[];
     };
 }
