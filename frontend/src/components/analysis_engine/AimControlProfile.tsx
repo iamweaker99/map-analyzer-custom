@@ -218,6 +218,39 @@ export const AimControlProfile: React.FC<AimControlProfileProps> = ({ data }) =>
                 </Card>
             )}
 
+            {/* NEW SECTION: Burst Aim Physicality */}
+            {data?.burst_aim && (
+                <Card className="border-gray-800 p-4">
+                    <h3 className="text-sm font-semibold mb-4">Burst Aim Profile (2n - 6n)</h3>
+                    <div className="space-y-6">
+                        <div>
+                            <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 border-b border-gray-800 pb-1">Average Burst Spacing</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-1 mt-2">
+                                <StatBar label="Stacked (<0.5D)" percentage={data.burst_aim.avgSpacing.low} colorClass="bg-blue-400" />
+                                <StatBar label="Flow (0.5-2D)" percentage={data.burst_aim.avgSpacing.mid} colorClass="bg-emerald-400" />
+                                <StatBar label="Jump (>2D)" percentage={data.burst_aim.avgSpacing.high} colorClass="bg-red-400" />
+                            </div>
+                        </div>
+                        <div>
+                            <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 border-b border-gray-800 pb-1">Burst Spacing Variance</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-1 mt-2">
+                                <StatBar label="Constant" percentage={data.burst_aim.variance.low} colorClass="bg-emerald-400" />
+                                <StatBar label="Adaptive" percentage={data.burst_aim.variance.mid} colorClass="bg-orange-400" />
+                                <StatBar label="Erratic" percentage={data.burst_aim.variance.high} colorClass="bg-red-500" />
+                            </div>
+                        </div>
+                        <div>
+                            <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 border-b border-gray-800 pb-1">Burst Spacing Spikes</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-1 mt-2">
+                                <StatBar label="Flat" percentage={data.burst_aim.spikes.low} colorClass="bg-emerald-400" />
+                                <StatBar label="Accented" percentage={data.burst_aim.spikes.mid} colorClass="bg-orange-400" />
+                                <StatBar label="Kick-Gap" percentage={data.burst_aim.spikes.high} colorClass="bg-red-500" />
+                            </div>
+                        </div>
+                    </div>
+                </Card>
+            )}
+
             <Card className="border-gray-800 p-4">
                 <div className="flex flex-row items-center justify-between mb-3">
                     <div>

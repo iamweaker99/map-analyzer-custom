@@ -42,6 +42,7 @@ struct DetailsResult {
     set_id: u32,
     statistics: Statistics,
     pub aim_volatility: crate::analysis::aim_control::statistics::AimVolatilitySummary,
+    pub burst_aim: crate::analysis::aim_control::burst_aim::BurstAimAnalysis,
 }
 
 pub async fn beatmap_details(
@@ -190,6 +191,9 @@ pub async fn beatmap_details(
 
     let spatial_vectors = crate::analysis::aim_control::spatial::calculate_spatial_vectors(&map_calculate);
     let aim_volatility = crate::analysis::aim_control::statistics::generate_aim_complexity_report(&spatial_vectors);
+    let patterns: Vec<crate::analysis::finger_control::patterns::Pattern> = 
+    crate::analysis::finger_control::patterns::extract_patterns(&map_calculate);
+    let burst_aim = crate::analysis::aim_control::burst_aim::analyze_burst_aim(&patterns, &spatial_vectors);
 
     Ok(reply::with_status(
         reply::json(&DetailsResult {
@@ -201,6 +205,7 @@ pub async fn beatmap_details(
             set_id: beatmapset.mapset_id,
             statistics,
             aim_volatility,
+            burst_aim,
         }),
         StatusCode::OK,
     ))

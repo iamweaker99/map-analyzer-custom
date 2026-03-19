@@ -5,6 +5,7 @@ pub mod endurance;
 pub mod buckets;
 pub mod volatility;
 pub mod statistics;
+pub mod burst_aim;
 
 use rosu_pp::Beatmap;
 use serde_json::{json, Value};
@@ -24,6 +25,13 @@ pub fn analyze(map: &Beatmap) -> Value {
     if spatial_vectors.is_empty() {
         return json!({ "error": "Not enough objects for aim analysis" });
     }
+
+    // 1. We need the patterns from finger control
+    let patterns: Vec<crate::analysis::finger_control::patterns::Pattern> = 
+    crate::analysis::finger_control::patterns::extract_patterns(map);
+
+    // 2. Run our new burst aim analysis
+    let burst_aim = burst_aim::analyze_burst_aim(&patterns, &spatial_vectors);
 
     let aim_volatility = statistics::generate_aim_complexity_report(&spatial_vectors);
     let kinematics = kinematics::calculate_kinematics(&spatial_vectors);
@@ -87,6 +95,8 @@ pub fn analyze(map: &Beatmap) -> Value {
         },
         
         "aimVolatility": aim_volatility,
+
+        "burst_aim": burst_aim,
 
         "kinematics": {
             "avg_velocity": avg_velocity,

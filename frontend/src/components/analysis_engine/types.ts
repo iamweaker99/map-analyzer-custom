@@ -3,6 +3,7 @@ export interface BeatmapDetailsResult {
     version: string; set_id: number;
     statistics: { ar: number; od: number; hp: number; cs: number; bpm: number; star_rating: number; total_objects: number; };
     aim_volatility?: AimVolatilitySummary;
+    burst_aim?: BurstAimAnalysis;
 }
 
 export interface BeatmapAnalysisResult {
@@ -141,6 +142,7 @@ export interface AimControlResult {
         time_under_tension_ms: number;
         strain_curve: { time: number; strain: number }[]; // Changed this line
     };
+    burst_aim?: BurstAimAnalysis;
 }
 
 export interface VolatilityDistribution {
@@ -174,4 +176,16 @@ export interface TextureMatrix {
   flowTech: number;
   rhythmicTech: number;
   chaoticTech: number;
+}
+
+export interface BurstAimDistribution {
+  low: number;
+  mid: number;
+  high: number;
+}
+
+export interface BurstAimAnalysis {
+  avgSpacing: BurstAimDistribution;
+  variance: BurstAimDistribution;
+  spikes: BurstAimDistribution;
 }
