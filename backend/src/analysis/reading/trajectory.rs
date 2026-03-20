@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use super::visuals::VisualNode;
+use super::density::DensityState;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TrajectoryState {
@@ -8,48 +9,67 @@ pub struct TrajectoryState {
     pub is_spaghetti: bool, 
 }
 
-pub fn calculate_trajectory(nodes: &[VisualNode], circle_diameter: f64) -> Vec<TrajectoryState> {
-    let mut states = Vec::new();
-    let window_size = 4;
+pub fn calculate_trajectory(nodes: &[VisualNode], density: &[DensityState], circle_diameter: f64) -> Vec<TrajectoryState> {
+    let mut states = Vec::with_capacity(nodes.len());
+    let safe_diameter = circle_diameter.max(1.0);
 
-    if nodes.len() < window_size { return states; }
+    for i in 0..nodes.len() {
+        // 1. DYNAMIC WINDOW SIZING
+        let local_density = density.get(i).map(|d| d.raw_objects).unwrap_or(4);
+        let w = local_density.clamp(4, 16); // Min 4 notes for angles, Max 16 to prevent blowout
+        let end_idx = (i + w).min(nodes.len());
+        let window = &nodes[i..end_idx];
 
-    for window in nodes.windows(window_size) {
-        let a = &window[0]; let b = &window[1];
-        let c = &window[2]; let d = &window[3];
+        if window.len() < 4 {
+            states.push(TrajectoryState { time: nodes[i].start_time, entropy: 0.0, is_spaghetti: false });
+            continue;
+        }
 
-        let dx1 = b.x - a.x; let dy1 = b.y - a.y;
-        let dx2 = c.x - b.x; let dy2 = c.y - b.y;
-        let dx3 = d.x - c.x; let dy3 = d.y - c.y;
-
-        let angle1 = dy1.atan2(dx1);
-        let angle2 = dy2.atan2(dx2);
-        let angle3 = dy3.atan2(dx3);
-
-        let mut d_theta1 = (angle2 - angle1) % (std::f64::consts::PI * 2.0);
-        if d_theta1 > std::f64::consts::PI { d_theta1 -= std::f64::consts::PI * 2.0; }
-        if d_theta1 < -std::f64::consts::PI { d_theta1 += std::f64::consts::PI * 2.0; }
-
-        let mut d_theta2 = (angle3 - angle2) % (std::f64::consts::PI * 2.0);
-        if d_theta2 > std::f64::consts::PI { d_theta2 -= std::f64::consts::PI * 2.0; }
-        if d_theta2 < -std::f64::consts::PI { d_theta2 += std::f64::consts::PI * 2.0; }
-
-        let entropy = (d_theta2.abs() - d_theta1.abs()).abs().to_degrees();
-
-        let dist_a_d = ((d.x - a.x).powi(2) + (d.y - a.y).powi(2)).sqrt();
-        let dist_b_d = ((d.x - b.x).powi(2) + (d.y - b.y).powi(2)).sqrt();
+        // 2. SPATIAL SPREAD (The "Cheese" Filter)
+        let mut max_dist_sq = 0.0;
+        let mut min_dist_sq = f64::MAX;
         
-        let physically_overlaps = dist_a_d < circle_diameter || dist_b_d < circle_diameter;
+        for a in 0..window.len() {
+            for b in (a+1)..window.len() {
+                let dist_sq = (window[a].x - window[b].x).powi(2) + (window[a].y - window[b].y).powi(2);
+                if dist_sq > max_dist_sq { max_dist_sq = dist_sq; }
+                if dist_sq < min_dist_sq { min_dist_sq = dist_sq; }
+            }
+        }
         
-        // NEW: Contextual Awareness. S-curves and streams are protected by low entropy.
-        let is_spaghetti = physically_overlaps && entropy > 60.0;
+        let max_d = max_dist_sq.sqrt();
+        let min_d = min_dist_sq.sqrt();
+        let spread_factor = if max_d >= safe_diameter { 1.0 } else { (max_d / safe_diameter).sqrt().clamp(0.0, 1.0) };
+
+        // 3. ADAPTIVE MEAN ENTROPY
+        let mut angle_changes = Vec::new();
+        for j in 0..(window.len() - 2) {
+            let p1 = &window[j]; let p2 = &window[j+1]; let p3 = &window[j+2];
+            let a1 = (p2.y - p1.y).atan2(p2.x - p1.x);
+            let a2 = (p3.y - p2.y).atan2(p3.x - p2.x);
+            
+            let mut d_theta = (a2 - a1) % (std::f64::consts::PI * 2.0);
+            if d_theta > std::f64::consts::PI { d_theta -= std::f64::consts::PI * 2.0; }
+            if d_theta < -std::f64::consts::PI { d_theta += std::f64::consts::PI * 2.0; }
+            angle_changes.push(d_theta);
+        }
+
+        let mut total_entropy = 0.0;
+        for j in 0..(angle_changes.len() - 1) {
+            total_entropy += (angle_changes[j+1].abs() - angle_changes[j].abs()).abs().to_degrees();
+        }
+
+        let mean_entropy = if angle_changes.len() > 1 { total_entropy / (angle_changes.len() - 1) as f64 } else { 0.0 };
+        
+        // 4. FINAL CALCULATION
+        let final_entropy = mean_entropy * spread_factor;
+        let is_spaghetti = min_d < safe_diameter && final_entropy > 60.0; // Overlaps AND is chaotic
 
         states.push(TrajectoryState {
-            time: a.start_time,
-            entropy,
+            time: window[0].start_time,
+            entropy: final_entropy,
             is_spaghetti,
         });
     }
-
     states
 }

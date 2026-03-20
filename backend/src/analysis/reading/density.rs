@@ -10,7 +10,7 @@ pub struct DensityState {
 
 pub fn calculate_density(nodes: &[VisualNode], circle_diameter: f64) -> Vec<DensityState> {
     let mut states = Vec::with_capacity(nodes.len());
-    let safe_diameter = circle_diameter.max(1.0); // Prevent division by zero
+    let safe_diameter = circle_diameter.max(1.0);
 
     for i in 0..nodes.len() {
         let current_time = nodes[i].start_time;
@@ -19,9 +19,9 @@ pub fn calculate_density(nodes: &[VisualNode], circle_diameter: f64) -> Vec<Dens
         let mut min_x = f64::MAX; let mut max_x = f64::MIN;
         let mut min_y = f64::MAX; let mut max_y = f64::MIN;
 
+        // Find all nodes visible at this exact millisecond
         for j in 0..nodes.len() {
             let other = &nodes[j];
-            
             if other.fade_in_time <= current_time && other.start_time >= current_time {
                 raw_count += 1;
                 if other.x < min_x { min_x = other.x; }
@@ -34,15 +34,12 @@ pub fn calculate_density(nodes: &[VisualNode], circle_diameter: f64) -> Vec<Dens
         // Apply Spatial Chunking Logic (Quadratic Smoothing)
         let effective_objects = if raw_count > 1 {
             let diagonal = ((max_x - min_x).powi(2) + (max_y - min_y).powi(2)).sqrt();
-            
             let spread_factor = if diagonal >= safe_diameter {
-                1.0 // Fully spread out, no chunking possible
+                1.0 // Wide spread, no chunking
             } else {
-                // Square Root smoothing for overlapping objects
-                (diagonal / safe_diameter).sqrt().clamp(0.0, 1.0)
+                (diagonal / safe_diameter).sqrt().clamp(0.0, 1.0) // Stacked/Overlapping
             };
             
-            // 1 base object + (remaining objects * spread multiplier)
             1.0 + ((raw_count as f64 - 1.0) * spread_factor)
         } else {
             raw_count as f64

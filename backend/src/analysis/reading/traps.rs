@@ -14,7 +14,7 @@ pub fn calculate_traps(nodes: &[VisualNode], bpm: f64) -> Vec<TrapState> {
     let mut states = Vec::new();
     if nodes.len() < 3 { return states; }
 
-    // Calculate dynamic inertia reset threshold
+    // Dynamic Inertia Reset: 1.5 beats
     let beat_duration_ms = 60000.0 / bpm.max(1.0);
     let inertia_reset_threshold = beat_duration_ms * 1.5;
 
@@ -26,20 +26,17 @@ pub fn calculate_traps(nodes: &[VisualNode], bpm: f64) -> Vec<TrapState> {
         let dt_prev = (curr_node.start_time - prev_node.start_time).max(1.0);
         let dt_curr = next_node.start_time - curr_node.start_time;
         
-        // 1. Check for Temporal Blank / Mini-break (Inertia Reset)
-        if dt_curr > inertia_reset_threshold {
-            continue; // Player inertia has reset. This is not a trap.
-        }
+        // Break detection filter
+        if dt_curr > inertia_reset_threshold { continue; }
 
         let dx = next_node.x - curr_node.x;
         let dy = next_node.y - curr_node.y;
         let distance = (dx * dx + dy * dy).sqrt();
 
-        // 2. Rhythmic Shock (Capped to prevent absurd outlier math)
+        // Rhythmic shock clamped to prevent mathematical blowouts on edge cases
         let rhythmic_shock = (dt_curr / dt_prev).clamp(0.0, 3.0);
         let magnitude = rhythmic_shock * (distance / 100.0);
 
-        // 3. True Trap Verification
         if magnitude > 1.5 && dt_curr > dt_prev {
             states.push(TrapState {
                 time: curr_node.start_time,
@@ -50,6 +47,5 @@ pub fn calculate_traps(nodes: &[VisualNode], bpm: f64) -> Vec<TrapState> {
             });
         }
     }
-
     states
 }

@@ -8,24 +8,21 @@ use rosu_pp::Beatmap;
 use serde_json::{json, Value};
 
 pub fn analyze(map: &Beatmap) -> Value {
-    // 1. MAP CONTEXT EXTRACTION
     let cs = map.cs as f64;
     let circle_radius = 54.4 - 4.48 * cs;
     let circle_diameter = circle_radius * 2.0;
     let bpm = map.bpm();
 
-    // 2. VISUAL FOUNDATION
     let visual_nodes = visuals::extract_visual_nodes(map);
     if visual_nodes.is_empty() {
         return json!({ "error": "Not enough objects for reading analysis" });
     }
 
-    // 3. CORE ENGINES (Now Context-Aware)
     let density_states = density::calculate_density(&visual_nodes, circle_diameter);
-    let trajectory_states = trajectory::calculate_trajectory(&visual_nodes, circle_diameter);
+    // Trajectory now requires density_states to know local cluster size
+    let trajectory_states = trajectory::calculate_trajectory(&visual_nodes, &density_states, circle_diameter);
     let trap_states = traps::calculate_traps(&visual_nodes, bpm);
 
-    // 4. SYSTEM SIMULATION
     let (_strain_points, klines) = strain::calculate_strain_and_klines(
         &visual_nodes, 
         &density_states, 
@@ -33,11 +30,10 @@ pub fn analyze(map: &Beatmap) -> Value {
         &trap_states
     );
 
-    // 5. AGGREGATION
     let total_nodes = visual_nodes.len() as f64;
     let total_traj = trajectory_states.len().max(1) as f64;
 
-    // Density Distribution (using effective_objects)
+    // Density Aggregation (Effective Objects)
     let mut d_isolated = 0; let mut d_chunking = 0; let mut d_clutter = 0; let mut d_overload = 0;
     for d in &density_states {
         match d.effective_objects.round() as usize {
@@ -48,7 +44,7 @@ pub fn analyze(map: &Beatmap) -> Value {
         }
     }
 
-    // Trajectory Distribution (using is_spaghetti)
+    // Trajectory Aggregation (Spaghetti & Adaptive Entropy)
     let mut t_linear = 0; let mut t_mild = 0; let mut t_kinks = 0; let mut t_spaghetti = 0;
     for t in &trajectory_states {
         if t.is_spaghetti {
@@ -62,7 +58,6 @@ pub fn analyze(map: &Beatmap) -> Value {
         }
     }
 
-    // Traps Sorting & Localization
     let mut sorted_traps = trap_states.clone();
     sorted_traps.sort_by(|a, b| b.magnitude.partial_cmp(&a.magnitude).unwrap());
     
@@ -73,10 +68,14 @@ pub fn analyze(map: &Beatmap) -> Value {
 
     let trap_index = (trap_states.len() as f64 / total_nodes) * 1000.0;
 
-    // 6. SERIALIZATION
+    let mut sorted_klines = klines.clone();
+    sorted_klines.sort_by(|a, b| a.high.partial_cmp(&b.high).unwrap_or(std::cmp::Ordering::Equal));
+    let peak_idx = (sorted_klines.len() as f64 * 0.95).floor() as usize;
+    let peak_strain = sorted_klines.get(peak_idx).map(|k| k.high).unwrap_or(0.0);
+
     json!({
         "summary": {
-            "peak_strain": klines.iter().map(|k| k.high).fold(0.0, f64::max),
+            "peak_strain": peak_strain,
             "ar_preempt_ms": visuals::ar_to_preempt(map.ar)
         },
         "density": {
