@@ -7,12 +7,16 @@ pub struct TrapState {
     pub is_deceleration_trap: bool,
     pub distance: f64,
     pub time_gap: f64,
-    pub magnitude: f64
+    pub magnitude: f64,
 }
 
-pub fn calculate_traps(nodes: &[VisualNode]) -> Vec<TrapState> {
+pub fn calculate_traps(nodes: &[VisualNode], bpm: f64) -> Vec<TrapState> {
     let mut states = Vec::new();
     if nodes.len() < 3 { return states; }
+
+    // Calculate dynamic inertia reset threshold
+    let beat_duration_ms = 60000.0 / bpm.max(1.0);
+    let inertia_reset_threshold = beat_duration_ms * 1.5;
 
     for window in nodes.windows(3) {
         let prev_node = &window[0];
@@ -20,25 +24,32 @@ pub fn calculate_traps(nodes: &[VisualNode]) -> Vec<TrapState> {
         let next_node = &window[2];
 
         let dt_prev = (curr_node.start_time - prev_node.start_time).max(1.0);
+        let dt_curr = next_node.start_time - curr_node.start_time;
+        
+        // 1. Check for Temporal Blank / Mini-break (Inertia Reset)
+        if dt_curr > inertia_reset_threshold {
+            continue; // Player inertia has reset. This is not a trap.
+        }
+
         let dx = next_node.x - curr_node.x;
         let dy = next_node.y - curr_node.y;
         let distance = (dx * dx + dy * dy).sqrt();
-        let dt_curr = next_node.start_time - curr_node.start_time;
 
-        // NEW: Calculate Magnitude (Rhythmic Shock * Spatial Distance)
-        let rhythmic_shock = dt_curr / dt_prev;
+        // 2. Rhythmic Shock (Capped to prevent absurd outlier math)
+        let rhythmic_shock = (dt_curr / dt_prev).clamp(0.0, 3.0);
         let magnitude = rhythmic_shock * (distance / 100.0);
 
-        // A trap is significant if magnitude > 1.5
+        // 3. True Trap Verification
         if magnitude > 1.5 && dt_curr > dt_prev {
             states.push(TrapState {
                 time: curr_node.start_time,
                 is_deceleration_trap: true,
                 distance,
                 time_gap: dt_curr,
-                magnitude, // Ensure you add this field to your TrapState struct
+                magnitude,
             });
         }
     }
+
     states
 }
