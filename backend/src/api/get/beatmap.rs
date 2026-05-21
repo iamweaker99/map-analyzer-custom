@@ -244,8 +244,8 @@ pub async fn analyze_beatmap(
             let fc_raw = analysis::finger_control::analyze(&pp_map, md5_string.clone());
             let fc_val = serde_json::to_value(fc_raw).unwrap_or(serde_json::Value::Null);
 
-            let ac_val = analysis::aim_control::analyze(&pp_map);
-            
+            let ac_val = analysis::aim_control::analyze(&pp_map, cs);
+
             // Fetch the Reading Analysis payload
             let reading_val = analysis::reading::analyze(&pp_map);
 
@@ -259,7 +259,7 @@ pub async fn analyze_beatmap(
             ]), StatusCode::OK))
         }
         "aimcontrol" => {
-            let ac_val = analysis::aim_control::analyze(&pp_map);
+            let ac_val = analysis::aim_control::analyze(&pp_map, cs);
             Ok(reply::with_status(reply::json(&AnalysisResult { 
                 analysis_type: String::from("aimcontrol"), 
                 analysis: ac_val 
