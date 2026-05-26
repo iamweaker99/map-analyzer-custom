@@ -58,6 +58,40 @@ pub fn analyze(map: &Beatmap) -> Value {
         }
     }
 
+    // Trajectory Timeline: bucket trajectory states into 5-second windows
+    let window_duration = 5000.0;
+    let mut trajectory_timeline: Vec<Value> = Vec::new();
+    if !trajectory_states.is_empty() {
+        let first_time = trajectory_states[0].time;
+        let last_time = trajectory_states.last().unwrap().time;
+        let start_win = (first_time / window_duration).floor() * window_duration;
+        let end_win = (last_time / window_duration).ceil() * window_duration;
+        let mut win_start = start_win;
+        while win_start < end_win {
+            let win_end = win_start + window_duration;
+            let mut w_linear = 0; let mut w_mild = 0; let mut w_kinks = 0; let mut w_spaghetti = 0;
+            let mut w_count = 0;
+            for t in &trajectory_states {
+                if t.time >= win_start && t.time < win_end {
+                    w_count += 1;
+                    if t.is_spaghetti {
+                        w_spaghetti += 1;
+                    } else if t.entropy < 30.0 {
+                        w_linear += 1;
+                    } else if t.entropy < 90.0 {
+                        w_mild += 1;
+                    } else {
+                        w_kinks += 1;
+                    }
+                }
+            }
+            if w_count > 0 {
+                trajectory_timeline.push(json!({"time": win_start, "linear_count": w_linear, "mild_shifts_count": w_mild, "sharp_kinks_count": w_kinks, "spaghetti_count": w_spaghetti}));
+            }
+            win_start = win_end;
+        }
+    }
+
     let mut sorted_traps = trap_states.clone();
     sorted_traps.sort_by(|a, b| b.magnitude.partial_cmp(&a.magnitude).unwrap());
     
@@ -90,6 +124,7 @@ pub fn analyze(map: &Beatmap) -> Value {
             "sharp_kinks_pct": (t_kinks as f64 / total_traj) * 100.0,
             "spaghetti_pct": (t_spaghetti as f64 / total_traj) * 100.0,
         },
+        "trajectory_timeline": trajectory_timeline,
         "traps": {
             "count": trap_states.len(),
             "trap_index": trap_index,

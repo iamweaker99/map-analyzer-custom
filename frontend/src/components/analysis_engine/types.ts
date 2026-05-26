@@ -158,6 +158,14 @@ export interface AimControlResult {
     };
 }
 
+export interface TrajectoryTimelinePoint {
+    time: number;
+    linear_count: number;
+    mild_shifts_count: number;
+    sharp_kinks_count: number;
+    spaghetti_count: number;
+}
+
 export interface KLineData {
     window_start: number;
     open: number;
@@ -184,6 +192,7 @@ export interface ReadingResult {
         sharp_kinks_pct: number;
         spaghetti_pct: number;
     };
+    trajectory_timeline: TrajectoryTimelinePoint[];
     traps: {
         count: number;
         trap_index: number;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { Clock } from "lucide-react";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts';
 
 const ProgressBar = ({ label, percentage, colorClass }: { label: string, percentage: number, colorClass: string }) => (
     <div className="flex items-center gap-4 mb-3">
@@ -150,6 +151,26 @@ export const ReadingProfile: React.FC<{ data: any }> = ({ data }) => {
                     <ProgressBar label="Mild Shifts" percentage={data.trajectory.mild_shifts_pct} colorClass="bg-blue-500" />
                     <ProgressBar label="Sharp Kinks" percentage={data.trajectory.sharp_kinks_pct} colorClass="bg-orange-500" />
                     <ProgressBar label="Spaghetti / Overlap" percentage={data.trajectory.spaghetti_pct} colorClass="bg-red-500" />
+                    {(data.trajectory_timeline && data.trajectory_timeline.length > 0) && (
+                        <div className="mt-6 pt-4 border-t border-gray-800/50">
+                            <h4 className="text-[11px] font-bold text-muted-foreground mb-3">Trajectory Breakdown Over Time</h4>
+                            <div className="h-48 w-full bg-secondary/10 rounded-lg p-2 border border-muted/10">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <LineChart data={data.trajectory_timeline}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                                        <XAxis dataKey="time" type="number" domain={['dataMin', 'dataMax']} tickFormatter={formatTime} stroke="rgba(255,255,255,0.2)" tick={{ fontSize: 10 }} />
+                                        <YAxis domain={[0, "auto"]} tickFormatter={(v) => Math.round(v).toString()} stroke="rgba(255,255,255,0.2)" tick={{ fontSize: 10 }} width={30} />
+                                        <Tooltip labelFormatter={(l) => formatTime(l as number)} formatter={(value: any, name: any) => [`${Math.round(value)}`, name]} contentStyle={{ backgroundColor: '#0f172a', fontSize: '12px' }} />
+                                        <Legend iconType="circle" wrapperStyle={{ fontSize: '11px' }} />
+                                        <Line type="monotone" name="Predictable Flow" dataKey="linear_count" stroke="#10b981" strokeWidth={2} dot={false} isAnimationActive={false} connectNulls={true} animateNewValues={false} />
+                                        <Line type="monotone" name="Mild Shifts" dataKey="mild_shifts_count" stroke="#3b82f6" strokeWidth={2} dot={false} isAnimationActive={false} connectNulls={true} animateNewValues={false} />
+                                        <Line type="monotone" name="Sharp Kinks" dataKey="sharp_kinks_count" stroke="#f97316" strokeWidth={2} dot={false} isAnimationActive={false} connectNulls={true} animateNewValues={false} />
+                                        <Line type="monotone" name="Spaghetti / Overlap" dataKey="spaghetti_count" stroke="#ef4444" strokeWidth={2} dot={false} isAnimationActive={false} connectNulls={true} animateNewValues={false} />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+                    )}
                 </Card>
             </div>
 
