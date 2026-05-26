@@ -143,6 +143,26 @@ export const ReadingProfile: React.FC<{ data: any }> = ({ data }) => {
                     <ProgressBar label="Chunking (3-5)" percentage={data.density.chunking_pct} colorClass="bg-blue-500" />
                     <ProgressBar label="Clutter (6-8)" percentage={data.density.clutter_pct} colorClass="bg-yellow-500" />
                     <ProgressBar label="Overload (9+)" percentage={data.density.overload_pct} colorClass="bg-red-500" />
+                    {(data.density_timeline && data.density_timeline.length > 0) && (
+                        <div className="mt-6 pt-4 border-t border-gray-800/50">
+                            <h4 className="text-[11px] font-bold text-muted-foreground mb-3">Visual Clutter Over Time</h4>
+                            <div className="h-48 w-full bg-secondary/10 rounded-lg p-2 border border-muted/10">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <LineChart data={data.density_timeline}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                                        <XAxis dataKey="time" type="number" domain={['dataMin', 'dataMax']} tickFormatter={formatTime} stroke="rgba(255,255,255,0.2)" tick={{ fontSize: 10 }} />
+                                        <YAxis domain={[0, "auto"]} tickFormatter={(v) => Math.round(v).toString()} stroke="rgba(255,255,255,0.2)" tick={{ fontSize: 10 }} width={30} />
+                                        <Tooltip labelFormatter={(l) => formatTime(l as number)} formatter={(value: any, name: any) => [`${Math.round(value)}`, name]} contentStyle={{ backgroundColor: '#0f172a', fontSize: '12px' }} />
+                                        <Legend iconType="circle" wrapperStyle={{ fontSize: '11px' }} />
+                                        <Line type="monotone" name="Isolated" dataKey="isolated_count" stroke="#10b981" strokeWidth={2} dot={false} isAnimationActive={false} connectNulls={true} animateNewValues={false} />
+                                        <Line type="monotone" name="Chunking" dataKey="chunking_count" stroke="#3b82f6" strokeWidth={2} dot={false} isAnimationActive={false} connectNulls={true} animateNewValues={false} />
+                                        <Line type="monotone" name="Clutter" dataKey="clutter_count" stroke="#f59e0b" strokeWidth={2} dot={false} isAnimationActive={false} connectNulls={true} animateNewValues={false} />
+                                        <Line type="monotone" name="Overload" dataKey="overload_count" stroke="#ef4444" strokeWidth={2} dot={false} isAnimationActive={false} connectNulls={true} animateNewValues={false} />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+                    )}
                 </Card>
 
                 <Card className="border-gray-800 p-6 bg-gray-900/30">

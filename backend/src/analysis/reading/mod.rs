@@ -92,6 +92,36 @@ pub fn analyze(map: &Beatmap) -> Value {
         }
     }
 
+    // Density Timeline: bucket density states into 5-second windows
+    let mut density_timeline: Vec<Value> = Vec::new();
+    if !density_states.is_empty() {
+        let first_time = density_states[0].time;
+        let last_time = density_states.last().unwrap().time;
+        let start_win = (first_time / window_duration).floor() * window_duration;
+        let end_win = (last_time / window_duration).ceil() * window_duration;
+        let mut win_start = start_win;
+        while win_start < end_win {
+            let win_end = win_start + window_duration;
+            let mut w_isolated = 0; let mut w_chunking = 0; let mut w_clutter = 0; let mut w_overload = 0;
+            let mut w_count = 0;
+            for d in &density_states {
+                if d.time >= win_start && d.time < win_end {
+                    w_count += 1;
+                    match d.effective_objects.round() as usize {
+                        0..=2 => w_isolated += 1,
+                        3..=5 => w_chunking += 1,
+                        6..=8 => w_clutter += 1,
+                        _ => w_overload += 1,
+                    }
+                }
+            }
+            if w_count > 0 {
+                density_timeline.push(json!({"time": win_start, "isolated_count": w_isolated, "chunking_count": w_chunking, "clutter_count": w_clutter, "overload_count": w_overload}));
+            }
+            win_start = win_end;
+        }
+    }
+
     let mut sorted_traps = trap_states.clone();
     sorted_traps.sort_by(|a, b| b.magnitude.partial_cmp(&a.magnitude).unwrap());
     
@@ -125,6 +155,7 @@ pub fn analyze(map: &Beatmap) -> Value {
             "spaghetti_pct": (t_spaghetti as f64 / total_traj) * 100.0,
         },
         "trajectory_timeline": trajectory_timeline,
+        "density_timeline": density_timeline,
         "traps": {
             "count": trap_states.len(),
             "trap_index": trap_index,
