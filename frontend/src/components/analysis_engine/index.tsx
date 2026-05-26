@@ -10,6 +10,7 @@ import { StreamProfile } from "./StreamProfile";
 import { SliderProfile } from "./SliderProfile";
 import { FingerControlProfile } from "./FingerControlProfile";
 import { AimControlProfile } from './AimControlProfile';
+import { ReadingProfile } from './ReadingProfile'; // <-- INJECTED HERE
 
 import { 
     BeatmapAnalysisResult, 
@@ -17,7 +18,8 @@ import {
     StreamAnalysis, 
     SliderAnalysis,
     FingerControlAnalysis,
-    AimControlResult // Imported the new type
+    AimControlResult,
+    ReadingResult // <-- INJECTED HERE
 } from "./types";
 
 export function AnalysisCardDetails({
@@ -33,6 +35,7 @@ export function AnalysisCardDetails({
     let displayType = analysis_type.charAt(0).toUpperCase() + analysis_type.slice(1);
     if (analysis_type === "fingercontrol") displayType = "Finger Control Analysis";
     if (analysis_type === "aimcontrol") displayType = "Aim Control Analysis";
+    if (analysis_type === "reading") displayType = "Reading Analysis"; // <-- INJECTED HERE
 
     return (
         <Accordion type="single" collapsible>
@@ -58,13 +61,14 @@ export function AnalysisCardDetails({
                             <FingerControlProfile analysis={details as FingerControlAnalysis} />
                         )}
                         {analysis_type === "aimcontrol" && (
-                            // Note: We use `data=` here because our AimControlProfile 
-                            // interface specifically expects a prop named `data`
                             <AimControlProfile data={details as AimControlResult} />
+                        )}
+                        {analysis_type === "reading" && (
+                            <ReadingProfile data={details as ReadingResult} /> // <-- INJECTED HERE
                         )}
                     </div>
                 </AccordionContent>
             </AccordionItem>
         </Accordion>
     );
-}
+} 

@@ -1,4 +1,4 @@
-use super::{kinematics::KinematicData, spatial::AimVector};
+use super::{kinematics::KinematicData, vectors::AimVector};
 use std::f64::consts::LN_2;
 use serde::Serialize;
 

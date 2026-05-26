@@ -135,6 +135,40 @@ export const AimControlProfile: React.FC<AimControlProfileProps> = ({ data }) =>
                 </div>
             </Card>
 
+            {/* NEW: ACCV Complexity Dashboard */}
+            {data.accv && (
+                <Card className="border-gray-800 p-4 bg-gray-900/30">
+                    <div className="flex flex-row items-center justify-between mb-3">
+                        <div>
+                            <h3 className="text-sm font-semibold text-purple-400">Aim Control Complexity (ACCV)</h3>
+                            <p className="text-[10px] text-gray-500">Multi-dimensional mechanical variance</p>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                        <div className="bg-gray-900/80 p-2 rounded border border-gray-800">
+                            <p className="text-[10px] text-gray-400 uppercase">Peak (95%)</p>
+                            <p className="text-lg font-semibold text-red-400">{data.accv.peak_complexity.toFixed(2)}</p>
+                        </div>
+                        <div className="bg-gray-900/80 p-2 rounded border border-gray-800">
+                            <p className="text-[10px] text-gray-400 uppercase">Sustained (50%)</p>
+                            <p className="text-lg font-semibold text-blue-400">{data.accv.sustained_complexity.toFixed(2)}</p>
+                        </div>
+                        <div className="bg-gray-900/80 p-2 rounded border border-gray-800">
+                            <p className="text-[10px] text-gray-400 uppercase" title="Spacing Variance">Spatial Var</p>
+                            <p className="text-lg font-semibold text-gray-200">{data.accv.peak_spatial_cv.toFixed(2)}</p>
+                        </div>
+                        <div className="bg-gray-900/80 p-2 rounded border border-gray-800">
+                            <p className="text-[10px] text-gray-400 uppercase" title="Rhythm Variance">Temporal Var</p>
+                            <p className="text-lg font-semibold text-gray-200">{data.accv.peak_temporal_cv.toFixed(2)}</p>
+                        </div>
+                        <div className="bg-gray-900/80 p-2 rounded border border-gray-800">
+                            <p className="text-[10px] text-gray-400 uppercase" title="Angle Variance">Kinetic Var</p>
+                            <p className="text-lg font-semibold text-gray-200">{data.accv.peak_kinetic_var.toFixed(2)}</p>
+                        </div>
+                    </div>
+                </Card>
+            )}
+
             <Card className="border-gray-800 p-4">
                 <div className="flex flex-row items-center justify-between mb-3">
                     <div>

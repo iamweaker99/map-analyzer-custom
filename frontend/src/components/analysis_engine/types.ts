@@ -5,9 +5,17 @@ export interface BeatmapDetailsResult {
 }
 
 export interface BeatmapAnalysisResult {
-    // Ensure "fingercontrol" is exactly as it appears in the backend JSON
-    analysis_type: "jump" | "stream" | "slider" | "fingercontrol" | "aimcontrol"; 
-    analysis: JumpAnalysis | StreamAnalysis | SliderAnalysis | FingerControlAnalysis | AimControlResult;
+    // We MUST add "reading" to this string union
+    analysis_type: "jump" | "stream" | "slider" | "fingercontrol" | "aimcontrol" | "reading";
+    
+    // We MUST add ReadingResult to this data union
+    analysis: 
+        | JumpAnalysis 
+        | StreamAnalysis 
+        | SliderAnalysis 
+        | FingerControlAnalysis 
+        | AimControlResult 
+        | ReadingResult; 
 }
 
 export interface JumpAnalysis {
@@ -138,6 +146,60 @@ export interface AimControlResult {
     endurance: {
         peak_strain: number;
         time_under_tension_ms: number;
-        strain_curve: { time: number; strain: number }[]; // Changed this line
+        strain_curve: { time: number; strain: number }[]; 
+    };
+    // NEW: Phase 3 ACCV Metrics
+    accv?: {
+        peak_complexity: number;
+        sustained_complexity: number;
+        peak_spatial_cv: number;
+        peak_temporal_cv: number;
+        peak_kinetic_var: number;
+    };
+}
+
+export interface TrajectoryTimelinePoint {
+    time: number;
+    linear_count: number;
+    mild_shifts_count: number;
+    sharp_kinks_count: number;
+    spaghetti_count: number;
+}
+
+export interface KLineData {
+    window_start: number;
+    open: number;
+    high: number;
+    low: number;
+    close: number;
+    volume: number;
+}
+
+export interface ReadingResult {
+    summary: {
+        peak_strain: number;
+        ar_preempt_ms: number;
+    };
+    density: {
+        isolated_pct: number;
+        chunking_pct: number;
+        clutter_pct: number;
+        overload_pct: number;
+    };
+    trajectory: {
+        linear_pct: number;
+        mild_shifts_pct: number;
+        sharp_kinks_pct: number;
+        spaghetti_pct: number;
+    };
+    trajectory_timeline: TrajectoryTimelinePoint[];
+    traps: {
+        count: number;
+        trap_index: number;
+        peak_magnitude: number;
+        notable_traps: { time: number; magnitude: number }[];
+    };
+    topography: {
+        klines: KLineData[];
     };
 }
