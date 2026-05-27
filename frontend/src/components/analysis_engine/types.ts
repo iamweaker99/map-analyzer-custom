@@ -166,6 +166,14 @@ export interface TrajectoryTimelinePoint {
     spaghetti_count: number;
 }
 
+export interface DensityTimelinePoint {
+    time: number;
+    isolated_count: number;
+    chunking_count: number;
+    clutter_count: number;
+    overload_count: number;
+}
+
 export interface KLineData {
     window_start: number;
     open: number;
@@ -193,6 +201,7 @@ export interface ReadingResult {
         spaghetti_pct: number;
     };
     trajectory_timeline: TrajectoryTimelinePoint[];
+    density_timeline: DensityTimelinePoint[];
     traps: {
         count: number;
         trap_index: number;
