@@ -7,6 +7,7 @@ pub struct DetailsResult {
     pub title: String,
     pub artist: String,
     pub creator: String,
+    #[allow(dead_code)]
     pub creator_id: u32,
     pub version: String,
     pub set_id: u32,

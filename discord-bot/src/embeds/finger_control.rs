@@ -1,8 +1,8 @@
-use serenity::all::{CreateEmbed, CreateEmbedFooter};
+use serenity::all::CreateEmbed;
 
 use crate::types::FingerControlAnalysis;
 
-pub fn build(data: &FingerControlAnalysis, page: usize, total: usize) -> CreateEmbed {
+pub fn build(data: &FingerControlAnalysis) -> CreateEmbed {
     let mut snaps: Vec<&crate::types::SnapBucket> = data.snap_distribution.iter().collect();
     snaps.sort_by(|a, b| b.percentage.partial_cmp(&a.percentage).unwrap_or(std::cmp::Ordering::Equal));
     let snap_text = snaps.iter().take(6).map(|s| {
@@ -39,5 +39,5 @@ pub fn build(data: &FingerControlAnalysis, page: usize, total: usize) -> CreateE
     let off_grid_count: u32 = data.off_grid_buckets.iter().sum();
     embed = embed.field("Off-Grid Notes", format!("**{}** total", off_grid_count), true);
 
-    embed.footer(CreateEmbedFooter::new(format!("Page {}/{}  •  Navigate with the buttons below", page, total)))
+    embed
 }

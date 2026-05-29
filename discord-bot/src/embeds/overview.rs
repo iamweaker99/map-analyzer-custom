@@ -1,9 +1,10 @@
-use serenity::all::{CreateEmbed, CreateEmbedFooter};
+use serenity::all::CreateEmbed;
 
-use crate::types::{AnalysisResult, DetailsResult};
+use crate::commands::analyze::AnalysisState;
+use crate::types::DetailsResult;
 use super::progress_bar;
 
-pub fn build(details: &DetailsResult, results: &[AnalysisResult]) -> CreateEmbed {
+pub fn build(details: &DetailsResult, state: &AnalysisState) -> CreateEmbed {
     let stats = &details.statistics;
 
     let info = format!(
@@ -19,16 +20,15 @@ pub fn build(details: &DetailsResult, results: &[AnalysisResult]) -> CreateEmbed
 
     let mut class_lines = String::from("**Classification:**\n");
     for atype in &["jump", "stream", "slider"] {
-        if let Some(r) = results.iter().find(|r| r.analysis_type == *atype) {
-            let conf = r.analysis.get("overall_confidence").and_then(|v| v.as_f64()).unwrap_or(0.0);
+        let (conf, label) = match *atype {
+            "jump" => (state.jump.as_ref().map(|j| j.overall_confidence), "Jump"),
+            "stream" => (state.stream.as_ref().map(|s| s.overall_confidence), "Stream"),
+            "slider" => (state.slider.as_ref().map(|s| s.overall_confidence), "Slider"),
+            _ => (None, *atype),
+        };
+        if let Some(conf) = conf {
             let pct = conf * 100.0;
             let bar = progress_bar(conf, 12);
-            let label = match *atype {
-                "jump" => "Jump",
-                "stream" => "Stream",
-                "slider" => "Slider",
-                _ => atype,
-            };
             class_lines.push_str(&format!("`{}` {} **{:.1}%**\n", bar, label, pct));
         }
     }
@@ -42,5 +42,4 @@ pub fn build(details: &DetailsResult, results: &[AnalysisResult]) -> CreateEmbed
         .field("Info", info, false)
         .field("Stats", stats_line, false)
         .field("\u{200b}", class_lines, false)
-        .footer(CreateEmbedFooter::new("Page 1/7  •  Use the buttons below to explore details"))
 }

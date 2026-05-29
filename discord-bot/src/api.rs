@@ -39,8 +39,15 @@ impl BackendApi {
             .map_err(|e| format!("Failed to parse details: {}", e))
     }
 
-    pub async fn fetch_analysis(&self, beatmap_id: u32) -> Result<Vec<AnalysisResult>, String> {
-        let url = format!("{}/api/beatmaps/{}/analyze/all", self.base_url, beatmap_id);
+    pub async fn fetch_analysis_by_type(
+        &self,
+        beatmap_id: u32,
+        analysis_type: &str,
+    ) -> Result<Vec<AnalysisResult>, String> {
+        let url = format!(
+            "{}/api/beatmaps/{}/analyze/{}",
+            self.base_url, beatmap_id, analysis_type
+        );
         let resp = self
             .client
             .get(&url)
@@ -58,4 +65,5 @@ impl BackendApi {
             .await
             .map_err(|e| format!("Failed to parse analysis: {}", e))
     }
+
 }

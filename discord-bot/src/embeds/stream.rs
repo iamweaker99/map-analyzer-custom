@@ -1,4 +1,4 @@
-use serenity::all::{CreateEmbed, CreateEmbedFooter};
+use serenity::all::CreateEmbed;
 
 use crate::types::StreamAnalysis;
 use super::progress_bar;
@@ -11,7 +11,7 @@ fn spacing_tag(spacing: f64, d: f64) -> &'static str {
     else { "Extreme (Jump-Stream)" }
 }
 
-pub fn build(data: &StreamAnalysis, page: usize, total: usize) -> CreateEmbed {
+pub fn build(data: &StreamAnalysis) -> CreateEmbed {
     let d = data.circle_diameter.max(1.0);
     let tag = spacing_tag(data.avg_stream_spacing, d);
     let total_patterns = data.total_stream_patterns.max(1);
@@ -47,5 +47,4 @@ pub fn build(data: &StreamAnalysis, page: usize, total: usize) -> CreateEmbed {
         .field("Length Profile", len, true)
         .field("Max Stream", format!("**{} notes**", data.max_stream_length), true)
         .field("BPM Consistency", format!("{} {:.1}%", bpm_bar, data.bpm_consistency * 100.0), true)
-        .footer(CreateEmbedFooter::new(format!("Page {}/{}  •  Navigate with the buttons below", page, total)))
 }

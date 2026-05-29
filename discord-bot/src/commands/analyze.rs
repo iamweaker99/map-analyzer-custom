@@ -1,24 +1,17 @@
-use std::collections::HashMap;
-use std::sync::Arc;
-
-use serenity::all::{
-    CommandDataOptionValue, CommandInteraction, CreateActionRow, CreateButton,
-    EditInteractionResponse,
-};
+use serenity::all::{CommandDataOptionValue, CommandInteraction, EditInteractionResponse};
 use serenity::client::Context;
-use tokio::sync::Mutex;
 
 use crate::api::BackendApi;
 use crate::embeds;
 use crate::types::*;
 
-pub type AnalysisCache = Arc<Mutex<HashMap<String, AnalysisState>>>;
-
 pub struct AnalysisState {
-    pub page: usize,
-    pub total_pages: usize,
-    pub details: DetailsResult,
-    pub results: Vec<AnalysisResult>,
+    pub jump: Option<JumpAnalysis>,
+    pub stream: Option<StreamAnalysis>,
+    pub slider: Option<SliderAnalysis>,
+    pub finger_control: Option<FingerControlAnalysis>,
+    pub aim_control: Option<AimControlResult>,
+    pub reading: Option<ReadingResult>,
 }
 
 fn parse_beatmap_id(input: &str) -> Option<u32> {
@@ -38,14 +31,19 @@ fn parse_beatmap_id(input: &str) -> Option<u32> {
     None
 }
 
-pub async fn run(ctx: &Context, command: CommandInteraction) {
+/// Shared analysis logic: fetch data, parse, build and send embeds for the requested sections.
+async fn run_analysis(
+    ctx: &Context,
+    command: CommandInteraction,
+    analysis_type: &str,
+    sections: &[&str],
+) {
     // Defer the response since analysis can take a while
     if let Err(e) = command.defer(&ctx.http).await {
         tracing::error!("Failed to defer: {}", e);
         return;
     }
 
-    // Get the beatmap argument
     let beatmap_input = command
         .data
         .options
@@ -70,14 +68,6 @@ pub async fn run(ctx: &Context, command: CommandInteraction) {
         }
     };
 
-    let cache = ctx
-        .data
-        .read()
-        .await
-        .get::<crate::SharedCache>()
-        .cloned()
-        .expect("SharedCache not registered");
-
     let backend_url = ctx
         .data
         .read()
@@ -88,8 +78,10 @@ pub async fn run(ctx: &Context, command: CommandInteraction) {
 
     let api = BackendApi::new(backend_url);
 
-    let (details_res, analysis_res) =
-        tokio::join!(api.fetch_details(beatmap_id), api.fetch_analysis(beatmap_id));
+    let (details_res, analysis_res) = tokio::join!(
+        api.fetch_details(beatmap_id),
+        api.fetch_analysis_by_type(beatmap_id, analysis_type),
+    );
 
     let details = match details_res {
         Ok(d) => d,
@@ -106,7 +98,7 @@ pub async fn run(ctx: &Context, command: CommandInteraction) {
         }
     };
 
-    let results = match analysis_res {
+    let mut results = match analysis_res {
         Ok(r) => r,
         Err(e) => {
             tracing::error!("Failed to fetch analysis: {}", e);
@@ -121,118 +113,150 @@ pub async fn run(ctx: &Context, command: CommandInteraction) {
         }
     };
 
-    let state = AnalysisState {
-        page: 1,
-        total_pages: 7,
-        details: details.clone(),
-        results: results.clone(),
-    };
-
-    let cache_key = format!("{:x}", rand_id());
-    {
-        let mut cache = cache.lock().await;
-        cache.insert(cache_key.clone(), state);
+    // Strip graph-only data from stored JSON (not used in Discord embeds)
+    for result in &mut results {
+        if let Some(obj) = result.analysis.as_object_mut() {
+            match result.analysis_type.as_str() {
+                "fingercontrol" => {
+                    obj.remove("timeline");
+                }
+                "reading" => {
+                    obj.remove("trajectoryTimeline");
+                    if let Some(topo) = obj.get_mut("topography").and_then(|v| v.as_object_mut()) {
+                        topo.remove("klines");
+                    }
+                }
+                _ => {}
+            }
+        }
     }
 
-    let embed = build_embed(&details, &results, 1, 7);
-    let components = build_components(&cache_key, 1, 7);
+    // Parse all analysis types that are present in the response
+    let jump = parse_analysis::<JumpAnalysis>(&results, "jump");
+    let stream = parse_analysis::<StreamAnalysis>(&results, "stream");
+    let slider = parse_analysis::<SliderAnalysis>(&results, "slider");
+    let finger_control = parse_analysis::<FingerControlAnalysis>(&results, "fingercontrol");
+    let aim_control = parse_analysis::<AimControlResult>(&results, "aimcontrol");
+    let reading = parse_analysis::<ReadingResult>(&results, "reading");
 
-    let _ = command
-        .edit_response(
-            &ctx.http,
-            EditInteractionResponse::new()
-                .add_embed(embed)
-                .components(components),
-        )
-        .await;
+    let state = AnalysisState {
+        jump,
+        stream,
+        slider,
+        finger_control,
+        aim_control,
+        reading,
+    };
+
+    let mut response = EditInteractionResponse::new();
+    for section in sections {
+        response = response.add_embed(build_embed(&details, &state, section));
+    }
+
+    let _ = command.edit_response(&ctx.http, response).await;
+}
+
+pub async fn run_all(ctx: &Context, command: CommandInteraction) {
+    run_analysis(
+        ctx, command, "all",
+        &["overview", "jump", "stream", "slider", "fingerctrl", "aimctrl", "reading"],
+    )
+    .await;
+}
+
+pub async fn run_jump(ctx: &Context, command: CommandInteraction) {
+    run_analysis(ctx, command, "jump", &["overview", "jump"]).await;
+}
+
+pub async fn run_stream(ctx: &Context, command: CommandInteraction) {
+    run_analysis(ctx, command, "stream", &["overview", "stream"]).await;
+}
+
+pub async fn run_slider(ctx: &Context, command: CommandInteraction) {
+    run_analysis(ctx, command, "slider", &["overview", "slider"]).await;
+}
+
+pub async fn run_finger_ctrl(ctx: &Context, command: CommandInteraction) {
+    run_analysis(ctx, command, "fingercontrol", &["overview", "fingerctrl"]).await;
+}
+
+pub async fn run_aim_ctrl(ctx: &Context, command: CommandInteraction) {
+    run_analysis(ctx, command, "aimcontrol", &["overview", "aimctrl"]).await;
+}
+
+pub async fn run_reading(ctx: &Context, command: CommandInteraction) {
+    run_analysis(ctx, command, "reading", &["overview", "reading"]).await;
 }
 
 pub fn build_embed(
     details: &DetailsResult,
-    results: &[AnalysisResult],
-    page: usize,
-    total_pages: usize,
+    state: &AnalysisState,
+    section: &str,
 ) -> serenity::all::CreateEmbed {
-    match page {
-        1 => embeds::overview::build(details, results),
-        2 => {
-            parse_analysis::<JumpAnalysis>(results, "jump")
-                .map(|data| embeds::jump::build(&data, page, total_pages))
-                .unwrap_or_else(|| {
-                    serenity::all::CreateEmbed::new()
-                        .title("Jump Analysis")
-                        .description("Data unavailable.")
-                        .color(0xec4899)
-                })
-        }
-        3 => {
-            parse_analysis::<StreamAnalysis>(results, "stream")
-                .map(|data| embeds::stream::build(&data, page, total_pages))
-                .unwrap_or_else(|| {
-                    serenity::all::CreateEmbed::new()
-                        .title("Stream Analysis")
-                        .description("Data unavailable.")
-                        .color(0x3b82f6)
-                })
-        }
-        4 => {
-            parse_analysis::<SliderAnalysis>(results, "slider")
-                .map(|data| embeds::slider::build(&data, page, total_pages))
-                .unwrap_or_else(|| {
-                    serenity::all::CreateEmbed::new()
-                        .title("Slider Analysis")
-                        .description("Data unavailable.")
-                        .color(0x22c55e)
-                })
-        }
-        5 => {
-            parse_analysis::<FingerControlAnalysis>(results, "fingercontrol")
-                .map(|data| embeds::finger_control::build(&data, page, total_pages))
-                .unwrap_or_else(|| {
-                    serenity::all::CreateEmbed::new()
-                        .title("Finger Control Analysis")
-                        .description("Data unavailable.")
-                        .color(0xa855f7)
-                })
-        }
-        6 => {
-            parse_analysis::<AimControlResult>(results, "aimcontrol")
-                .map(|data| embeds::aim_control::build(&data, page, total_pages))
-                .unwrap_or_else(|| {
-                    serenity::all::CreateEmbed::new()
-                        .title("Aim Control Analysis")
-                        .description("Data unavailable.")
-                        .color(0xf97316)
-                })
-        }
-        7 => {
-            parse_analysis::<ReadingResult>(results, "reading")
-                .map(|data| embeds::reading::build(&data, page, total_pages))
-                .unwrap_or_else(|| {
-                    serenity::all::CreateEmbed::new()
-                        .title("Reading Analysis")
-                        .description("Data unavailable.")
-                        .color(0x06b6d4)
-                })
-        }
+    match section {
+        "overview" => embeds::overview::build(details, state),
+        "jump" => state
+            .jump
+            .as_ref()
+            .map(|data| embeds::jump::build(data))
+            .unwrap_or_else(|| {
+                serenity::all::CreateEmbed::new()
+                    .title("Jump Analysis")
+                    .description("Data unavailable.")
+                    .color(0xec4899)
+            }),
+        "stream" => state
+            .stream
+            .as_ref()
+            .map(|data| embeds::stream::build(data))
+            .unwrap_or_else(|| {
+                serenity::all::CreateEmbed::new()
+                    .title("Stream Analysis")
+                    .description("Data unavailable.")
+                    .color(0x3b82f6)
+            }),
+        "slider" => state
+            .slider
+            .as_ref()
+            .map(|data| embeds::slider::build(data))
+            .unwrap_or_else(|| {
+                serenity::all::CreateEmbed::new()
+                    .title("Slider Analysis")
+                    .description("Data unavailable.")
+                    .color(0x22c55e)
+            }),
+        "fingerctrl" => state
+            .finger_control
+            .as_ref()
+            .map(|data| embeds::finger_control::build(data))
+            .unwrap_or_else(|| {
+                serenity::all::CreateEmbed::new()
+                    .title("Finger Control Analysis")
+                    .description("Data unavailable.")
+                    .color(0xa855f7)
+            }),
+        "aimctrl" => state
+            .aim_control
+            .as_ref()
+            .map(|data| embeds::aim_control::build(data))
+            .unwrap_or_else(|| {
+                serenity::all::CreateEmbed::new()
+                    .title("Aim Control Analysis")
+                    .description("Data unavailable.")
+                    .color(0xf97316)
+            }),
+        "reading" => state
+            .reading
+            .as_ref()
+            .map(|data| embeds::reading::build(data))
+            .unwrap_or_else(|| {
+                serenity::all::CreateEmbed::new()
+                    .title("Reading Analysis")
+                    .description("Data unavailable.")
+                    .color(0x06b6d4)
+            }),
         _ => unreachable!(),
     }
-}
-
-pub fn build_components(cache_key: &str, page: usize, total_pages: usize) -> Vec<CreateActionRow> {
-    let prev_btn = CreateButton::new(format!("nav_{}_prev", cache_key))
-        .label("◀ Previous")
-        .disabled(page <= 1);
-
-    let indicator_btn = CreateButton::new(format!("nav_{}_indicator", cache_key))
-        .label(format!("{}/{}", page, total_pages))
-        .disabled(true);
-
-    let next_btn = CreateButton::new(format!("nav_{}_next", cache_key))
-        .label("Next ▶")
-        .disabled(page >= total_pages);
-
-    vec![CreateActionRow::Buttons(vec![prev_btn, indicator_btn, next_btn])]
 }
 
 fn parse_analysis<T: serde::de::DeserializeOwned>(
@@ -245,11 +269,3 @@ fn parse_analysis<T: serde::de::DeserializeOwned>(
         .and_then(|r| serde_json::from_value(r.analysis.clone()).ok())
 }
 
-fn rand_id() -> u64 {
-    use std::time::{SystemTime, UNIX_EPOCH};
-    let nanos = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .unwrap_or_default()
-        .subsec_nanos() as u64;
-    nanos ^ (std::process::id() as u64).wrapping_mul(0x9e3779b97f4a7c15)
-}

@@ -1,25 +1,12 @@
 mod api;
 mod commands;
-mod components;
 mod embeds;
 mod types;
-
-use std::collections::HashMap;
-use std::sync::Arc;
 
 use serenity::all::*;
 use serenity::async_trait;
 use serenity::client::{Context, EventHandler};
 use serenity::prelude::TypeMapKey;
-use tokio::sync::Mutex;
-
-use crate::commands::analyze::AnalysisCache;
-
-/// TypeMap key for the shared analysis cache
-pub struct SharedCache;
-impl TypeMapKey for SharedCache {
-    type Value = AnalysisCache;
-}
 
 /// TypeMap key for the backend URL
 pub struct BackendUrl;
@@ -35,31 +22,47 @@ impl EventHandler for Handler {
     async fn ready(&self, ctx: Context, ready: Ready) {
         tracing::info!("{} is connected!", ready.user.name);
 
-        let command = CreateCommand::new("analyze")
-            .description("Analyze an osu! beatmap")
-            .add_option(
-                CreateCommandOption::new(
-                    CommandOptionType::String,
-                    "beatmap",
-                    "Beatmap URL or ID",
-                )
-                .required(true),
-            );
+        let beatmap_option = CreateCommandOption::new(
+            CommandOptionType::String,
+            "beatmap",
+            "Beatmap URL or ID",
+        )
+        .required(true);
 
-        let commands = Command::create_global_command(&ctx.http, command).await;
+        let commands = vec![
+            CreateCommand::new("analyze-all")
+                .description("Show all analysis sections for an osu! beatmap")
+                .add_option(beatmap_option.clone()),
+            CreateCommand::new("analyze-jump")
+                .description("Show overview + jump analysis for an osu! beatmap")
+                .add_option(beatmap_option.clone()),
+            CreateCommand::new("analyze-stream")
+                .description("Show overview + stream analysis for an osu! beatmap")
+                .add_option(beatmap_option.clone()),
+            CreateCommand::new("analyze-slider")
+                .description("Show overview + slider analysis for an osu! beatmap")
+                .add_option(beatmap_option.clone()),
+            CreateCommand::new("analyze-finger_ctrl")
+                .description("Show overview + finger control analysis for an osu! beatmap")
+                .add_option(beatmap_option.clone()),
+            CreateCommand::new("analyze-aim_ctrl")
+                .description("Show overview + aim control analysis for an osu! beatmap")
+                .add_option(beatmap_option.clone()),
+            CreateCommand::new("analyze-reading")
+                .description("Show overview + reading analysis for an osu! beatmap")
+                .add_option(beatmap_option.clone()),
+        ];
 
-        match commands {
-            Ok(_) => tracing::info!("Registered /analyze command"),
-            Err(e) => tracing::error!("Failed to register command: {}", e),
+        match Command::set_global_commands(&ctx.http, commands).await {
+            Ok(_) => tracing::info!("Registered 7 analyze commands"),
+            Err(e) => tracing::error!("Failed to register commands: {}", e),
         }
     }
 
-    /// Handle interactions (commands + component interactions)
+    /// Handle interactions (slash commands only)
     async fn interaction_create(&self, ctx: Context, interaction: Interaction) {
-        if let Some(command) = interaction.clone().as_command() {
+        if let Some(command) = interaction.as_command() {
             commands::handle_command(&ctx, command.clone()).await;
-        } else if let Some(component) = interaction.message_component() {
-            components::handle_component(&ctx, component).await;
         }
     }
 }
@@ -88,7 +91,6 @@ async fn main() {
     // Insert shared data
     {
         let mut data = client.data.write().await;
-        data.insert::<SharedCache>(Arc::new(Mutex::new(HashMap::new())));
         data.insert::<BackendUrl>(backend_url);
     }
 

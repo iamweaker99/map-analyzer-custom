@@ -1,9 +1,9 @@
-use serenity::all::{CreateEmbed, CreateEmbedFooter};
+use serenity::all::CreateEmbed;
 
 use crate::types::ReadingResult;
 use super::{progress_bar, format_time};
 
-pub fn build(data: &ReadingResult, page: usize, total: usize) -> CreateEmbed {
+pub fn build(data: &ReadingResult) -> CreateEmbed {
     let clutter = format!(
         "Isolated: {} {:.1}%\nChunking:  {} {:.1}%\nClutter:   {} {:.1}%\nOverload:  {} {:.1}%",
         progress_bar(data.density.isolated_pct / 100.0, 10), data.density.isolated_pct,
@@ -39,5 +39,4 @@ pub fn build(data: &ReadingResult, page: usize, total: usize) -> CreateEmbed {
         .field("Visual Clutter", clutter, false)
         .field("Trajectory Chaos", traj, false)
         .field("Reading Traps", trap_lines, false)
-        .footer(CreateEmbedFooter::new(format!("Page {}/{}  •  Navigate with the buttons below", page, total)))
 }

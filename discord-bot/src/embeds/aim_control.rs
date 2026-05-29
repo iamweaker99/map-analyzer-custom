@@ -1,4 +1,4 @@
-use serenity::all::{CreateEmbed, CreateEmbedFooter};
+use serenity::all::CreateEmbed;
 
 use crate::types::AimControlResult;
 use super::format_time;
@@ -8,7 +8,7 @@ fn stat_bar(label: &str, value: i32, total: i32) -> String {
     format!("{}: {} ({:.1}%)", label, value, pct)
 }
 
-pub fn build(data: &AimControlResult, page: usize, total: usize) -> CreateEmbed {
+pub fn build(data: &AimControlResult) -> CreateEmbed {
     let overview = format!(
         "Avg Spacing: **{:.2}D**\nAvg Angle: **{:.2}°**\nAvg Velocity: **{:.2} px/ms**\nDir Flips: **{}**  Chirps: **{}**\nPeak Strain: **{:.0}**",
         data.spatial.avg_spacing_d,
@@ -65,5 +65,4 @@ pub fn build(data: &AimControlResult, page: usize, total: usize) -> CreateEmbed 
 
     embed
         .field("Time Under Tension", format!("**{}**", format_time(data.endurance.time_under_tension_ms)), false)
-        .footer(CreateEmbedFooter::new(format!("Page {}/{}  •  Navigate with the buttons below", page, total)))
 }

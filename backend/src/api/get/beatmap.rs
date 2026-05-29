@@ -214,7 +214,19 @@ pub async fn analyze_beatmap(
     analyze_type: String,
 ) -> Result<impl Reply, Rejection> {
     let path = Path::new("maps").join(format!("{}.osu", beatmap_id));
-    
+
+    // Download the map if it doesn't exist on disk yet
+    if !path.exists() {
+        if let Err(e) = download_beatmap(beatmap_id).await {
+            return Ok(reply::with_status(
+                reply::json(&ApiError {
+                    error: format!("Failed to download beatmap: {}", e),
+                }),
+                StatusCode::INTERNAL_SERVER_ERROR,
+            ));
+        }
+    }
+
     // 1. Calculate MD5 for the Chart Reset Key
     let md5_string = match std::fs::read(&path) {
         Ok(bytes) => format!("{:x}", md5::compute(bytes)),
@@ -223,7 +235,7 @@ pub async fn analyze_beatmap(
 
     let map = match rosu_map::from_path::<rosu_map::Beatmap>(&path) {
         Ok(m) => m,
-        Err(_) => return Ok(reply::with_status(reply::json(&ApiError { error: "Failed to parse map".to_string() }), StatusCode::INTERNAL_SERVER_ERROR)),
+        Err(e) => return Ok(reply::with_status(reply::json(&ApiError { error: format!("Failed to parse map: {}", e) }), StatusCode::INTERNAL_SERVER_ERROR)),
     };
     let pp_map = match rosu_pp::Beatmap::from_path(&path) {
         Ok(m) => m,
@@ -260,37 +272,37 @@ pub async fn analyze_beatmap(
         }
         "aimcontrol" => {
             let ac_val = analysis::aim_control::analyze(&pp_map, cs);
-            Ok(reply::with_status(reply::json(&AnalysisResult { 
-                analysis_type: String::from("aimcontrol"), 
-                analysis: ac_val 
-            }), StatusCode::OK))
+            Ok(reply::with_status(reply::json(&vec![AnalysisResult {
+                analysis_type: String::from("aimcontrol"),
+                analysis: ac_val
+            }]), StatusCode::OK))
         }
         "fingercontrol" => {
             let fc_raw = analysis::finger_control::analyze(&pp_map, md5_string);
             let fc_val = serde_json::to_value(fc_raw).unwrap_or(serde_json::Value::Null);
-            Ok(reply::with_status(reply::json(&AnalysisResult { 
-                analysis_type: String::from("fingercontrol"), 
-                analysis: fc_val 
-            }), StatusCode::OK))
+            Ok(reply::with_status(reply::json(&vec![AnalysisResult {
+                analysis_type: String::from("fingercontrol"),
+                analysis: fc_val
+            }]), StatusCode::OK))
         }
-        "reading" => { // <-- NEW ENDPOINT
+        "reading" => {
             let reading_val = analysis::reading::analyze(&pp_map);
-            Ok(reply::with_status(reply::json(&AnalysisResult { 
-                analysis_type: String::from("reading"), 
-                analysis: reading_val 
-            }), StatusCode::OK))
+            Ok(reply::with_status(reply::json(&vec![AnalysisResult {
+                analysis_type: String::from("reading"),
+                analysis: reading_val
+            }]), StatusCode::OK))
         }
         "jump" => {
             let j_val = analysis::jumps::analyze(&movements, cs, bpm, total_obj);
-            Ok(reply::with_status(reply::json(&AnalysisResult { analysis_type: String::from("jump"), analysis: j_val }), StatusCode::OK))
+            Ok(reply::with_status(reply::json(&vec![AnalysisResult { analysis_type: String::from("jump"), analysis: j_val }]), StatusCode::OK))
         }
         "stream" => {
             let s_val = analysis::streams::analyze(&movements, cs, bpm, total_obj);
-            Ok(reply::with_status(reply::json(&AnalysisResult { analysis_type: String::from("stream"), analysis: s_val }), StatusCode::OK))
+            Ok(reply::with_status(reply::json(&vec![AnalysisResult { analysis_type: String::from("stream"), analysis: s_val }]), StatusCode::OK))
         }
         "slider" => {
             let sl_val = analysis::sliders::analyze(&map, cs, total_obj);
-            Ok(reply::with_status(reply::json(&AnalysisResult { analysis_type: String::from("slider"), analysis: sl_val }), StatusCode::OK))
+            Ok(reply::with_status(reply::json(&vec![AnalysisResult { analysis_type: String::from("slider"), analysis: sl_val }]), StatusCode::OK))
         }
         _ => {
             Ok(reply::with_status(

@@ -1,4 +1,4 @@
-use serenity::all::{CreateEmbed, CreateEmbedFooter};
+use serenity::all::CreateEmbed;
 
 use crate::types::JumpAnalysis;
 use super::progress_bar;
@@ -11,7 +11,7 @@ fn spacing_tag(spacing: f64, d: f64) -> &'static str {
     else { "Cross-Screen (Extreme)" }
 }
 
-pub fn build(data: &JumpAnalysis, page: usize, total: usize) -> CreateEmbed {
+pub fn build(data: &JumpAnalysis) -> CreateEmbed {
     let d = data.circle_diameter.max(1.0);
     let tag = spacing_tag(data.avg_spacing, d);
 
@@ -37,5 +37,4 @@ pub fn build(data: &JumpAnalysis, page: usize, total: usize) -> CreateEmbed {
         .field("Distance Profile", dist, false)
         .field("Jump Chains", chains, true)
         .field("BPM Consistency", format!("{} {:.1}%", bpm_bar, data.bpm_consistency * 100.0), true)
-        .footer(CreateEmbedFooter::new(format!("Page {}/{}  •  Navigate with the buttons below", page, total)))
 }

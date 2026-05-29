@@ -1,4 +1,4 @@
-use serenity::all::{CreateEmbed, CreateEmbedFooter};
+use serenity::all::CreateEmbed;
 
 use crate::types::SliderAnalysis;
 
@@ -8,7 +8,7 @@ fn slider_tag(ratio: f64) -> &'static str {
     else { "Slider Tech" }
 }
 
-pub fn build(data: &SliderAnalysis, page: usize, total: usize) -> CreateEmbed {
+pub fn build(data: &SliderAnalysis) -> CreateEmbed {
     let len = format!(
         "Short (<1.5D): {} ({:.1}%)\nMedium (1.5-3D): {} ({:.1}%)\nLong (3-4.5D): {} ({:.1}%)\nExtended (>4.5D): {} ({:.1}%)",
         data.l_short_count, data.l_short_dens * 100.0,
@@ -38,5 +38,4 @@ pub fn build(data: &SliderAnalysis, page: usize, total: usize) -> CreateEmbed {
         .field("Slider Length", len, false)
         .field("Buzz Profile", buzz, true)
         .field("Artistic Profile", art, false)
-        .footer(CreateEmbedFooter::new(format!("Page {}/{}  •  Navigate with the buttons below", page, total)))
 }
