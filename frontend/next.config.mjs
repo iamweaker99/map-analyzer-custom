@@ -5,7 +5,11 @@ const nextConfig = {
     },
     experimental: {
         serverActions: {
-            allowedOrigins: ["analyze.yorunoken.com", "127.0.0.1:3006"],
+            allowedOrigins: [
+                "127.0.0.1:3006",
+                process.env.VERCEL_URL && `*.${process.env.VERCEL_URL}`,
+                process.env.VERCEL_URL,
+            ].filter(Boolean),
         },
     },
     images: {

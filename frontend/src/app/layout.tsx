@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
 import Script from "next/script";
 import { cn } from "@/lib/utils";
 
@@ -30,11 +28,7 @@ export default function RootLayout({
                     enableSystem
                     disableTransitionOnChange
                 >
-                    <div className="flex flex-col min-h-screen">
-                        <Header />
-                        <main>{children}</main>
-                        <Footer />
-                    </div>
+                    {children}
                     <Toaster />
                 </ThemeProvider>
                 <Script
