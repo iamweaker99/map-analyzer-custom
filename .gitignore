@@ -1,3 +1,7 @@
 /node_modules
 target/
 maps/
+.env*
+.claude/
+nul
+web_hosting_memory.md

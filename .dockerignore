@@ -6,3 +6,5 @@ frontend
 memory
 *.md
 nul
+Shuttle.toml
+Secrets.toml

@@ -2,14 +2,14 @@ mod api;
 mod models;
 mod routes;
 mod utils;
-mod analysis; // Add this line
+mod analysis;
 
 use dotenvy::from_filename;
 use std::{env, sync::Arc};
 
 #[tokio::main]
 async fn main() {
-    // Load environment variables
+    // Load environment variables (safe to call even if file doesn't exist)
     from_filename(".env.local").ok();
 
     let osu_client_id: u64 = env::var("OSU_CLIENT_ID")
@@ -26,13 +26,20 @@ async fn main() {
             .unwrap(),
     );
 
-    let api = routes::routes(osu_client);
+    let router = routes::router(osu_client);
 
     let port: u16 = env::var("PORT")
-        .expect("Expected PORT to be defined in environment.")
+        .unwrap_or_else(|_| "8000".to_string())
         .parse()
         .expect("PORT is not a number!");
 
-    println!("Server started at http://0.0.0.0:{port}");
-    warp::serve(api).run(([0, 0, 0, 0], port)).await;
+    let addr = format!("0.0.0.0:{}", port);
+    println!("Server started at http://{}", addr);
+
+    let listener = tokio::net::TcpListener::bind(&addr)
+        .await
+        .expect("Failed to bind address");
+    axum::serve(listener, router)
+        .await
+        .expect("Server error");
 }

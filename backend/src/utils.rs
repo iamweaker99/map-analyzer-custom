@@ -1,7 +1,7 @@
 use std::fs::File;
 use std::io::Write;
-use warp::hyper::body::Bytes;
 
+use bytes::Bytes;
 use reqwest::Client;
 
 pub async fn download_beatmap(beatmap_id: u32) -> Result<Bytes, Box<dyn std::error::Error>> {

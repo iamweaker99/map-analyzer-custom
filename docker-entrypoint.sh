@@ -1,21 +1,18 @@
 #!/bin/sh
 set -e
 
-# Start backend in background
+# Start the backend API server in the background
 echo "Starting backend on port ${PORT:-8000}..."
 /app/backend &
 BACKEND_PID=$!
 
-# Small pause to let backend initialise
-sleep 1
-
-# Start Discord bot in background
+# Start the Discord bot in the background
 echo "Starting Discord bot..."
 /app/discord-bot &
 BOT_PID=$!
 
-# Forward signals to both processes
-trap "kill $BACKEND_PID $BOT_PID 2>/dev/null; exit" SIGTERM SIGINT
+# Trap SIGTERM/SIGINT and forward to child processes
+trap 'echo "Shutting down..."; kill $BACKEND_PID $BOT_PID 2>/dev/null; wait' TERM INT
 
-# Wait for either process to exit
-wait $BACKEND_PID $BOT_PID
+# Wait for any process to exit
+wait

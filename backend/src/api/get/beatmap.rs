@@ -1,25 +1,20 @@
+use axum::{extract::Path, http::StatusCode, Json, Extension, response::IntoResponse};
+use md5;
 use osu_map_analyzer::rosu_map;
 use rosu_pp::{Beatmap, Difficulty};
-use serde_json::Value;
-use md5;
-
 use rosu_v2::{prelude::RankStatus, Osu as OsuClient};
 use serde::Serialize;
+use serde_json::Value;
 use std::{
     fs::File,
     io::{ErrorKind, Read},
-    path::Path,
+    path::Path as FilePath,
     str::FromStr,
     sync::Arc,
 };
-use warp::{http::StatusCode, reply, Rejection, Reply};
 
+use crate::analysis;
 use crate::utils::download_beatmap;
-
-#[derive(Serialize)]
-struct ApiError {
-    error: String,
-}
 
 #[derive(Serialize)]
 struct Statistics {
@@ -44,19 +39,17 @@ struct DetailsResult {
 }
 
 pub async fn beatmap_details(
-    beatmap_id: u32,
-    osu_client: Arc<OsuClient>,
-) -> Result<impl Reply, Rejection> {
+    Path(beatmap_id): Path<u32>,
+    Extension(osu_client): Extension<Arc<OsuClient>>,
+) -> impl IntoResponse {
     let beatmap = match osu_client.beatmap().map_id(beatmap_id).await {
         Ok(ok) => ok,
         Err(err) => {
             eprintln!("Error while fetching beatmap: {}", err);
-            return Ok(reply::with_status(
-                reply::json(&ApiError {
-                    error: format!("Error while fetching beatmap: {}", err),
-                }),
+            return (
                 StatusCode::INTERNAL_SERVER_ERROR,
-            ));
+                Json(serde_json::json!({ "error": format!("Error while fetching beatmap: {}", err) })),
+            );
         }
     };
 
@@ -64,12 +57,10 @@ pub async fn beatmap_details(
         Some(s) => s,
         None => {
             eprintln!("Couldn't get beatmapset from beatmap (wtf?)");
-            return Ok(reply::with_status(
-                reply::json(&ApiError {
-                    error: format!("Couldn't get beatmapset from beatmap (wtf?)"),
-                }),
+            return (
                 StatusCode::INTERNAL_SERVER_ERROR,
-            ));
+                Json(serde_json::json!({ "error": "Couldn't get beatmapset from beatmap (wtf?)" })),
+            );
         }
     };
 
@@ -84,22 +75,18 @@ pub async fn beatmap_details(
                 Ok(string) => string,
                 Err(err) => {
                     eprintln!("Error while converting bytes to string: {}", err);
-                    return Ok(reply::with_status(
-                        reply::json(&ApiError {
-                            error: format!("Error while converting bytes to string: {}", err),
-                        }),
+                    return (
                         StatusCode::INTERNAL_SERVER_ERROR,
-                    ));
+                        Json(serde_json::json!({ "error": format!("Error while converting bytes to string: {}", err) })),
+                    );
                 }
             },
             Err(err) => {
                 eprintln!("Error while downloading beatmap: {}", err);
-                return Ok(reply::with_status(
-                    reply::json(&ApiError {
-                        error: format!("Error while downloading beatmap: {}", err),
-                    }),
+                return (
                     StatusCode::INTERNAL_SERVER_ERROR,
-                ));
+                    Json(serde_json::json!({ "error": format!("Error while downloading beatmap: {}", err) })),
+                );
             }
         }
     } else {
@@ -109,12 +96,10 @@ pub async fn beatmap_details(
 
                 if let Err(why) = file.read_to_string(&mut data_buf) {
                     eprintln!("Error while reading file: {}", why);
-                    return Ok(reply::with_status(
-                        reply::json(&ApiError {
-                            error: format!("Error while reading file: {}", why),
-                        }),
+                    return (
                         StatusCode::INTERNAL_SERVER_ERROR,
-                    ));
+                        Json(serde_json::json!({ "error": format!("Error while reading file: {}", why) })),
+                    );
                 }
 
                 data_buf
@@ -125,36 +110,27 @@ pub async fn beatmap_details(
                         Ok(string) => string,
                         Err(err) => {
                             eprintln!("Error while converting bytes to string: {}", err);
-                            return Ok(reply::with_status(
-                                reply::json(&ApiError {
-                                    error: format!(
-                                        "Error while converting bytes to string: {}",
-                                        err
-                                    ),
-                                }),
+                            return (
                                 StatusCode::INTERNAL_SERVER_ERROR,
-                            ));
+                                Json(serde_json::json!({ "error": format!("Error while converting bytes to string: {}", err) })),
+                            );
                         }
                     },
                     Err(err) => {
                         eprintln!("Error while downloading beatmap: {}", err);
-                        return Ok(reply::with_status(
-                            reply::json(&ApiError {
-                                error: format!("Error while downloading beatmap: {}", err),
-                            }),
+                        return (
                             StatusCode::INTERNAL_SERVER_ERROR,
-                        ));
+                            Json(serde_json::json!({ "error": format!("Error while downloading beatmap: {}", err) })),
+                        );
                     }
                 },
 
                 _ => {
                     eprintln!("Internal server error: {}", err);
-                    return Ok(reply::with_status(
-                        reply::json(&ApiError {
-                            error: format!("Internal server error: {}", err),
-                        }),
+                    return (
                         StatusCode::INTERNAL_SERVER_ERROR,
-                    ));
+                        Json(serde_json::json!({ "error": format!("Internal server error: {}", err) })),
+                    );
                 }
             },
         }
@@ -164,17 +140,14 @@ pub async fn beatmap_details(
         Ok(map) => map,
         Err(err) => {
             eprintln!("Error parsing beatmap: {}", err);
-            return Ok(reply::with_status(
-                reply::json(&ApiError {
-                    error: format!("Error parsing beatmap: {}", err),
-                }),
+            return (
                 StatusCode::INTERNAL_SERVER_ERROR,
-            ));
+                Json(serde_json::json!({ "error": format!("Error parsing beatmap: {}", err) })),
+            );
         }
     };
 
     let diff_attrs = Difficulty::new().calculate(&map_calculate);
-
     let perf_attrs = rosu_pp::Performance::new(diff_attrs).calculate();
 
     let statistics = Statistics {
@@ -184,11 +157,12 @@ pub async fn beatmap_details(
         hp: map_calculate.hp,
         bpm: map_calculate.bpm(),
         star_rating: perf_attrs.stars(),
-        total_objects: map_calculate.hit_objects.len(), 
+        total_objects: map_calculate.hit_objects.len(),
     };
 
-    Ok(reply::with_status(
-        reply::json(&DetailsResult {
+    (
+        StatusCode::OK,
+        Json(serde_json::to_value(DetailsResult {
             title: beatmapset.title,
             artist: beatmapset.artist,
             creator: beatmapset.creator_name.to_string(),
@@ -196,9 +170,9 @@ pub async fn beatmap_details(
             version: beatmap.version,
             set_id: beatmapset.mapset_id,
             statistics,
-        }),
-        StatusCode::OK,
-    ))
+        })
+        .unwrap()),
+    )
 }
 
 #[derive(Serialize)]
@@ -207,23 +181,18 @@ struct AnalysisResult {
     analysis: Value,
 }
 
-use crate::analysis; // Import your new engine
-
 pub async fn analyze_beatmap(
-    beatmap_id: u32,
-    analyze_type: String,
-) -> Result<impl Reply, Rejection> {
-    let path = Path::new("maps").join(format!("{}.osu", beatmap_id));
+    Path((beatmap_id, analyze_type)): Path<(u32, String)>,
+) -> impl IntoResponse {
+    let path = FilePath::new("maps").join(format!("{}.osu", beatmap_id));
 
     // Download the map if it doesn't exist on disk yet
     if !path.exists() {
         if let Err(e) = download_beatmap(beatmap_id).await {
-            return Ok(reply::with_status(
-                reply::json(&ApiError {
-                    error: format!("Failed to download beatmap: {}", e),
-                }),
+            return (
                 StatusCode::INTERNAL_SERVER_ERROR,
-            ));
+                Json(serde_json::json!({ "error": format!("Failed to download beatmap: {}", e) })),
+            );
         }
     }
 
@@ -235,11 +204,21 @@ pub async fn analyze_beatmap(
 
     let map = match rosu_map::from_path::<rosu_map::Beatmap>(&path) {
         Ok(m) => m,
-        Err(e) => return Ok(reply::with_status(reply::json(&ApiError { error: format!("Failed to parse map: {}", e) }), StatusCode::INTERNAL_SERVER_ERROR)),
+        Err(e) => {
+            return (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(serde_json::json!({ "error": format!("Failed to parse map: {}", e) })),
+            );
+        }
     };
     let pp_map = match rosu_pp::Beatmap::from_path(&path) {
         Ok(m) => m,
-        Err(_) => return Ok(reply::with_status(reply::json(&ApiError { error: "Failed to parse PP map".to_string() }), StatusCode::INTERNAL_SERVER_ERROR)),
+        Err(_) => {
+            return (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(serde_json::json!({ "error": "Failed to parse PP map".to_string() })),
+            );
+        }
     };
 
     let movements = analysis::create_movements(&pp_map);
@@ -247,69 +226,69 @@ pub async fn analyze_beatmap(
     let bpm = pp_map.bpm();
     let cs = pp_map.cs;
 
-    match analyze_type.to_lowercase().as_str() {
+    let results = match analyze_type.to_lowercase().as_str() {
         "all" => {
             let j_val = analysis::jumps::analyze(&movements, cs, bpm, total_obj);
             let s_val = analysis::streams::analyze(&movements, cs, bpm, total_obj);
             let sl_val = analysis::sliders::analyze(&map, cs, total_obj);
-            
+
             let fc_raw = analysis::finger_control::analyze(&pp_map, md5_string.clone());
             let fc_val = serde_json::to_value(fc_raw).unwrap_or(serde_json::Value::Null);
 
             let ac_val = analysis::aim_control::analyze(&pp_map, cs);
 
-            // Fetch the Reading Analysis payload
             let reading_val = analysis::reading::analyze(&pp_map);
 
-            Ok(reply::with_status(reply::json(&vec![
+            vec![
                 AnalysisResult { analysis_type: String::from("jump"), analysis: j_val },
                 AnalysisResult { analysis_type: String::from("stream"), analysis: s_val },
                 AnalysisResult { analysis_type: String::from("slider"), analysis: sl_val },
                 AnalysisResult { analysis_type: String::from("fingercontrol"), analysis: fc_val },
                 AnalysisResult { analysis_type: String::from("aimcontrol"), analysis: ac_val },
-                AnalysisResult { analysis_type: String::from("reading"), analysis: reading_val }, // <-- INJECTED HERE
-            ]), StatusCode::OK))
+                AnalysisResult { analysis_type: String::from("reading"), analysis: reading_val },
+            ]
         }
         "aimcontrol" => {
             let ac_val = analysis::aim_control::analyze(&pp_map, cs);
-            Ok(reply::with_status(reply::json(&vec![AnalysisResult {
+            vec![AnalysisResult {
                 analysis_type: String::from("aimcontrol"),
-                analysis: ac_val
-            }]), StatusCode::OK))
+                analysis: ac_val,
+            }]
         }
         "fingercontrol" => {
             let fc_raw = analysis::finger_control::analyze(&pp_map, md5_string);
             let fc_val = serde_json::to_value(fc_raw).unwrap_or(serde_json::Value::Null);
-            Ok(reply::with_status(reply::json(&vec![AnalysisResult {
+            vec![AnalysisResult {
                 analysis_type: String::from("fingercontrol"),
-                analysis: fc_val
-            }]), StatusCode::OK))
+                analysis: fc_val,
+            }]
         }
         "reading" => {
             let reading_val = analysis::reading::analyze(&pp_map);
-            Ok(reply::with_status(reply::json(&vec![AnalysisResult {
+            vec![AnalysisResult {
                 analysis_type: String::from("reading"),
-                analysis: reading_val
-            }]), StatusCode::OK))
+                analysis: reading_val,
+            }]
         }
         "jump" => {
             let j_val = analysis::jumps::analyze(&movements, cs, bpm, total_obj);
-            Ok(reply::with_status(reply::json(&vec![AnalysisResult { analysis_type: String::from("jump"), analysis: j_val }]), StatusCode::OK))
+            vec![AnalysisResult { analysis_type: String::from("jump"), analysis: j_val }]
         }
         "stream" => {
             let s_val = analysis::streams::analyze(&movements, cs, bpm, total_obj);
-            Ok(reply::with_status(reply::json(&vec![AnalysisResult { analysis_type: String::from("stream"), analysis: s_val }]), StatusCode::OK))
+            vec![AnalysisResult { analysis_type: String::from("stream"), analysis: s_val }]
         }
         "slider" => {
             let sl_val = analysis::sliders::analyze(&map, cs, total_obj);
-            Ok(reply::with_status(reply::json(&vec![AnalysisResult { analysis_type: String::from("slider"), analysis: sl_val }]), StatusCode::OK))
+            vec![AnalysisResult { analysis_type: String::from("slider"), analysis: sl_val }]
         }
         _ => {
-            Ok(reply::with_status(
-                // Updated error message
-                reply::json(&ApiError { error: "Bad request: analyze_type must be all, jump, stream, slider, fingercontrol, aimcontrol, or reading".to_string() }),
-                StatusCode::BAD_REQUEST
-            ))
+            return (
+                StatusCode::BAD_REQUEST,
+                Json(serde_json::json!({ "error": "Bad request: analyze_type must be all, jump, stream, slider, fingercontrol, aimcontrol, or reading" })),
+            );
         }
-    }
+    };
+
+    (StatusCode::OK, Json(serde_json::to_value(results).unwrap()))
 }
