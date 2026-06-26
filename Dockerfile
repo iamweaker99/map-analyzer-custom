@@ -6,6 +6,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
+# Force both cargo builds to share the same target directory
+ENV CARGO_TARGET_DIR=/app/target
+
 # Copy all manifests first for dependency caching
 COPY backend/Cargo.toml backend/Cargo.lock backend/
 COPY discord-bot/Cargo.toml discord-bot/Cargo.lock discord-bot/
