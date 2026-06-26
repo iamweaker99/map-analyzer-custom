@@ -12,7 +12,8 @@ RUN mkdir -p backend/src discord-bot/src && \
     echo "fn main() {}" > discord-bot/src/main.rs
 
 # Build dependencies (cached layer)
-RUN cargo build --release 2>/dev/null; return 0
+RUN cargo build --release --manifest-path backend/Cargo.toml 2>/dev/null; return 0
+RUN cargo build --release --manifest-path discord-bot/Cargo.toml 2>/dev/null; return 0
 
 # Now copy the real source
 COPY backend/src backend/src/
@@ -22,8 +23,8 @@ COPY discord-bot/src discord-bot/src/
 RUN touch backend/src/main.rs discord-bot/src/main.rs
 
 # Build both binaries
-RUN cargo build --release --bin backend && \
-    cargo build --release --bin discord-bot
+RUN cargo build --release --manifest-path backend/Cargo.toml && \
+    cargo build --release --manifest-path discord-bot/Cargo.toml
 
 # ---- Runtime stage ----
 FROM debian:bookworm-slim
