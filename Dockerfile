@@ -1,5 +1,9 @@
 FROM rust:slim-bookworm AS builder
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    pkg-config libssl-dev && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 # Copy all manifests first for dependency caching
