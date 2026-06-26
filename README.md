@@ -1,3 +1,9 @@
+This project is based on the original project by [yorunoken](https://github.com/yorunoken). Here is the [Original repository](https://github.com/yorunoken/map-analyzer).
+
+This fork is maintained for personal learning and use.
+
+Below is the message from original author.
+
 # osu! beatmap analyzer
 
 osu! beatmap analyzer is a website that analyzes osu! beatmaps and categorizes them based on their characteristics.
