@@ -1,6 +1,7 @@
 mod api;
 mod commands;
 mod embeds;
+mod register_commands;
 mod types;
 
 use serenity::all::*;
@@ -18,43 +19,16 @@ struct Handler;
 
 #[async_trait]
 impl EventHandler for Handler {
-    /// Register slash commands on startup
-    async fn ready(&self, ctx: Context, ready: Ready) {
+    /// Register slash commands via raw HTTP (supports integration_types for User Install)
+    async fn ready(&self, _ctx: Context, ready: Ready) {
         tracing::info!("{} is connected!", ready.user.name);
 
-        let beatmap_option = CreateCommandOption::new(
-            CommandOptionType::String,
-            "beatmap",
-            "Beatmap URL or ID",
-        )
-        .required(true);
+        let token = std::env::var("DISCORD_TOKEN")
+            .expect("DISCORD_TOKEN must be set");
+        let application_id = ready.application.id.get();
 
-        let commands = vec![
-            CreateCommand::new("analyze-all")
-                .description("Show all analysis sections for an osu! beatmap")
-                .add_option(beatmap_option.clone()),
-            CreateCommand::new("analyze-jump")
-                .description("Show overview + jump analysis for an osu! beatmap")
-                .add_option(beatmap_option.clone()),
-            CreateCommand::new("analyze-stream")
-                .description("Show overview + stream analysis for an osu! beatmap")
-                .add_option(beatmap_option.clone()),
-            CreateCommand::new("analyze-slider")
-                .description("Show overview + slider analysis for an osu! beatmap")
-                .add_option(beatmap_option.clone()),
-            CreateCommand::new("analyze-finger_ctrl")
-                .description("Show overview + finger control analysis for an osu! beatmap")
-                .add_option(beatmap_option.clone()),
-            CreateCommand::new("analyze-aim_ctrl")
-                .description("Show overview + aim control analysis for an osu! beatmap")
-                .add_option(beatmap_option.clone()),
-            CreateCommand::new("analyze-reading")
-                .description("Show overview + reading analysis for an osu! beatmap")
-                .add_option(beatmap_option.clone()),
-        ];
-
-        match Command::set_global_commands(&ctx.http, commands).await {
-            Ok(_) => tracing::info!("Registered 7 analyze commands"),
+        match register_commands::register_commands(&token, application_id).await {
+            Ok(()) => tracing::info!("Commands registered with User Install support"),
             Err(e) => tracing::error!("Failed to register commands: {}", e),
         }
     }
