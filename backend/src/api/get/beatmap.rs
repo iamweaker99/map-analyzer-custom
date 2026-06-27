@@ -11,6 +11,7 @@ use std::{
     path::Path as FilePath,
     str::FromStr,
     sync::Arc,
+    time::Duration,
 };
 
 use crate::analysis;
@@ -42,6 +43,9 @@ pub async fn beatmap_details(
     Path(beatmap_id): Path<u32>,
     Extension(osu_client): Extension<Arc<OsuClient>>,
 ) -> impl IntoResponse {
+    // Track whether we downloaded the file during this request
+    let mut downloaded = false;
+
     let beatmap = match osu_client.beatmap().map_id(beatmap_id).await {
         Ok(ok) => ok,
         Err(err) => {
@@ -71,14 +75,17 @@ pub async fn beatmap_details(
 
     let map_file = if should_download {
         match download_beatmap(beatmap_id).await {
-            Ok(bytes) => match String::from_utf8(bytes.to_vec()) {
-                Ok(string) => string,
-                Err(err) => {
-                    eprintln!("Error while converting bytes to string: {}", err);
-                    return (
-                        StatusCode::INTERNAL_SERVER_ERROR,
-                        Json(serde_json::json!({ "error": format!("Error while converting bytes to string: {}", err) })),
-                    );
+            Ok(bytes) => {
+                downloaded = true;
+                match String::from_utf8(bytes.to_vec()) {
+                    Ok(string) => string,
+                    Err(err) => {
+                        eprintln!("Error while converting bytes to string: {}", err);
+                        return (
+                            StatusCode::INTERNAL_SERVER_ERROR,
+                            Json(serde_json::json!({ "error": format!("Error while converting bytes to string: {}", err) })),
+                        );
+                    }
                 }
             },
             Err(err) => {
@@ -106,14 +113,17 @@ pub async fn beatmap_details(
             }
             Err(err) => match err.kind() {
                 ErrorKind::NotFound => match download_beatmap(beatmap_id).await {
-                    Ok(bytes) => match String::from_utf8(bytes.to_vec()) {
-                        Ok(string) => string,
-                        Err(err) => {
-                            eprintln!("Error while converting bytes to string: {}", err);
-                            return (
-                                StatusCode::INTERNAL_SERVER_ERROR,
-                                Json(serde_json::json!({ "error": format!("Error while converting bytes to string: {}", err) })),
-                            );
+                    Ok(bytes) => {
+                        downloaded = true;
+                        match String::from_utf8(bytes.to_vec()) {
+                            Ok(string) => string,
+                            Err(err) => {
+                                eprintln!("Error while converting bytes to string: {}", err);
+                                return (
+                                    StatusCode::INTERNAL_SERVER_ERROR,
+                                    Json(serde_json::json!({ "error": format!("Error while converting bytes to string: {}", err) })),
+                                );
+                            }
                         }
                     },
                     Err(err) => {
@@ -160,7 +170,7 @@ pub async fn beatmap_details(
         total_objects: map_calculate.hit_objects.len(),
     };
 
-    (
+    let response = (
         StatusCode::OK,
         Json(serde_json::to_value(DetailsResult {
             title: beatmapset.title,
@@ -172,7 +182,22 @@ pub async fn beatmap_details(
             statistics,
         })
         .unwrap()),
-    )
+    );
+
+    // Only clean up if we downloaded the file during this request
+    if downloaded {
+        let cleanup_path = format!("maps/{}.osu", beatmap_id);
+        tokio::spawn(async move {
+            tokio::time::sleep(Duration::from_secs(300)).await;
+            if let Err(e) = tokio::fs::remove_file(&cleanup_path).await {
+                if e.kind() != std::io::ErrorKind::NotFound {
+                    eprintln!("Failed to cleanup beatmap file: {}", e);
+                }
+            }
+        });
+    }
+
+    response
 }
 
 #[derive(Serialize)]
@@ -290,5 +315,19 @@ pub async fn analyze_beatmap(
         }
     };
 
-    (StatusCode::OK, Json(serde_json::to_value(results).unwrap()))
+    let response = (StatusCode::OK, Json(serde_json::to_value(results).unwrap()));
+
+    // Schedule cleanup of the beatmap file after a 5-minute delay
+    // This gives short-term caching for repeat lookups while preventing unbounded disk growth
+    let cleanup_path = format!("maps/{}.osu", beatmap_id);
+    tokio::spawn(async move {
+        tokio::time::sleep(Duration::from_secs(300)).await;
+        if let Err(e) = tokio::fs::remove_file(&cleanup_path).await {
+            if e.kind() != std::io::ErrorKind::NotFound {
+                eprintln!("Failed to cleanup beatmap file: {}", e);
+            }
+        }
+    });
+
+    response
 }
