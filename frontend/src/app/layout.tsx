@@ -4,6 +4,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import Script from "next/script";
 import { cn } from "@/lib/utils";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 
 export const metadata: Metadata = {
     title: "osu! beatmap analyzer",
@@ -28,7 +30,11 @@ export default function RootLayout({
                     enableSystem
                     disableTransitionOnChange
                 >
-                    {children}
+                    <div className="flex flex-col min-h-screen">
+                        <Header />
+                        <main className="flex-1">{children}</main>
+                        <Footer />
+                    </div>
                     <Toaster />
                 </ThemeProvider>
                 <Script
