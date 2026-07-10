@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Card } from "@/components/ui/card";
 import { Clock } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts';
 import { StatBar } from "./StatBar";
@@ -70,7 +69,7 @@ export const ReadingProfile: React.FC<{ data: any }> = ({ data }) => {
             )}
 
             {/* ROW 1: K-LINE CHART */}
-            <Card className="border-gray-800 p-6 bg-gray-900/30">
+            <div>
                 <div className="mb-6">
                     <h3 className="text-lg font-semibold text-blue-400">Cognitive Strain Topography</h3>
                     {/* RESTORED PEAK VALUE HERE */}
@@ -124,19 +123,21 @@ export const ReadingProfile: React.FC<{ data: any }> = ({ data }) => {
                     </div>
                     <div className="text-center text-[10px] text-gray-600 uppercase tracking-widest">Drain Time (mm:ss)</div>
                 </div>
-            </Card>
+            </div>
 
             {/* ROW 2 & 3 remain the same as previous version... */}
             <div className="space-y-4">
-                <Card className="border-gray-800 p-6 bg-gray-900/30">
-                    <h3 className="text-sm font-semibold text-purple-400 mb-4 uppercase tracking-widest">I. Visual Clutter</h3>
-                    <StatBar label="Isolated (1-2)" percentage={data.density.isolated_pct} colorClass="bg-emerald-500" />
-                    <StatBar label="Chunking (3-5)" percentage={data.density.chunking_pct} colorClass="bg-blue-500" />
-                    <StatBar label="Clutter (6-8)" percentage={data.density.clutter_pct} colorClass="bg-yellow-500" />
-                    <StatBar label="Overload (9+)" percentage={data.density.overload_pct} colorClass="bg-red-500" />
+                <div>
+                    <h3 className="text-sm font-semibold text-amber-400 mb-4">Visual Clutter</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1">
+                        <StatBar label="Isolated (1-2)" percentage={data.density.isolated_pct} colorClass="bg-emerald-500" />
+                        <StatBar label="Chunking (3-5)" percentage={data.density.chunking_pct} colorClass="bg-blue-500" />
+                        <StatBar label="Clutter (6-8)" percentage={data.density.clutter_pct} colorClass="bg-yellow-500" />
+                        <StatBar label="Overload (9+)" percentage={data.density.overload_pct} colorClass="bg-red-500" />
+                    </div>
                     {(data.density_timeline && data.density_timeline.length > 0) && (
                         <div className="mt-6 pt-4 border-t border-gray-800/50">
-                            <h4 className="text-[11px] font-bold text-muted-foreground mb-3">Visual Clutter Over Time</h4>
+                            <h4 className="text-[11px] font-semibold text-gray-400 border-l-2 border-l-amber-500 pl-2 mb-3">Visual Clutter Over Time</h4>
                             <div className="h-48 w-full bg-secondary/10 rounded-lg p-2 border border-muted/10">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <LineChart data={data.density_timeline}>
@@ -154,17 +155,19 @@ export const ReadingProfile: React.FC<{ data: any }> = ({ data }) => {
                             </div>
                         </div>
                     )}
-                </Card>
+                </div>
 
-                <Card className="border-gray-800 p-6 bg-gray-900/30">
-                    <h3 className="text-sm font-semibold text-orange-400 mb-4 uppercase tracking-widest">II. Trajectory Chaos</h3>
-                    <StatBar label="Predictable Flow" percentage={data.trajectory.linear_pct} colorClass="bg-emerald-500" />
-                    <StatBar label="Mild Shifts" percentage={data.trajectory.mild_shifts_pct} colorClass="bg-blue-500" />
-                    <StatBar label="Sharp Kinks" percentage={data.trajectory.sharp_kinks_pct} colorClass="bg-orange-500" />
-                    <StatBar label="Spaghetti / Overlap" percentage={data.trajectory.spaghetti_pct} colorClass="bg-red-500" />
+                <div>
+                    <h3 className="text-sm font-semibold text-amber-400 mb-4">Trajectory Chaos</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1">
+                        <StatBar label="Predictable Flow" percentage={data.trajectory.linear_pct} colorClass="bg-emerald-500" />
+                        <StatBar label="Mild Shifts" percentage={data.trajectory.mild_shifts_pct} colorClass="bg-blue-500" />
+                        <StatBar label="Sharp Kinks" percentage={data.trajectory.sharp_kinks_pct} colorClass="bg-orange-500" />
+                        <StatBar label="Spaghetti / Overlap" percentage={data.trajectory.spaghetti_pct} colorClass="bg-red-500" />
+                    </div>
                     {(data.trajectory_timeline && data.trajectory_timeline.length > 0) && (
                         <div className="mt-6 pt-4 border-t border-gray-800/50">
-                            <h4 className="text-[11px] font-bold text-muted-foreground mb-3">Trajectory Breakdown Over Time</h4>
+                            <h4 className="text-[11px] font-semibold text-gray-400 border-l-2 border-l-amber-500 pl-2 mb-3">Trajectory Breakdown Over Time</h4>
                             <div className="h-48 w-full bg-secondary/10 rounded-lg p-2 border border-muted/10">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <LineChart data={data.trajectory_timeline}>
@@ -182,13 +185,13 @@ export const ReadingProfile: React.FC<{ data: any }> = ({ data }) => {
                             </div>
                         </div>
                     )}
-                </Card>
+                </div>
             </div>
 
-            <Card className="border-gray-800 p-6 bg-gray-900/30">
-                <div className="flex justify-between items-start mb-6 text-xs text-gray-500 font-mono italic">
-                    <div className="text-rose-400 font-bold uppercase not-italic tracking-tighter">III. Relational Deception (Traps)</div>
-                    <div>Trap Index: {(data.traps.trap_index || 0).toFixed(1)} / 1k</div>
+            <div>
+                <div className="flex justify-between items-start mb-6">
+                    <h3 className="text-sm font-semibold text-amber-400">Relational Deception (Traps)</h3>
+                    <div className="text-xs text-gray-500 font-mono italic">Trap Index: {(data.traps.trap_index || 0).toFixed(1)} / 1k</div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -218,7 +221,7 @@ export const ReadingProfile: React.FC<{ data: any }> = ({ data }) => {
                         </p>
                     </div>
                 </div>
-            </Card>
+            </div>
         </div>
     );
 };

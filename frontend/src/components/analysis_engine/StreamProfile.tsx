@@ -21,94 +21,100 @@ export function StreamProfile({
         (analysis.death_streams || 0);
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-6">
             <li className="font-bold border-b border-blue-900 pb-1 mb-2">
                 Type: {getStreamSpacingTag(avg, d)} ({avg.toFixed(1)} px)
             </li>
 
-            <p className="text-xs font-semibold text-blue-400 uppercase mb-2">
+            <h3 className="text-sm font-semibold text-blue-400 mb-4">
                 Distance Profile (Density by Notes)
-            </p>
-            <StatBar
-                label="Stacked (&lt;0.5x D)"
-                value={analysis.s_stacked_count || 0}
-                percentage={(analysis.s_stack_dens || 0) * 100}
-                colorClass="bg-blue-500"
-            />
-            <StatBar
-                label="Overlapping (0.5-1x D)"
-                value={analysis.s_overlapping_count || 0}
-                percentage={(analysis.s_over_dens || 0) * 100}
-                colorClass="bg-blue-500"
-            />
-            <StatBar
-                label="Spaced (1-2x D)"
-                value={analysis.s_spaced_count || 0}
-                percentage={(analysis.s_space_dens || 0) * 100}
-                colorClass="bg-blue-500"
-            />
-            <StatBar
-                label="Extreme (2-2.5x D)"
-                value={analysis.s_extreme_count || 0}
-                percentage={(analysis.s_extr_dens || 0) * 100}
-                colorClass="bg-blue-500"
-            />
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1">
+                <StatBar
+                    label="Stacked (&lt;0.5x D)"
+                    value={analysis.s_stacked_count || 0}
+                    percentage={(analysis.s_stack_dens || 0) * 100}
+                    colorClass="bg-green-500"
+                />
+                <StatBar
+                    label="Overlapping (0.5-1x D)"
+                    value={analysis.s_overlapping_count || 0}
+                    percentage={(analysis.s_over_dens || 0) * 100}
+                    colorClass="bg-blue-500"
+                />
+                <StatBar
+                    label="Spaced (1-2x D)"
+                    value={analysis.s_spaced_count || 0}
+                    percentage={(analysis.s_space_dens || 0) * 100}
+                    colorClass="bg-orange-500"
+                />
+                <StatBar
+                    label="Extreme (2-2.5x D)"
+                    value={analysis.s_extreme_count || 0}
+                    percentage={(analysis.s_extr_dens || 0) * 100}
+                    colorClass="bg-red-500"
+                />
+            </div>
 
-            <p className="text-xs font-semibold text-blue-400 uppercase mb-2">
+            <h3 className="text-sm font-semibold text-blue-400 mb-4">
                 Variance Profile
-            </p>
-            <StatBar
-                label="Steady"
-                value={analysis.v_steady_count || 0}
-                total={totalPatterns}
-                colorClass="bg-blue-500"
-            />
-            <StatBar
-                label="Variable"
-                value={analysis.v_variable_count || 0}
-                total={totalPatterns}
-                colorClass="bg-blue-500"
-            />
-            <StatBar
-                label="Dynamic"
-                value={analysis.v_dynamic_count || 0}
-                total={totalPatterns}
-                colorClass="bg-blue-500"
-            />
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1">
+                <StatBar
+                    label="Steady"
+                    value={analysis.v_steady_count || 0}
+                    total={totalPatterns}
+                    colorClass="bg-green-500"
+                />
+                <StatBar
+                    label="Variable"
+                    value={analysis.v_variable_count || 0}
+                    total={totalPatterns}
+                    colorClass="bg-blue-500"
+                />
+                <StatBar
+                    label="Dynamic"
+                    value={analysis.v_dynamic_count || 0}
+                    total={totalPatterns}
+                    colorClass="bg-red-500"
+                />
+            </div>
 
-            <p className="text-xs font-semibold text-blue-400 uppercase mb-2">
+            <h3 className="text-sm font-semibold text-blue-400 mb-4">
                 Length Profile
-            </p>
-            <StatBar
-                label="Bursts (3-4)"
-                value={analysis.bursts || 0}
-                total={totalLength}
-                colorClass="bg-blue-500"
-            />
-            <StatBar
-                label="Short (5-12)"
-                value={analysis.short_streams || 0}
-                total={totalLength}
-                colorClass="bg-blue-500"
-            />
-            <StatBar
-                label="Medium (13-24)"
-                value={analysis.medium_streams || 0}
-                total={totalLength}
-                colorClass="bg-blue-500"
-            />
-            <StatBar
-                label="Long (25-48)"
-                value={analysis.long_streams || 0}
-                total={totalLength}
-                colorClass="bg-blue-500"
-            />
-            <StatBar
-                label="Deathstream (49+)"
-                value={analysis.death_streams || 0}
-                total={totalLength}
-                colorClass="bg-blue-500"
-            />
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1">
+                <StatBar
+                    label="Bursts (3-4)"
+                    value={analysis.bursts || 0}
+                    total={totalLength}
+                    colorClass="bg-green-500"
+                />
+                <StatBar
+                    label="Short (5-12)"
+                    value={analysis.short_streams || 0}
+                    total={totalLength}
+                    colorClass="bg-blue-500"
+                />
+                <StatBar
+                    label="Medium (13-24)"
+                    value={analysis.medium_streams || 0}
+                    total={totalLength}
+                    colorClass="bg-orange-500"
+                />
+                <StatBar
+                    label="Long (25-48)"
+                    value={analysis.long_streams || 0}
+                    total={totalLength}
+                    colorClass="bg-red-500"
+                />
+                <StatBar
+                    label="Deathstream (49+)"
+                    value={analysis.death_streams || 0}
+                    total={totalLength}
+                    colorClass="bg-red-500"
+                />
+            </div>
 
             <li className="flex justify-between border-t border-blue-900 pt-2 font-semibold">
                 <span>Max stream:</span>

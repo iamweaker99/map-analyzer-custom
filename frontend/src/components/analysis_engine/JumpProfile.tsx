@@ -12,60 +12,64 @@ export function JumpProfile({ analysis }: { analysis: JumpAnalysis }) {
         (analysis.long_jumps || 0);
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-6">
             <li className="font-bold border-b border-gray-700 pb-1 mb-2">
                 Spacing: {getSpacingTag(spacing, d)} ({spacing.toFixed(1)} px)
             </li>
 
-            <p className="text-xs font-semibold text-pink-400 uppercase mb-2">
+            <h3 className="text-sm font-semibold text-pink-400 mb-4">
                 Distance Profile (Excluding Streams)
-            </p>
-            <StatBar
-                label="Narrow (&lt;2.0x D)"
-                value={analysis.narrow_count || 0}
-                percentage={(analysis.narrow_dens || 0) * 100}
-                colorClass="bg-pink-500"
-            />
-            <StatBar
-                label="Moderate (2-3.5x D)"
-                value={analysis.moderate_count || 0}
-                percentage={(analysis.moderate_dens || 0) * 100}
-                colorClass="bg-pink-500"
-            />
-            <StatBar
-                label="Wide (3.5-5x D)"
-                value={analysis.wide_count || 0}
-                percentage={(analysis.wide_dens || 0) * 100}
-                colorClass="bg-pink-500"
-            />
-            <StatBar
-                label="Extreme (5.0x+ D)"
-                value={analysis.extreme_count || 0}
-                percentage={(analysis.extreme_dens || 0) * 100}
-                colorClass="bg-pink-500"
-            />
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1">
+                <StatBar
+                    label="Narrow (&lt;2.0x D)"
+                    value={analysis.narrow_count || 0}
+                    percentage={(analysis.narrow_dens || 0) * 100}
+                    colorClass="bg-green-500"
+                />
+                <StatBar
+                    label="Moderate (2-3.5x D)"
+                    value={analysis.moderate_count || 0}
+                    percentage={(analysis.moderate_dens || 0) * 100}
+                    colorClass="bg-blue-500"
+                />
+                <StatBar
+                    label="Wide (3.5-5x D)"
+                    value={analysis.wide_count || 0}
+                    percentage={(analysis.wide_dens || 0) * 100}
+                    colorClass="bg-orange-500"
+                />
+                <StatBar
+                    label="Extreme (5.0x+ D)"
+                    value={analysis.extreme_count || 0}
+                    percentage={(analysis.extreme_dens || 0) * 100}
+                    colorClass="bg-red-500"
+                />
+            </div>
 
-            <p className="text-xs font-semibold text-pink-400 uppercase mb-2">
+            <h3 className="text-sm font-semibold text-pink-400 mb-4">
                 Jump Chain Profile
-            </p>
-            <StatBar
-                label="Short chains (3-5)"
-                value={analysis.short_jumps || 0}
-                total={totalChains}
-                colorClass="bg-pink-500"
-            />
-            <StatBar
-                label="Medium chains (6-11)"
-                value={analysis.medium_jumps || 0}
-                total={totalChains}
-                colorClass="bg-pink-500"
-            />
-            <StatBar
-                label="Long chains (12+)"
-                value={analysis.long_jumps || 0}
-                total={totalChains}
-                colorClass="bg-pink-500"
-            />
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1">
+                <StatBar
+                    label="Short chains (3-5)"
+                    value={analysis.short_jumps || 0}
+                    total={totalChains}
+                    colorClass="bg-green-500"
+                />
+                <StatBar
+                    label="Medium chains (6-11)"
+                    value={analysis.medium_jumps || 0}
+                    total={totalChains}
+                    colorClass="bg-blue-500"
+                />
+                <StatBar
+                    label="Long chains (12+)"
+                    value={analysis.long_jumps || 0}
+                    total={totalChains}
+                    colorClass="bg-red-500"
+                />
+            </div>
 
             <li className="flex justify-between border-t border-pink-900 pt-2 font-semibold">
                 <span>Max jump chain:</span>
