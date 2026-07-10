@@ -32,9 +32,9 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
   };
 
   // Helper to render the categorized tables
-  const renderTransitionTable = (title: string, data: TransitionOccurrence[]) => (
+  const renderTransitionTable = (title: string, data: TransitionOccurrence[], headingClass?: string) => (
     <div className="space-y-2">
-      <h4 className="text-[10px] font-bold text-muted-foreground uppercase px-1">{title}</h4>
+      <h4 className={headingClass || "text-[10px] font-bold text-muted-foreground uppercase px-1"}>{title}</h4>
       <div className="max-h-32 overflow-y-auto rounded border border-muted/10 bg-black/10">
         <table className="w-full text-[10px] text-left">
           <tbody className="divide-y divide-muted/10">
@@ -60,7 +60,7 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
         
         {/* 1. Burst Length Profile */}
         <div className="space-y-2">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Numbered Burst Profile</h3>
+          <h3 className="text-sm font-semibold text-purple-400 mb-4">Numbered Burst Profile</h3>
           <div className="grid grid-cols-5 gap-2">
             {burstSizes.map(size => (
               <div key={size} className="bg-secondary/30 p-2 rounded text-center border border-muted/10">
@@ -75,7 +75,7 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
 
         {/* 2. Snap Distribution */}
         <div className="space-y-2">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Rhythmic Signature</h3>
+          <h3 className="text-sm font-semibold text-purple-400 mb-4">Rhythmic Signature</h3>
           <div className="h-8 w-full flex rounded-full overflow-hidden bg-secondary">
             {analysis.snapDistribution.map((snap) => (
               <div
@@ -98,7 +98,7 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
 
         {/* 3. Off-Grid Section Analysis */}
         <div className="space-y-3">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          <h3 className="text-sm font-semibold text-purple-400 mb-4">
             Rhythmic Instability by Map Section
           </h3>
           {/* SCROLLABLE WRAPPER */}
@@ -137,7 +137,7 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
         {/* 4. Morphology & Transitions */}
         <div className="space-y-6">
           <div className="space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground border-b border-muted/20 pb-1">
+            <h3 className="text-sm font-semibold text-purple-400 mb-4">
                 Transition between Numbered Bursts
             </h3>
             <div className="grid grid-cols-4 gap-2">
@@ -161,11 +161,11 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">BPM / Snap Switching Profile</h3>
-            {renderTransitionTable("Top 10 Snap-to-Snap Transitions", analysis.transitionMatrix.bpmTransitions)}
+            <h3 className="text-sm font-semibold text-purple-400 mb-4">BPM / Snap Switching Profile</h3>
+            {renderTransitionTable("Top 10 Snap-to-Snap Transitions", analysis.transitionMatrix.bpmTransitions, "text-[11px] font-semibold text-gray-400 border-l-2 border-l-purple-500 pl-2 mb-3")}
             
             <div className="space-y-3 pt-2">
-                <h4 className="text-[11px] font-bold text-muted-foreground border-l-2 border-yellow-500 pl-2">Transition Based on Δ of BPM/Snap</h4>
+                <h4 className="text-[11px] font-semibold text-gray-400 border-l-2 border-l-purple-500 pl-2 mb-3">Transition Based on Δ of BPM/Snap</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {renderTransitionTable("Ordinary Switch", analysis.transitionMatrix.bpmOrdinary || [])}
                     {renderTransitionTable("Minor Switch", analysis.transitionMatrix.bpmMinor || [])}
@@ -175,11 +175,11 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
           </div>
 
           <div className="space-y-4 pt-4 border-t border-muted/20">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Pattern Morphology</h3>
-            {renderTransitionTable("Top 10 Pattern Transitions", analysis.transitionMatrix.topTransitions)}
+            <h3 className="text-sm font-semibold text-purple-400 mb-4">Pattern Morphology</h3>
+            {renderTransitionTable("Top 10 Pattern Transitions", analysis.transitionMatrix.topTransitions, "text-[11px] font-semibold text-gray-400 border-l-2 border-l-purple-500 pl-2 mb-3")}
             
             <div className="space-y-3 pt-2">
-                <h4 className="text-[11px] font-bold text-muted-foreground border-l-2 border-purple-500 pl-2">Transition Based on Δ of Notes</h4>
+                <h4 className="text-[11px] font-semibold text-gray-400 border-l-2 border-l-purple-500 pl-2 mb-3">Transition Based on Δ of Notes</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {renderTransitionTable("Consistency (Δ0 / Same Snap)", analysis.transitionMatrix.deltaGroups[0] || [])}
                     {renderTransitionTable("Rhythmic Resets (Δ0 / Speed Shift)", analysis.transitionMatrix.rhythmicResets || [])}
@@ -194,11 +194,11 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
         {/* 5. Triple Timeline SMA Curves */}
         <div className="space-y-6 pt-4 border-t border-muted/20" key={chartResetKey}>
         {/* Adding the key here forces the entire graph section to re-render from scratch on map change */}
-        <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Technical Density Curves (SMA)</h3>
+        <h3 className="text-sm font-semibold text-purple-400 mb-4">Technical Density Curves (SMA)</h3>
           
           {/* Graph 1: Overall */}
           <div className="space-y-2">
-            <h4 className="text-[11px] font-bold text-muted-foreground">Overall Switching</h4>
+            <h4 className="text-[11px] font-semibold text-gray-400 border-l-2 border-l-purple-500 pl-2 mb-3">Overall Switching</h4>
             <div className="h-48 w-full bg-secondary/10 rounded-lg p-2 border border-muted/10">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={analysis.timeline} syncId="fingerControl">
@@ -216,7 +216,7 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
 
           {/* Graph 2: BPM Delta */}
           <div className="space-y-2">
-            <h4 className="text-[11px] font-bold text-muted-foreground">Transition based on Δ of BPM/Snap</h4>
+            <h4 className="text-[11px] font-semibold text-gray-400 border-l-2 border-l-purple-500 pl-2 mb-3">Transition based on Δ of BPM/Snap</h4>
             <div className="h-48 w-full bg-secondary/10 rounded-lg p-2 border border-muted/10">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={analysis.timeline} syncId="fingerControl">
@@ -235,7 +235,7 @@ export const FingerControlProfile: React.FC<Props> = ({ analysis }) => {
 
           {/* Graph 3: Notes Delta */}
           <div className="space-y-2">
-            <h4 className="text-[11px] font-bold text-muted-foreground">Transition based on Δ of Notes</h4>
+            <h4 className="text-[11px] font-semibold text-gray-400 border-l-2 border-l-purple-500 pl-2 mb-3">Transition based on Δ of Notes</h4>
             <div className="h-48 w-full bg-secondary/10 rounded-lg p-2 border border-muted/10">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={analysis.timeline} syncId="fingerControl">

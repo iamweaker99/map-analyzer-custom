@@ -45,7 +45,7 @@ export default function Main() {
     }
 
     return (
-        <div className="container mx-auto p-4 max-w-3xl">
+        <div className="container mx-auto p-4 max-w-6xl">
             <p className="font-semibold mb-2 text-center">
                 Analyze beatmaps with the click of a button.
             </p>

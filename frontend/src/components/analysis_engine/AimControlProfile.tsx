@@ -2,6 +2,7 @@ import React from 'react';
 import { Card } from "@/components/ui/card";
 import { AimControlResult } from './types';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { StatBar } from "./StatBar";
 
 interface AimControlProfileProps {
     data: AimControlResult;
@@ -14,30 +15,6 @@ const formatTime = (ms: any) => {
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-};
-
-const StatBar = ({ 
-    label, value = 0, total = 0, colorClass = "bg-blue-500" 
-}: { 
-    label: string; value?: number; total?: number; colorClass?: string; 
-}) => {
-    const safeValue = value || 0;
-    const safeTotal = total || 0;
-    const percentage = safeTotal > 0 ? (safeValue / safeTotal) * 100 : 0;
-    
-    return (
-        <div className="mb-2">
-            <div className="flex justify-between text-xs mb-0.5">
-                <span className="text-gray-300">{label}</span>
-                <span className="font-mono text-gray-400">
-                    {safeValue} <span className="text-[10px]">({percentage.toFixed(1)}%)</span>
-                </span>
-            </div>
-            <div className="h-1 w-full bg-gray-800 rounded-full overflow-hidden">
-                <div className={`h-full ${colorClass}`} style={{ width: `${percentage}%` }} />
-            </div>
-        </div>
-    );
 };
 
 // Custom Tooltip replaces the buggy formatter prop
@@ -95,8 +72,8 @@ export const AimControlProfile: React.FC<AimControlProfileProps> = ({ data }) =>
                 </Card>
             </div>
 
-            <Card className="border-gray-800 p-4">
-                <h3 className="text-sm font-semibold mb-3">Spacing Profile</h3>
+            <div>
+                <h3 className="text-sm font-semibold text-cyan-400 mb-4">Spacing Profile</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1">
                     <StatBar label="Stacked / Overlap" value={data.spatial.spacing_distribution.stacked} total={totalSpacing} colorClass="bg-gray-500" />
                     <StatBar label="Micro (Wiggles)" value={data.spatial.spacing_distribution.micro} total={totalSpacing} colorClass="bg-blue-400" />
@@ -104,14 +81,13 @@ export const AimControlProfile: React.FC<AimControlProfileProps> = ({ data }) =>
                     <StatBar label="Standard Jumps" value={data.spatial.spacing_distribution.standard} total={totalSpacing} colorClass="bg-orange-400" />
                     <StatBar label="Fullscreen Jumps" value={data.spatial.spacing_distribution.large} total={totalSpacing} colorClass="bg-red-500" />
                 </div>
-            </Card>
+            </div>
 
-            <Card className="border-gray-800 p-4">
-                <h3 className="text-sm font-semibold mb-4">Deflection & Vectors</h3>
+            <div>
                 <div className="space-y-6">
                     <div>
-                        <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 border-b border-gray-800 pb-1">Angles (Pathing)</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1 mt-2">
+                        <h3 className="text-sm font-semibold text-cyan-400 mb-4">Angles (Pathing)</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1">
                             <StatBar label="Linear (Straight)" value={data.spatial.angle_distribution.linear} total={totalAngles} colorClass="bg-emerald-400" />
                             <StatBar label="Wide (Flow)" value={data.spatial.angle_distribution.wide} total={totalAngles} colorClass="bg-blue-400" />
                             <StatBar label="Acute (Sharp Tech)" value={data.spatial.angle_distribution.acute} total={totalAngles} colorClass="bg-orange-400" />
@@ -119,8 +95,8 @@ export const AimControlProfile: React.FC<AimControlProfileProps> = ({ data }) =>
                         </div>
                     </div>
                     <div>
-                        <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2 border-b border-gray-800 pb-1">Alignment (Pattern Logic)</h4>
-                        <div className="mb-2 mt-2">
+                        <h3 className="text-sm font-semibold text-cyan-400 mb-4">Alignment (Pattern Logic)</h3>
+                        <div className="mb-4">
                             <div className="flex justify-between text-xs mb-0.5">
                                 <span className="text-gray-300">Chirps (Rotation Resets)</span>
                                 <span className="font-mono text-gray-400">{data.vectors.directional_chirps || 0}</span>
@@ -133,14 +109,14 @@ export const AimControlProfile: React.FC<AimControlProfileProps> = ({ data }) =>
                         </div>
                     </div>
                 </div>
-            </Card>
+            </div>
 
             {/* NEW: ACCV Complexity Dashboard */}
             {data.accv && (
-                <Card className="border-gray-800 p-4 bg-gray-900/30">
+                <div>
                     <div className="flex flex-row items-center justify-between mb-3">
                         <div>
-                            <h3 className="text-sm font-semibold text-purple-400">Aim Control Complexity (ACCV)</h3>
+                            <h3 className="text-sm font-semibold text-cyan-400">Aim Control Complexity (ACCV)</h3>
                             <p className="text-[10px] text-gray-500">Multi-dimensional mechanical variance</p>
                         </div>
                     </div>
@@ -166,13 +142,13 @@ export const AimControlProfile: React.FC<AimControlProfileProps> = ({ data }) =>
                             <p className="text-lg font-semibold text-gray-200">{data.accv.peak_kinetic_var.toFixed(2)}</p>
                         </div>
                     </div>
-                </Card>
+                </div>
             )}
 
-            <Card className="border-gray-800 p-4">
+            <div>
                 <div className="flex flex-row items-center justify-between mb-3">
                     <div>
-                        <h3 className="text-sm font-semibold">Sustained Aim Strain</h3>
+                        <h3 className="text-sm font-semibold text-cyan-400">Sustained Aim Strain</h3>
                         <p className="text-[10px] text-gray-500">Kinematic speed & angular tension (EMA).</p>
                     </div>
                     <div className="text-right">
@@ -184,13 +160,13 @@ export const AimControlProfile: React.FC<AimControlProfileProps> = ({ data }) =>
                     <ResponsiveContainer width="100%" height="100%">
                         {/* Margin added to fix graph cut-offs */}
                         <LineChart data={strainChartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-                            <XAxis 
-                                dataKey="timeMs" 
-                                stroke="#4b5563" 
-                                fontSize={10} 
-                                tickLine={false} 
-                                axisLine={false} 
-                                tickFormatter={formatTime} 
+                            <XAxis
+                                dataKey="timeMs"
+                                stroke="#4b5563"
+                                fontSize={10}
+                                tickLine={false}
+                                axisLine={false}
+                                tickFormatter={formatTime}
                                 minTickGap={30}
                             />
                             <YAxis stroke="#4b5563" fontSize={10} tickLine={false} axisLine={false} />
@@ -199,7 +175,7 @@ export const AimControlProfile: React.FC<AimControlProfileProps> = ({ data }) =>
                         </LineChart>
                     </ResponsiveContainer>
                 </div>
-            </Card>
+            </div>
         </div>
     );
 };
