@@ -2,6 +2,7 @@ import React from 'react';
 import { Card } from "@/components/ui/card";
 import { AimControlResult } from './types';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { StatBar } from "./StatBar";
 
 interface AimControlProfileProps {
     data: AimControlResult;
@@ -14,30 +15,6 @@ const formatTime = (ms: any) => {
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-};
-
-const StatBar = ({ 
-    label, value = 0, total = 0, colorClass = "bg-blue-500" 
-}: { 
-    label: string; value?: number; total?: number; colorClass?: string; 
-}) => {
-    const safeValue = value || 0;
-    const safeTotal = total || 0;
-    const percentage = safeTotal > 0 ? (safeValue / safeTotal) * 100 : 0;
-    
-    return (
-        <div className="mb-2">
-            <div className="flex justify-between text-xs mb-0.5">
-                <span className="text-gray-300">{label}</span>
-                <span className="font-mono text-gray-400">
-                    {safeValue} <span className="text-[10px]">({percentage.toFixed(1)}%)</span>
-                </span>
-            </div>
-            <div className="h-1 w-full bg-gray-800 rounded-full overflow-hidden">
-                <div className={`h-full ${colorClass}`} style={{ width: `${percentage}%` }} />
-            </div>
-        </div>
-    );
 };
 
 // Custom Tooltip replaces the buggy formatter prop

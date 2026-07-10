@@ -2,16 +2,7 @@ import React, { useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { Clock } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts';
-
-const ProgressBar = ({ label, percentage, colorClass }: { label: string, percentage: number, colorClass: string }) => (
-    <div className="flex items-center gap-4 mb-3">
-        <span className="text-[11px] text-gray-400 w-32 shrink-0">{label}</span>
-        <div className="flex-grow bg-gray-800 rounded-full h-2">
-            <div className={`h-2 rounded-full ${colorClass} transition-all duration-700`} style={{ width: `${percentage}%` }}></div>
-        </div>
-        <span className="text-[11px] font-mono text-gray-300 w-10 text-right">{percentage.toFixed(1)}%</span>
-    </div>
-);
+import { StatBar } from "./StatBar";
 
 const formatTime = (ms: number) => {
     const totalSecs = Math.floor(ms / 1000);
@@ -139,10 +130,10 @@ export const ReadingProfile: React.FC<{ data: any }> = ({ data }) => {
             <div className="space-y-4">
                 <Card className="border-gray-800 p-6 bg-gray-900/30">
                     <h3 className="text-sm font-semibold text-purple-400 mb-4 uppercase tracking-widest">I. Visual Clutter</h3>
-                    <ProgressBar label="Isolated (1-2)" percentage={data.density.isolated_pct} colorClass="bg-emerald-500" />
-                    <ProgressBar label="Chunking (3-5)" percentage={data.density.chunking_pct} colorClass="bg-blue-500" />
-                    <ProgressBar label="Clutter (6-8)" percentage={data.density.clutter_pct} colorClass="bg-yellow-500" />
-                    <ProgressBar label="Overload (9+)" percentage={data.density.overload_pct} colorClass="bg-red-500" />
+                    <StatBar label="Isolated (1-2)" percentage={data.density.isolated_pct} colorClass="bg-emerald-500" />
+                    <StatBar label="Chunking (3-5)" percentage={data.density.chunking_pct} colorClass="bg-blue-500" />
+                    <StatBar label="Clutter (6-8)" percentage={data.density.clutter_pct} colorClass="bg-yellow-500" />
+                    <StatBar label="Overload (9+)" percentage={data.density.overload_pct} colorClass="bg-red-500" />
                     {(data.density_timeline && data.density_timeline.length > 0) && (
                         <div className="mt-6 pt-4 border-t border-gray-800/50">
                             <h4 className="text-[11px] font-bold text-muted-foreground mb-3">Visual Clutter Over Time</h4>
@@ -167,10 +158,10 @@ export const ReadingProfile: React.FC<{ data: any }> = ({ data }) => {
 
                 <Card className="border-gray-800 p-6 bg-gray-900/30">
                     <h3 className="text-sm font-semibold text-orange-400 mb-4 uppercase tracking-widest">II. Trajectory Chaos</h3>
-                    <ProgressBar label="Predictable Flow" percentage={data.trajectory.linear_pct} colorClass="bg-emerald-500" />
-                    <ProgressBar label="Mild Shifts" percentage={data.trajectory.mild_shifts_pct} colorClass="bg-blue-500" />
-                    <ProgressBar label="Sharp Kinks" percentage={data.trajectory.sharp_kinks_pct} colorClass="bg-orange-500" />
-                    <ProgressBar label="Spaghetti / Overlap" percentage={data.trajectory.spaghetti_pct} colorClass="bg-red-500" />
+                    <StatBar label="Predictable Flow" percentage={data.trajectory.linear_pct} colorClass="bg-emerald-500" />
+                    <StatBar label="Mild Shifts" percentage={data.trajectory.mild_shifts_pct} colorClass="bg-blue-500" />
+                    <StatBar label="Sharp Kinks" percentage={data.trajectory.sharp_kinks_pct} colorClass="bg-orange-500" />
+                    <StatBar label="Spaghetti / Overlap" percentage={data.trajectory.spaghetti_pct} colorClass="bg-red-500" />
                     {(data.trajectory_timeline && data.trajectory_timeline.length > 0) && (
                         <div className="mt-6 pt-4 border-t border-gray-800/50">
                             <h4 className="text-[11px] font-bold text-muted-foreground mb-3">Trajectory Breakdown Over Time</h4>

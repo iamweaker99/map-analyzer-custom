@@ -4,125 +4,32 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AnalysisCardDetails } from "./analysis_engine";
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion";
 import { useToast } from "@/hooks/use-toast";
-import { RadarChartComponent } from "./analysis_engine/RadarChartComponent";
+import { ScrollArea } from "./ui/scroll-area";
 
 import { useState } from "react";
 import { AlertTriangle, BarChart, Music } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { parseURL } from "@/lib/osu";
-import { ScrollArea } from "./ui/scroll-area";
 
-export interface BeatmapDetailsResult {
-    title: string;
-    artist: string;
-    creator: string;
-    creator_id: number;
-    version: string;
-    set_id: number;
-    statistics: {
-        ar: number;
-        od: number;
-        hp: number;
-        cs: number;
-        bpm: number;
-        star_rating: number;
-        total_objects: number;
-    };
-}
+import {
+    BeatmapDetailsResult,
+    BeatmapAnalysisResult,
+    JumpAnalysis,
+    StreamAnalysis,
+    SliderAnalysis,
+    FingerControlAnalysis,
+    AimControlResult,
+    ReadingResult,
+} from "./analysis_engine/types";
 
-export interface BeatmapAnalysisResult {
-    // Strictly limited to these three
-    analysis_type: "jump" | "stream" | "slider";
-    analysis: JumpAnalysis | StreamAnalysis | SliderAnalysis;
-}
-
-interface JumpAnalysis {
-    overall_confidence: number;
-    total_jump: number;
-    circle_diameter: number;
-    max_jump_length: number;
-    short_jumps: number;
-    medium_jumps: number;
-    long_jumps: number;
-    jump_density: number;
-    bpm_consistency: number;
-    avg_spacing: number;
-    // Distance Profile Fields
-    narrow_count: number;
-    moderate_count: number;
-    wide_count: number;
-    extreme_count: number;
-    narrow_dens: number;
-    moderate_dens: number;
-    wide_dens: number;
-    extreme_dens: number;
-}
-
-interface StreamAnalysis {
-    overall_confidence: number;
-    total_stream_patterns: number;
-    circle_diameter: number;
-    // Spacing Profile
-    s_stacked_count: number;
-    s_overlapping_count: number;
-    s_spaced_count: number;
-    s_extreme_count: number;
-    avg_stream_spacing: number;
-    s_stack_dens: number;
-    s_over_dens: number;
-    s_space_dens: number;
-    s_extr_dens: number;
-    // Variance Profile
-    v_steady_count: number;
-    v_variable_count: number;
-    v_dynamic_count: number;
-    // Length Profile
-    // Length Profile
-    bursts: number;
-    short_streams: number;
-    medium_streams: number;
-    long_streams: number;
-    death_streams: number;
-    max_stream_length: number;
-    stream_density: number;
-    bpm_consistency: number;
-}
-
-interface SliderAnalysis {
-    overall_confidence: number;
-    avg_velocity: number;
-    slider_ratio: number;
-    // Length Profile (Relative to Map)
-    l_short_count: number; l_short_dens: number;
-    l_med_count: number;   l_med_dens: number;
-    l_long_count: number;  l_long_dens: number;
-    l_ext_count: number;   l_ext_dens: number;
-    // Buzz Profile (Relative to Sliders)
-    b_buzz_count: number;   b_buzz_dens: number;
-    b_static_count: number; b_static_dens: number;
-    // Artistic Profile (Relative to Sliders)
-    a_simple_count: number; a_simple_dens: number;
-    a_curved_count: number; a_curved_dens: number;
-    a_complex_count: number; a_complex_dens: number;
-    a_artistic_count: number; a_artistic_dens: number;
-}
-
-interface FingerControlAnalysis {
-    overall_confidence: number; // This is the value the progress bar uses
-    complexityScore: number;
-    morphologyIndex: number;
-    snapDistribution: { label: string, percentage: number }[];
-    evenBurstRatio: number;
-}
+import { JumpProfile } from "./analysis_engine/JumpProfile";
+import { StreamProfile } from "./analysis_engine/StreamProfile";
+import { SliderProfile } from "./analysis_engine/SliderProfile";
+import { FingerControlProfile } from "./analysis_engine/FingerControlProfile";
+import { AimControlProfile } from "./analysis_engine/AimControlProfile";
+import { ReadingProfile } from "./analysis_engine/ReadingProfile";
 
 type AnalysisProps = {
     getBeatmapDetails(beatmapId: number): Promise<BeatmapDetailsResult>;
@@ -168,12 +75,6 @@ export default function Analysis({
             const mapDetails = await getBeatmapDetails(+beatmapId);
             const mapAnalysis = await getBeatmapAnalysis(+beatmapId, "all");
 
-            mapAnalysis.sort(
-                (a, b) =>
-                    b.analysis.overall_confidence -
-                    a.analysis.overall_confidence,
-            );
-
             setBeatmapSetId(mapDetails.set_id);
             setBeatmapId(+beatmapId);
             setDetailsResult(mapDetails);
@@ -188,6 +89,38 @@ export default function Analysis({
             });
         }
     }
+
+    const jumpResult = analysisResult?.find(
+        (a) => a.analysis_type === "jump",
+    );
+    const streamResult = analysisResult?.find(
+        (a) => a.analysis_type === "stream",
+    );
+    const sliderResult = analysisResult?.find(
+        (a) => a.analysis_type === "slider",
+    );
+    const fingerResult = analysisResult?.find(
+        (a) => a.analysis_type === "fingercontrol",
+    );
+    const aimResult = analysisResult?.find(
+        (a) => a.analysis_type === "aimcontrol",
+    );
+    const readingResult = analysisResult?.find(
+        (a) => a.analysis_type === "reading",
+    );
+
+    const classificationTypes = [jumpResult, streamResult, sliderResult]
+        .filter(
+            (r): r is BeatmapAnalysisResult => r !== null && r !== undefined,
+        )
+        .sort(
+            (a, b) =>
+                ((b.analysis as any).overall_confidence ?? 0) -
+                ((a.analysis as any).overall_confidence ?? 0),
+        );
+
+    const stats = detailsResult?.statistics;
+    const totalObjects = stats?.total_objects ?? 0;
 
     return (
         <div>
@@ -206,158 +139,259 @@ export default function Analysis({
 
             {analysisResult && detailsResult && (
                 <>
-                    <div className="mb-2">
-                        <Card className="mb-6">
-                            <CardContent className="p-0">
-                                <div className="relative aspect-[16/10] sm:aspect-[16/5] overflow-hidden">
-                                    <Image
-                                        alt="beatmap cover"
-                                        fill
-                                        src={`https://assets.ppy.sh/beatmaps/${beatmapSetId}/covers/cover.jpg`}
-                                        className="object-cover"
-                                    />
-                                    <div className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"></div>
-                                    <div className="absolute inset-0 flex flex-col justify-center items-center text-white p-4">
-                                        <h2 className="text-2xl font-bold mb-2 text-center">
-                                            <Link
-                                                href={`https://osu.ppy.sh/b/${beatmapId}`}
-                                                className="underline text-pink-100"
-                                                target="_blank"
-                                            >
-                                                {detailsResult.title}
-                                            </Link>
-                                        </h2>
-                                        <p className="text-base mb-1 text-center">
-                                            by{" "}
-                                            <Link
-                                                href={`https://osu.ppy.sh/beatmapsets?q=artist="${detailsResult.artist}"`}
-                                                className="hover:underline text-pink-300"
-                                                target="_blank"
-                                            >
-                                                {detailsResult.artist}
-                                            </Link>
-                                        </p>
-                                        <p className="text-sm text-center">
-                                            mapped by{" "}
-                                            <Link
-                                                href={`https://osu.ppy.sh/users/${detailsResult.creator_id}`}
-                                                className="hover:underline text-pink-200"
-                                                target="_blank"
-                                            >
-                                                {detailsResult.creator}
-                                            </Link>
-                                        </p>
-                                        <p className="text-sm mt-1">
-                                            [ {detailsResult.version} ]
-                                        </p>
+                    {/* Beatmap Banner */}
+                    <Card className="mb-6">
+                        <CardContent className="p-0">
+                            <div className="relative aspect-[16/10] sm:aspect-[16/5] overflow-hidden">
+                                <Image
+                                    alt="beatmap cover"
+                                    fill
+                                    src={`https://assets.ppy.sh/beatmaps/${beatmapSetId}/covers/cover.jpg`}
+                                    className="object-cover"
+                                />
+                                <div className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"></div>
+                                <div className="absolute inset-0 flex flex-col justify-center items-center text-white p-4">
+                                    <h2 className="text-2xl font-bold mb-2 text-center">
+                                        <Link
+                                            href={`https://osu.ppy.sh/b/${beatmapId}`}
+                                            className="underline text-pink-100"
+                                            target="_blank"
+                                        >
+                                            {detailsResult.title}
+                                        </Link>
+                                    </h2>
+                                    <p className="text-base mb-1 text-center">
+                                        by{" "}
+                                        <Link
+                                            href={`https://osu.ppy.sh/beatmapsets?q=artist="${detailsResult.artist}"`}
+                                            className="hover:underline text-pink-300"
+                                            target="_blank"
+                                        >
+                                            {detailsResult.artist}
+                                        </Link>
+                                    </p>
+                                    <p className="text-sm text-center">
+                                        mapped by{" "}
+                                        <Link
+                                            href={`https://osu.ppy.sh/users/${detailsResult.creator_id}`}
+                                            className="hover:underline text-pink-200"
+                                            target="_blank"
+                                        >
+                                            {detailsResult.creator}
+                                        </Link>
+                                    </p>
+                                    <p className="text-sm mt-1">
+                                        [ {detailsResult.version} ]
+                                    </p>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Row 1: Stats | Classification */}
+                    <div className="grid gap-4 md:grid-cols-2 mb-6">
+                        {/* Beatmap Stats Card */}
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2">
+                                    <BarChart className="w-5 h-5" />
+                                    Beatmap Stats
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="grid grid-cols-2 gap-2 text-sm">
+                                    <div className="flex flex-row">
+                                        <span className="font-semibold mr-1">
+                                            AR:
+                                        </span>
+                                        <span>
+                                            {stats?.ar.toFixed(2)}
+                                        </span>
+                                    </div>
+                                    <div className="flex flex-row">
+                                        <span className="font-semibold mr-1">
+                                            OD:
+                                        </span>
+                                        <span>
+                                            {stats?.od.toFixed(1)}
+                                        </span>
+                                    </div>
+                                    <div className="flex flex-row">
+                                        <span className="font-semibold mr-1">
+                                            HP:
+                                        </span>
+                                        <span>
+                                            {stats?.hp.toFixed(1)}
+                                        </span>
+                                    </div>
+                                    <div className="flex flex-row">
+                                        <span className="font-semibold mr-1">
+                                            CS:
+                                        </span>
+                                        <span>
+                                            {stats?.cs.toFixed(1)}
+                                        </span>
+                                    </div>
+                                    <div className="flex flex-row">
+                                        <span className="font-semibold mr-1">
+                                            BPM:
+                                        </span>
+                                        <span>
+                                            {stats?.bpm.toFixed(1)}
+                                        </span>
+                                    </div>
+                                    <div className="col-span-2 flex flex-row">
+                                        <span className="font-semibold mr-1">
+                                            Star Rating:
+                                        </span>
+                                        <span>
+                                            {stats?.star_rating.toFixed(2)}
+                                        </span>
                                     </div>
                                 </div>
                             </CardContent>
                         </Card>
-                        <div className="grid gap-6 md:grid-cols-2">
-                            <Card>
+
+                        {/* Classification Card */}
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2">
+                                    <Music className="w-5 h-5" />
+                                    Classification
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                {classificationTypes.length > 0 ? (
+                                    classificationTypes.map((analysis, i) => (
+                                        <AnalysisCardClass
+                                            key={`class-${i}`}
+                                            analysis={analysis}
+                                        />
+                                    ))
+                                ) : (
+                                    <p className="text-sm text-gray-500">
+                                        No classification data available.
+                                    </p>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    {/* Row 2: Jump | Stream | Slider */}
+                    <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 mb-6">
+                        {jumpResult && (
+                            <Card className="border-t-2 border-t-pink-500/50">
                                 <CardHeader>
-                                    <CardTitle className="flex items-center gap-2">
-                                        <BarChart className="w-5 h-5" />
-                                        Beatmap Stats
-                                    </CardTitle>
+                                    <CardTitle>Jumps</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="grid grid-cols-2 gap-2 text-sm">
-                                        <div className="flex flex-row">
-                                            <span className="font-semibold mr-1">
-                                                AR:
-                                            </span>
-                                            <span>
-                                                {detailsResult.statistics.ar}
-                                            </span>
-                                        </div>
-                                        <div className="flex flex-row">
-                                            <span className="font-semibold mr-1">
-                                                OD:
-                                            </span>
-                                            <span>
-                                                {detailsResult.statistics.od}
-                                            </span>
-                                        </div>
-                                        <div className="flex flex-row">
-                                            <span className="font-semibold mr-1">
-                                                HP:
-                                            </span>
-                                            <span>
-                                                {detailsResult.statistics.hp}
-                                            </span>
-                                        </div>
-                                        <div className="flex flex-row">
-                                            <span className="font-semibold mr-1">
-                                                CS:
-                                            </span>
-                                            <span>
-                                                {detailsResult.statistics.cs}
-                                            </span>
-                                        </div>
-                                        <div className="flex flex-row">
-                                            <span className="font-semibold mr-1">
-                                                BPM:
-                                            </span>
-                                            <span>
-                                                {detailsResult.statistics.bpm.toFixed()}
-                                            </span>
-                                        </div>
-                                        <div className="col-span-2 flex flex-row">
-                                            <span className="font-semibold mr-1">
-                                                Star Rating:
-                                            </span>
-                                            <span>
-                                                {detailsResult.statistics.star_rating.toFixed(
-                                                    2,
-                                                )}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-
-                            <RadarChartComponent 
-                                jump={analysisResult.find(a => a.analysis_type === "jump")?.analysis as JumpAnalysis}
-                                stream={analysisResult.find(a => a.analysis_type === "stream")?.analysis as StreamAnalysis}
-                                //fingerControl={analysisResult.find(a => a.analysis_type === "fingercontrol")?.analysis as FingerControlAnalysis}
-                            />
-
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle className="flex items-center gap-2">
-                                        <Music className="w-5 h-5" />
-                                        Classification
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <ScrollArea className="h-56 pr-3">
-                                        <div className="space-y-4">
-                                            {analysisResult.map(
-                                                (analysis, i) => (
-                                                    <AnalysisCardClass
-                                                        key={`class-${i}`}
-                                                        index={i}
-                                                        analysis={analysis}
-                                                    />
-                                                ),
-                                            )}
-                                            {analysisResult.map(
-                                                (analysis, i) => (
-                                                    <AnalysisCardDetails
-                                                        key={`details-${i}`}
-                                                        analysis={analysis}
-                                                        totalObjects={detailsResult.statistics.total_objects}
-                                                    />
-                                                ),
-                                            )}
-                                        </div>
+                                    <ScrollArea className="h-72 pr-3">
+                                        <JumpProfile
+                                            analysis={
+                                                jumpResult
+                                                    .analysis as JumpAnalysis
+                                            }
+                                        />
                                     </ScrollArea>
                                 </CardContent>
                             </Card>
-                        </div>
+                        )}
+
+                        {streamResult && (
+                            <Card className="border-t-2 border-t-blue-500/50">
+                                <CardHeader>
+                                    <CardTitle>Streams</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <ScrollArea className="h-72 pr-3">
+                                        <StreamProfile
+                                            analysis={
+                                                streamResult
+                                                    .analysis as StreamAnalysis
+                                            }
+                                            totalObjects={totalObjects}
+                                        />
+                                    </ScrollArea>
+                                </CardContent>
+                            </Card>
+                        )}
+
+                        {sliderResult && (
+                            <Card className="border-t-2 border-t-green-500/50">
+                                <CardHeader>
+                                    <CardTitle>Sliders</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <ScrollArea className="h-72 pr-3">
+                                        <SliderProfile
+                                            analysis={
+                                                sliderResult
+                                                    .analysis as SliderAnalysis
+                                            }
+                                        />
+                                    </ScrollArea>
+                                </CardContent>
+                            </Card>
+                        )}
                     </div>
+
+                    {/* Row 3: Finger Control | Aim Control | Reading */}
+                    <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 mb-6">
+                        {fingerResult && (
+                            <Card className="border-t-2 border-t-purple-500/50">
+                                <CardHeader>
+                                    <CardTitle>Finger Control</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <ScrollArea className="h-72 pr-3">
+                                        <FingerControlProfile
+                                            analysis={
+                                                fingerResult
+                                                    .analysis as FingerControlAnalysis
+                                            }
+                                        />
+                                    </ScrollArea>
+                                </CardContent>
+                            </Card>
+                        )}
+
+                        {aimResult && (
+                            <Card className="border-t-2 border-t-cyan-500/50">
+                                <CardHeader>
+                                    <CardTitle>Aim Control</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <ScrollArea className="h-72 pr-3">
+                                        <AimControlProfile
+                                            data={
+                                                aimResult
+                                                    .analysis as AimControlResult
+                                            }
+                                        />
+                                    </ScrollArea>
+                                </CardContent>
+                            </Card>
+                        )}
+
+                        {readingResult && (
+                            <Card className="border-t-2 border-t-amber-500/50">
+                                <CardHeader>
+                                    <CardTitle>Reading</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <ScrollArea className="h-72 pr-3">
+                                        <ReadingProfile
+                                            data={
+                                                readingResult
+                                                    .analysis as ReadingResult
+                                            }
+                                        />
+                                    </ScrollArea>
+                                </CardContent>
+                            </Card>
+                        )}
+                    </div>
+
                     <Alert className="flex items-start">
                         <div className="flex items-center h-full pt-1">
                             <AlertTriangle className="h-4 w-4 flex-shrink-0" />
@@ -382,24 +416,21 @@ export default function Analysis({
 
 function AnalysisCardClass({
     analysis,
-    index,
 }: {
     analysis: BeatmapAnalysisResult;
-    index: number;
 }) {
     const type = analysis.analysis_type;
-    
+
     const colors: Record<string, string> = {
         jump: "bg-pink-500",
         stream: "bg-blue-500",
         slider: "bg-green-500",
     };
 
-    // Use type assertion to safely access the field, defaulting to 0
     const confidence = (analysis.analysis as any).overall_confidence ?? 0;
 
     return (
-        <div className="mb-4">
+        <div className="mb-4 last:mb-0">
             <h3 className="font-bold text-lg uppercase tracking-tight">
                 {type}
             </h3>
@@ -417,3 +448,5 @@ function AnalysisCardClass({
         </div>
     );
 }
+
+export type { BeatmapDetailsResult, BeatmapAnalysisResult };
