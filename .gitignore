@@ -2,6 +2,9 @@
 target/
 maps/
 .env*
-.claude/
+.claude/*
+!.claude/skills/
+.claude/skills/*
+!.claude/skills/wiki/
 nul
 web_hosting_memory.md
