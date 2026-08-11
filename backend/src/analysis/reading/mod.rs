@@ -3,6 +3,7 @@ pub mod density;
 pub mod trajectory;
 pub mod traps;
 pub mod strain;
+pub mod sequence_motor;
 
 use rosu_pp::Beatmap;
 use serde_json::{json, Value};
@@ -24,11 +25,43 @@ pub fn analyze(map: &Beatmap) -> Value {
     let trap_states = traps::calculate_traps(&visual_nodes, bpm);
 
     let (_strain_points, klines) = strain::calculate_strain_and_klines(
-        &visual_nodes, 
-        &density_states, 
-        &trajectory_states, 
+        &visual_nodes,
+        &density_states,
+        &trajectory_states,
         &trap_states
     );
+
+    // ── Sequence Motor Descriptors (per-pattern) ──
+    let pattern_data: Vec<(std::ops::Range<usize>, String)> = super::finger_control::rhythm_segmentation::extract_pattern_indices(map)
+        .into_iter()
+        .map(|(pattern, range)| (range, pattern.p_type.as_str()))
+        .collect();
+    // Convert to (&str) borrows for the API; collect owned strings, then borrow
+    let pattern_refs: Vec<(std::ops::Range<usize>, &str)> = pattern_data
+        .iter()
+        .map(|(r, s)| (r.clone(), s.as_str()))
+        .collect();
+    let seq_output = sequence_motor::analyze_patterns(&visual_nodes, &pattern_refs, circle_diameter);
+
+    // Format timeline with MM:SS time strings
+    fn format_time(ms: f64) -> String {
+        let total_secs = (ms / 1000.0).round() as u64;
+        let mins = total_secs / 60;
+        let secs = total_secs % 60;
+        format!("{}:{:02}", mins, secs)
+    }
+
+    let seq_timeline: Vec<serde_json::Value> = seq_output
+        .timeline
+        .iter()
+        .map(|p| json!({
+            "time": format_time(p.time_ms),
+            "notes": p.note_count,
+            "mpa": p.mpa,
+            "mm": p.mm,
+            "sc": p.sc,
+        }))
+        .collect();
 
     let total_nodes = visual_nodes.len() as f64;
     let total_traj = trajectory_states.len().max(1) as f64;
@@ -164,6 +197,14 @@ pub fn analyze(map: &Beatmap) -> Value {
         },
         "topography": {
             "klines": klines
+        },
+        "sequence_motor": {
+            "timeline": seq_timeline,
+            "summary": {
+                "mpa": { "mean": seq_output.summary_mpa.mean, "max": seq_output.summary_mpa.max, "p95": seq_output.summary_mpa.p95 },
+                "mm":  { "mean": seq_output.summary_mm.mean,  "max": seq_output.summary_mm.max,  "p95": seq_output.summary_mm.p95 },
+                "sc":  { "mean": seq_output.summary_sc.mean,  "max": seq_output.summary_sc.max,  "p95": seq_output.summary_sc.p95 }
+            }
         }
     })
 }

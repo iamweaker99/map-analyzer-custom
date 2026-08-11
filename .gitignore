@@ -5,6 +5,9 @@ maps/
 .claude/*
 !.claude/skills/
 .claude/skills/*
-!.claude/skills/wiki/
+!.claude/skills/resume/
+!.claude/skills/wiki-ingest/
+!.claude/skills/wiki-lint/
+!.claude/skills/wiki-query/
 nul
 web_hosting_memory.md
