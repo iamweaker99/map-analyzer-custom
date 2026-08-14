@@ -1,9 +1,11 @@
 ---
 type: module
-status: stable
-updated: 2026-08-08
+status: stale
+updated: 2026-08-11
 ---
 # Module: reading-analysis
+
+> ⚠️ **STALE** — production port landed 2026-08-11 (commit `15d15ab`): R/T threshold **0.35**, `finger_control::patterns` deleted, finger_control + reading rewired, `canary_segmentation.rs` added. Content below reflects the pre-port state. See [[rhythm-segmentation]] and [[segmentation-unification]].
 
 Purpose: visual reading difficulty of a beatmap — how hard notes are to *see and process*, independent of physical execution. Entry point is `reading::analyze(map)` which returns one JSON object with all sections.
 

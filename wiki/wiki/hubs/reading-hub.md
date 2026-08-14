@@ -16,6 +16,8 @@ updated: 2026-08-06
 - [[issue-5-angle-distribution]] -- open: angle distribution, blocked by #3 #issue
 - [[issue-3-intra-pattern-spacing]] -- sibling issue, same Slice 2 infra [link: gh#3]
 - [[issue-5-angle-distribution]] -- blocked by #3 [link: gh#5]
+- [[motor-model-requirements]] -- research: R1-R9 motor difficulty requirements; 51-sample ground truth; assumptions+hypotheses awaiting discussion #research
+- [[difficulty-philosophy]] -- concept: race-track axiom (trajectory x velocity), local spikes, direction-agnostic, sliders+mods excluded #concept
 
 ## What lives here
 Modules, research, decisions, and issues for: reading analysis, pattern-aware metrics, spacing demand, angle distribution.

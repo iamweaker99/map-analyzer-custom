@@ -1,6 +1,6 @@
 ---
 name: resume
-description: Resume a previous session from its handoff page. Triggered when the user's prompt starts with a resume token (e.g. "resume:2026-08-07-wiki-bootstrap") — read the handoff, run lint, continue from the next step. Unrelated sessions load zero wiki context.
+description: Resume a previous session from its handoff page. Triggered when the user's prompt starts with a resume token (e.g. "resume:2026-08-07-wiki-bootstrap") — read the handoff, continue from the next step. Lint runs at session end, not at resume (amended 2026-08-12). Unrelated sessions load zero wiki context.
 ---
 
 # Resume
@@ -16,8 +16,8 @@ The user pasted a `resume:` token. It must resolve **deterministically** — par
 ## 2. Read + verify
 
 1. Read the handoff page: where the work is, decisions, open threads, next step.
-2. Run `/wiki-lint` — the wiki must be green before continuing (reroute `stale` pages per the lint result).
-3. State to the user, in a few lines: what the handoff says, the wiki's health, and what you're about to do (the handoff's next step). Confirm before doing anything destructive.
+2. Recap only — no lint at resume (lint runs at session end per the 2026-08-12 amendment). Run `/wiki-lint` at resume only when the previous session's end-of-session lint is missing (crash, uncommitted wiki) or the handoff's claims look suspect.
+3. State to the user, in a few lines: what the handoff says, and what you're about to do (the handoff's next step). Confirm before doing anything destructive.
 
 ## 3. Continue
 

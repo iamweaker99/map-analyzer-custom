@@ -1,6 +1,6 @@
 # Index — map-analyzer-custom Wiki
 
-_Updated 2026-08-11. History: [[log]]._
+_Updated 2026-08-13. History: [[log]]._
 
 ## Hubs (start here when wiki grows past ~100 pages)
 - [[reading-hub]] — reading domain: module, research, decisions, issues
@@ -15,6 +15,7 @@ _Updated 2026-08-11. History: [[log]]._
 ## Concepts
 - [[Data-Philosophy]] — raw data, no interpretation; how it shapes every metric
 - [[experiment-protocol]] — every experiment: prediction | kill-criteria | outcome | verdict; `[explore]` runs carry no criteria
+- [[difficulty-philosophy]] — design philosophy: difficulty = (trajectory × velocity), local/relative spikes, direction-agnostic; sliders + mods excluded; CAD-style geometry descriptors
 
 ## Codebase modules — backend
 - [[aim-control]] — spatial/angle buckets, z-band velocity, ACCV complexity; analysis_type "aimcontrol"
@@ -38,13 +39,16 @@ _Updated 2026-08-11. History: [[log]]._
 - [[sequence-motor]] — MPA/MM/SC origin; per-pattern vs sliding-window; T vs R segmentation
 - [[reading-analysis-design]] — framework + architecture draft + chaos-score resolution; what shipped vs PRD
 - [[spacing-demand]] — TV2/LTD distilled; superseded by [[sequence-motor]]; keep-1/2-snap; frontend undecided
-- [[rhythm-segmentation]] — R vs T discontinuity; three-variable prototype; shipped in reading pipeline; patterns.rs parallel path; `--exp` type-boundary rules (2026-08-10); pivot rule + R_THRESHOLD 0.35 (2026-08-11)
+- [[rhythm-segmentation]] — R vs T discontinuity; three-variable prototype; shipped in reading pipeline; patterns.rs parallel path; `--exp` type-boundary rules (2026-08-10); R_THRESHOLD 0.35 verified + pivot rule abandoned (2026-08-11)
+- [[motor-model-requirements]] — motor requirements R1–R5/R7–R9 (authoritative) + A/H/AA/HH lists (reference-only since 2026-08-13); ground truth = 51 tagged sections (Prototyping/51_test_run_sample.json)
+- [[motor-metrics-oiah]] — OIAH diagnostic of MM/MPA/SC vs tiered success criteria: 13 Obs/7 Inf/6 Asp/7 Hyp + reasoning map; **active clearing basis** since 2026-08-13; R↔Hyp coverage contract + gap-hunt
 
 ## Decisions
 - [[keep-12-snap]] — include 1/2 snap patterns in spacing demand (AngelMaker test, 22→2 patterns)
 - [[run-start-engulf-known-limits]] — 8 engulf mismatches accepted as known limitations; proximity-override rejected (8 fixes vs 6 verified breaks); ≥185px dataset retracted
 - [[suppression-refinement-abandoned]] — s→c suppression refinement abandoned (what it fixes = what it breaks)
 - [[segmentation-unification]] — finger control analysis unified on the updated pattern segmentation (Path A retires; lands with the port)
+- [[orchestration-cache-improvements]] — reader agent + verbatim fan-out shell + agent reuse; trial to recover orchestration cache hit rate (95→90%)
 
 ## Issues
 - [[issue-3-intra-pattern-spacing]] — gh#3 OPEN: per-pattern spacing (Burst 2/3/4); prefactor exists in WIP
@@ -54,7 +58,9 @@ _Updated 2026-08-11. History: [[log]]._
 - [[issue-4-forward-density]] — gh#4 CLOSED + archived 2026-08-08; design notes on [[forward-density]]
 
 ## Sessions (conversation state, most recent first)
-- [[2026-08-11-handoff]] — rerun verdict split: Feral 7/7 + 6/6 fixed, YOASOBI 106 rows break (pivot rule ≈ all; threshold ≈ none); "9 stacks gap-rule" refuted; clue-based kill-criteria adopted; pivot rule decision OPEN
+- [[2026-08-13-handoff]] — OIAH diagnostic of MM/MPA/SC vs tiered success criteria: complete — ingested as [[motor-metrics-oiah]] (active clearing basis), A/H/AA/HH demoted to reference, R↔Hyp coverage table + gap-hunt candidates; wiki diff pending human review before commit
+- [[2026-08-12-handoff]] — motor requirements discussion: A-list pruned to A1–A5, H10 replaced (shape-descriptor runs), R6 dropped, Q1–Q4 resolved/deferred, gh#5 angle review → AA1–AA3 + HH1, joins-vs-filler terminology; lint timing amended to session end (resolved)
+- [[2026-08-11-handoff]] — rerun verdict split: Feral 7/7 + 6/6 fixed, YOASOBI 106 rows break (pivot rule ≈ all; threshold ≈ none); "9 stacks gap-rule" refuted; clue-based kill-criteria adopted; threshold-0.35-only verified + ported to production (canary PASS); pivot rule ABANDONED
 - [[2026-08-10-handoff]] — cross-check rounds 1–2 → resolution: 8 mismatches accepted as known limitations (override rejected: 8 fixes vs 6 verified breaks); re-measure + NC bits done; decisions documented; resume = recap-only
 - [[2026-08-09-handoff]] — pattern segmentation: slider-chain misclassification found; asymmetric type rule + SliderChain decided; new-combo decision open
 - [[2026-08-08-handoff]] — Phases 0–1 + Phase 2 area 1 done (30 pages); next: area 2 finger-control + decision backlog
@@ -64,3 +70,4 @@ _Updated 2026-08-11. History: [[log]]._
 ## Known gaps
 - Frontend display for [[spacing-demand]] — undecided (per-pattern vs aggregate, top-N, primary metric, placement, empty state) → `[gap]` in log
 - 2 parallel pattern-classification paths ([[finger-control]] vs reading pipeline) — divergence untested; situation documented on [[rhythm-segmentation]] → `[gap]` in log
+- Ideal context window for geometric segmentation — unknown; trial on the 51 sections pending ([[motor-model-requirements]] H5)

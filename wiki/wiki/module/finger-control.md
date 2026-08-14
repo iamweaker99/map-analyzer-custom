@@ -1,9 +1,11 @@
 ---
 type: module
-status: stable
-updated: 2026-08-08
+status: stale
+updated: 2026-08-11
 ---
 # Module: finger-control
+
+> ⚠️ **STALE** — production port landed 2026-08-11 (commit `15d15ab`): `finger_control::patterns` (Path A) **deleted**, R/T threshold **0.35**, finger_control + reading rewired, `canary_segmentation.rs` added. Content below reflects the pre-port state (`patterns::extract_patterns()` no longer exists; R > 0.5 → 0.35). See [[rhythm-segmentation]] and [[segmentation-unification]].
 
 Purpose: physical execution difficulty — snap precision, burst structure, pattern transitions. Registered in `analysis` (analysis/mod.rs:4); `analyze()` is served by the API for `fingercontrol` and `all` types (api/get/beatmap.rs:260, 284).
 

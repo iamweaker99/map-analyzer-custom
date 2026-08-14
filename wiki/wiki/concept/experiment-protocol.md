@@ -7,6 +7,8 @@ updated: 2026-08-11
 
 *Every experiment records its prediction and kill-criteria BEFORE it runs; outcome and verdict after. Adopted 2026-08-11 (session discussion, research-loop wave 1).*
 
+> **PAUSED 2026-08-12** — user stopped this protocol (research-loop wave #1) in favor of the role-split mode (main = research agent, builder sub-agent, critic; waves #2–#4) for the motor modelling discussion. Not abandoned; re-evaluation pending. See log.md.
+
 ## Why
 
 Trial-and-error rationalizes results after the fact; a pre-written falsification criterion can't be talked around. Without one, every experiment "looks promising" and the loop never converges.

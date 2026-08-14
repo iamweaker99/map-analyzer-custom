@@ -45,7 +45,7 @@ Three orthogonal, sequence-length-independent motor descriptors computed per-pat
 
 ## Contradictions (handoff vs code)
 
-- **Stale pattern-source path**: handoff 000 and sequence_motor.rs:172 docstring cite `finger_control::patterns::extract_pattern_indices`; the live path is `finger_control::rhythm_segmentation` (mod.rs:35). The old `patterns::extract_pattern_indices` used only a fixed gap threshold with global BPM; rhythm_segmentation replaces it, adding R-based detection of rhythm changes inside continuous streams (e.g. 1/4→1/6) — per rhythm_segmentation.rs:10-12.
+- **Stale pattern-source path (fixed 2026-08-11 with the port)**: handoff 000 cited `finger_control::patterns::extract_pattern_indices`; the old `patterns` module is deleted (Path A retired). sequence_motor.rs:172 docstring now cites the live path `finger_control::rhythm_segmentation::extract_pattern_indices`. rhythm_segmentation adds R-based detection of rhythm changes inside continuous streams (e.g. 1/4→1/6) — per rhythm_segmentation.rs:10-12.
 - **Two vs three metrics**: research notes proposed a two-metric model (MPA + Movement Scale); the prototype spec added SC as a third orthogonal axis before implementation.
 - **Sliding window vs per-pattern**: the spec's sliding-window deliverable was deliberately superseded by the grilling decision (per-pattern atomic windows).
 - **"No synthetic test patterns"**: the handoff decision says real beatmaps only, but the shipped unit tests construct synthetic nodes. Minor; the decision reads as about evaluation data rather than unit-test fixtures.
@@ -53,14 +53,14 @@ Three orthogonal, sequence-length-independent motor descriptors computed per-pat
 ## Numbers / thresholds
 
 - Diameter normalization: `108.8 − 8.96·CS` (radius `54.4 − 4.48·CS`).
-- Pattern boundary: gap > ½ beat; |R| > 0.5 (≈1.4× snap ratio; catches 1/4→1/2, 1/4→1/6, 1/8→1/4; **misses 1/4→1/3 ≈ 0.415** — "tune if needed", rhythm_segmentation.rs:25-30). T threshold same value (0.5), equivalent on single-BPM maps.
+- Pattern boundary: gap > ½ beat; |R| > 0.35 (catches 1/4→1/3 ≈ 0.415; adopted 2026-08-11 — see [[rhythm-segmentation]]; was 0.5, "tune if needed"). T threshold same value (0.35), equivalent on single-BPM maps.
 - Pattern classification: ≥7 notes = Stream, ≥2 = Burst(n), slider = Slider, else Jump (rhythm_segmentation.rs:61-69).
 
 ## Open questions / next steps
 
 - Stacked-line visualization (three synchronized time-series, shared X axis) not yet built; timeline JSON is ready (handoff-sequence-motor.md:37).
 - Whether descriptors should later merge into a higher-level execution model or stay independent (open in sequence_motor_plan_research_notes_7.md).
-- R threshold 0.5 misses 1/4→1/3 snap transitions; tuning considered.
+- ~~R threshold 0.5 misses 1/4→1/3 snap transitions; tuning considered~~ → resolved: R/T threshold = 0.35 since 2026-08-11 (Feral Class B fix, verified + ported; see [[rhythm-segmentation]]).
 - Frontend presentation of the section undecided; see [[reading-hub]] and the frontend-overhaul state.
 
 Related: [[reading-analysis]] (module), [[forward-density]] (planned sibling metric), [[reading-hub]] (landing).

@@ -1,6 +1,6 @@
 ---
 name: wiki-lint
-description: Check wiki health — broken wikilinks, orphan pages, index drift, invalid frontmatter, stale flags, page caps. Auto-fix mechanical issues, report judgment calls. Use when the user says "lint the wiki", after every ingest, and as part of the resume protocol.
+description: Check wiki health — broken wikilinks, orphan pages, index drift, invalid frontmatter, stale flags, page caps. Auto-fix mechanical issues, report judgment calls. Use when the user says "lint the wiki", after every ingest, and as the session-end save-ritual step (not at resume; amended 2026-08-12).
 ---
 
 # Wiki Lint
