@@ -1,7 +1,7 @@
 ---
 type: research
 status: idea
-updated: 2026-08-13
+updated: 2026-08-14
 sources: [Temp/oiah_motor_adjustment.md, Temp/OIAH definitions & pipeline.md, Prototyping/yoasobi_collab_extra_motor_patterns (success criteria here).xlsx, backend/src/analysis/reading/sequence_motor.rs, wiki/wiki/research/motor-model-requirements.md]
 ---
 # Research: Motor-metrics OIAH — why MM/MPA/SC cannot reproduce the tier ranking
@@ -20,7 +20,7 @@ Sources: the success-criteria Excel (sheet `Patterns`, rows 2–552; tiers by ce
 
 ### Obs.1 — Tier structure exists as cell fill only
 - **Observation**: 85 of 552 pattern rows carry a tier color (purple 22, orange 33, aqua 30); tiers are represented solely by cell fill on columns A/B, with no legend, title, or tier text anywhere in the workbook.
-- **Evidence**: openpyxl fill extraction; theme mapping purple theme#7 `CCC1DA`, orange theme#9 `FCD5B5` (rows 56–57 a lighter tint, accident), aqua theme#8 `B7DEE8`.
+- **Evidence**: openpyxl fill extraction; theme mapping purple theme#7 `CCC1DA`, orange theme#9 `FCD5B5` (rows 56–57 a lighter tint — **kept as orange**, user 2026-08-14: accidental shade of the same orange, S003 stays), aqua theme#8 `B7DEE8`.
 - **Source**: Excel extraction (Temp/tiered_rows_table.txt).
 
 ### Obs.2 — 32 of 85 tiered rows have no metric values at all
@@ -74,7 +74,7 @@ Sources: the success-criteria Excel (sheet `Patterns`, rows 2–552; tiers by ce
 - **Source**: Phase 2 reader stats from Excel.
 
 ### Obs.12 — Wiki records: hardest section scores mid-range; metrics near-orthogonal
-- **Observation**: wiki log records the "hardest" section (S042 = purple r542, "the hardest: spaced diagonal/spiral…") at MPA 0.358 / MM 0.952 while untagged rows reach MPA 4.7 — no obvious separation; MPA/MM near-orthogonal (Signal r=0.125, YOASOBI r=0.286), MPA/SC partially shared (0.56 / 0.50).
+- **Observation**: wiki log records the "hardest" section (S049 = purple r542 — corrected 2026-08-15 from "S042" against the 51-sample ground truth; S042 is orange r464, a different section; row number was always 542) at MPA 0.358 / MM 0.952 while untagged rows reach MPA 4.7 — no obvious separation; MPA/MM near-orthogonal (Signal r=0.125, YOASOBI r=0.286), MPA/SC partially shared (0.56 / 0.50).
 - **Evidence**: `wiki/wiki/log.md` entries 203, 229; Excel row 542.
 - **Source**: wiki log; Excel.
 
@@ -83,10 +83,17 @@ Sources: the success-criteria Excel (sheet `Patterns`, rows 2–552; tiers by ce
 - **Evidence**: verbatim descriptor dump (Temp/criteria_xlsx_full_dump.txt).
 - **Source**: Excel column C.
 
-### Obs.14 — Tier colors often span consecutive rows
+### Obs.14 — Tier colors often span consecutive rows; a description covers its run
 - **Observation**: tier color frequently covers a run of adjacent pattern rows executed in sequence: purple runs {275,276}, {301–303}, {343,344}, {364,365}, {367,368}, {512–514}; orange runs {56,57}, {139,140}, {196,197}, {250,251}, {263,264}, {337,338}, {352,353}, {358–363}, {419,420}, {491–494}; aqua runs {134–136}, {256,257}, {269,270}, {323,324}, {378,379}, {434–436}, {482–484}, {531,532}. The rest are single-row tags.
-- **Evidence**: row layout of tiered rows in the workbook (adjacency of same-fill rows).
-- **Source**: Excel extraction; user statement (2026-08-13): "a colour tag is based on multiple rows executed in a sequence, it's similar to those 51 test sample notes".
+- **Section rule (user, 2026-08-14)**: a description covers from the time at its row until the colour tag discontinues or meets a new colour tag, chronological top-to-bottom — i.e. the description anchors the whole contiguous same-colour run. Verified against the workbook dump: every multi-row run carries its description on the **first row only**; rows 323+324 are the sole exception (both carry "flatten wiggle" → split into S025/S026, matching the 51-sample). **Confirmed 2026-08-14 (user): S025/S026 are genuinely distinct sections that only look similar — not duplications; the split stands.**
+- **Coverage consequence**: all 32 no-value rows sit inside runs whose sibling rows carry metric values → at **section level** (run = section) coverage is 51/51, including the abrupt set S009 (r157), S011 (r212), S012 (r215), S028 (r343+344), S033 (r367+368).
+- **Evidence**: row layout of tiered rows in the workbook (adjacency of same-fill rows); descriptor column per row in `Temp/criteria_xlsx_full_dump.txt` (text on run's first row); 51-sample section structure (`Prototyping/51_test_run_sample.json`).
+- **Source**: Excel extraction; user statements (2026-08-13): "a colour tag is based on multiple rows executed in a sequence, it's similar to those 51 test sample notes"; (2026-08-14): "the description 1 actually covers from the time at its current row until the colour tag discontinues or meets a new colour tag…".
+
+### Obs.15 — User's difficulty model: two counterpart channels (velocity spike + geometry)
+- **Observation**: user-dictated difficulty model (2026-08-14): reading difficulty decomposes into two **counterpart channels** — (1) **velocity spike** at joins (difficulty concentrates in purple; the abrupt/join-break tags), (2) **geometry/trajectory** (orange & aqua sections are difficult by geometry; the hardest purple, S049 r542 spaced diagonal/spiral, is geometry **without** a velocity spike). Spike difficulty and geometry difficulty are **not yet comparable units** — translate-vs-separate-categories is a post-Hyp.1 decision (open).
+- **Evidence**: user statements 2026-08-14; descriptor language over the 51 sample (abrupt/join-break 10 rows P5/O4/A1 — Obs.9); S049 note "the hardest: spaced diagonal/spiral"; S049 metrics mid-range (Obs.12).
+- **Source**: user discussion 2026-08-14; 51-sample (`Prototyping/51_test_run_sample.json`).
 
 ---
 
@@ -165,7 +172,7 @@ Sources: the success-criteria Excel (sheet `Patterns`, rows 2–552; tiers by ce
 
 ## Hypotheses (active clearing list)
 
-Statuses follow the research vocabulary: `idea → designed → prototyped → implemented` (all 7 currently `idea`). "Cleared" = validated *and* still serving its requirement (see § Requirements coverage).
+Statuses follow the research vocabulary: `idea → designed → prototyped → implemented` (Hyp.2 `designed` since 2026-08-14; the other 6 currently `idea`). "Cleared" = validated *and* still serving its requirement (see § Requirements coverage).
 
 ### Hyp.1 — Trajectory descriptors restore row-level tier ranking
 - **Hypothesis**: if the metric set is augmented with trajectory descriptors (turn-sign sequence sᵢ ∈ {+, −, 0}, shape-segment labels, self-overlap flags), then row-level ranking of the 85 tiered rows reproduces purple > orange > aqua (minimum bar per Q3: purple all harder than aqua), under the current pattern segmentation.
@@ -174,14 +181,18 @@ Statuses follow the research vocabulary: `idea → designed → prototyped → i
 - **Falsifier**: no significant improvement over MPA/MM/SC alone, or r542-class rows still rank mid-range.
 - **Status**: idea
 - **Based on**: Inf.1, Inf.2, Inf.4, Inf.7; Asp.1, Asp.3, Asp.6
+- **Channel note (user, 2026-08-14)**: counterpart to Hyp.2's velocity-spike channel (Obs.15) — geometry difficulty covers orange/aqua and S049 (hardest purple, geometry without spike); channel comparability (translate vs separate categories) is a post-Hyp.1 decision.
 
-### Hyp.2 — Join-boundary discontinuity is the purple-tier discriminator
-- **Hypothesis**: if the join between minor sections is measured (spacing/angle discontinuity at pattern boundaries, i.e. cursor-reset demand per the A552 definition), then abrupt-tagged rows score highest on join demand — including separating within-tier (abrupt purple r157/r215 vs non-abrupt purple r411) — under the same-snap-window rule.
-- **Prediction**: join-demand scores rank abrupt rows (r157, 212, 215, 343, 367) above non-abrupt rows of the same tier; adds separation beyond Hyp.1's within-pattern descriptors.
-- **Test**: implement boundary-discontinuity features (HH1 fork: geometry descriptors vs physics Δv at boundaries); score the 85 rows; compare abrupt vs non-abrupt within tier.
-- **Falsifier**: abrupt rows do not separate from non-abrupt rows of the same tier, or join features add no separation over Hyp.1.
-- **Status**: idea
-- **Based on**: Inf.3, Inf.7; Asp.5
+### Hyp.2 — Velocity-spike discontinuity is the purple-tier discriminator (join-boundary channel)
+- **Hypothesis**: if joins are measured as **velocity spikes** (spacing-per-grid-unit contrast at note transitions — the A552 cursor-reset mechanism), then spike-bearing sections rank P > O > A by spike magnitude. Hyp.2 and Hyp.1 are **counterpart channels** (user, 2026-08-14): spike difficulty concentrates in purple; orange/aqua are hard by geometry; S049 (hardest purple) is geometry without a spike — see Obs.15.
+- **Mechanism (user-defined, 2026-08-14)**: same BPM snapping window = transitions sharing one rhythm grid unit (1/2, 1/4, 1/6) read from map timing — external to the analyzer's segmentation (circularity removed). Spike at transition k ⟺ sign(Δv) flips at k (acceleration→deceleration = **peak**; deceleration→acceleration = **valley** — both count) with magnitude ≥ threshold vs the local baseline ("spacing record", momentum window). Threshold is **data-derived** (e.g. MAD-type outlier vs the local velocity distribution) — user rejected a fixed assigned value; exact form pinned in the spec.
+- **Measurement frame**: the section's note-transition sequence — **no minor-section classification** (user, 2026-08-14); the segmentation is bypassed as a measurement frame. Transitions are measured across row/pattern boundaries within a section and at section edges (S028 jump→stream, S029 exit jump).
+- **Test set (user, 2026-08-14)**: the **10-row spike set** = workbook abrupt/join-break tags → S009/S011/S012/S028/S033 (P), S010/S029/S030/S042 (O), S051 (A). Membership per descriptor language; the detector confirms at run time. **Valid subjects = spike-bearing sections only** — non-spike sections are Hyp.1's subjects.
+- **Prediction**: spike magnitude ranks spike sections P > O > A.
+- **Test**: compute transition velocities per section (spacing per grid unit from pattern data), detect spikes (Δv sign-change + adaptive threshold), score spike magnitude per section, rank the spike set. Data: `Prototyping/51_test_run_sample.json` (row↔pattern↔note-range↔snap mapping complete, all 51 sections one source) + `yoasobi_collab_extra_motor_patterns.json` (note coordinates; range-index fidelity = Gap 11, delegated).
+- **Falsifier**: spike magnitudes do not order the spike set P > O > A.
+- **Status**: designed (experiment formed 2026-08-14; open design points: threshold form, per-section spike aggregation, Gap 3 comparison design)
+- **Based on**: Inf.3, Inf.7, Obs.15; Asp.5
 
 ### Hyp.3 — Covering the excluded 1-note rows reveals the hardest purple evidence
 - **Hypothesis**: if 1-note Jump/Slider rows enter measurement (slider-waypoint model or neighbor-context trajectory features), then the currently invisible purple rows (343, 364, 367, 512) rank among the hardest in the tier set.
@@ -222,6 +233,24 @@ Statuses follow the research vocabulary: `idea → designed → prototyped → i
 - **Falsifier**: a purely geometric metric set reproduces the ranking — Hyp.7 rejected, Hyp.1/Hyp.5 supported.
 - **Status**: idea
 - **Based on**: Inf.1, Inf.2; Asp.4
+
+---
+
+## Clearing order (test sequence)
+
+Ranked 2026-08-14 (user-approved): **score = impact on the measured result × uncertainty that it works** — test high-impact, high-uncertainty first; **one hypothesis at a time** (no parallel clearing; others deferred until the active one resolves).
+
+| Rank | Hyp. | Rationale |
+|---|---|---|
+| **1** | **Hyp.2** | Only hypothesis measuring the workbook's *defined* mechanism (A552 abrupt joins) — the purple discriminator; entirely unmeasured → highest uncertainty |
+| 2 | Hyp.1 | Synthesis branch (restores ranking); high impact, high uncertainty; `vectors.rs` precedent lowers uncertainty below Hyp.2 |
+| 3 | Hyp.3 | Changes the evaluation set (53→85 rows incl. the strongest purple evidence); medium uncertainty (slider-waypoint model deferred) |
+| — | Hyp.7 | Terminal verdict by construction (its test = failure of Hyp.1–6); defines the loop's exit, not a test item |
+| 4 | Hyp.5 | Sub-question of Hyp.1's feature family; folded into Hyp.1's test design |
+| 5 | Hyp.4 | Component fix (force-zeroed rows); near-free variant, rides along measurement runs |
+| 6 | Hyp.6 | Conditional on per-pattern separation existing first |
+
+**Decision (2026-08-14, user):** Hyp.2 first; all others deferred. One hypothesis at a time. Phase-gated workflow unchanged: stop + notify after Hyp.2's experiment before proceeding.
 
 ---
 

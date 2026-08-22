@@ -1,7 +1,7 @@
 ---
 type: research
 status: implemented
-updated: 2026-08-11
+updated: 2026-08-22
 sources: [Temp/handoff-three-variable-prototype_10.md, Temp/handoff-rhythm-discontinuity-integration_11.md, Temp/temporal-vs-rhythm-illustrated.md, Prototyping/rhythm_rejection - Signal feat. Such (Mameyudoufu Remix) (NekoShabeta) [Disturbance].csv, Prototyping/temporal_rejection - Signal feat. Such (Mameyudoufu Remix) (NekoShabeta) [Disturbance].csv, backend/src/analysis/finger_control/rhythm_segmentation.rs, backend/src/analysis/finger_control/snap_filter.rs, backend/src/analysis/finger_control/mod.rs, backend/src/analysis/finger_control/patterns.rs, backend/src/analysis/reading/mod.rs]
 ---
 # Research: Rhythm Segmentation (Motor-Continuity Pattern Boundaries)
@@ -18,6 +18,12 @@ Rhythm segmentation splits a beatmap's hit objects into **patterns** for the rea
 - Direction/angle (the four-variable scheme's Variable 3) — deferred entirely to `Temp/angle-direction-research-notes.md` (handoff_10:13, 42-46).
 
 The prototype's critical path was the **BPM snap fix** (handoff_10:32-36): find the active uninherited (red line) timing point at each object via `rosu_pp::Beatmap::timing_points`; replace the global `map.bpm()` + ±12 ms tolerance with per-timing-point beat_len + **±10% adaptive tolerance** (`beat_len × fraction × 0.10`); export per-adjacent-pair snap; remove the dead burst-histogram computation.
+
+## Deferred velocity + direction framework
+
+The deferred velocity note adds an important design boundary to the prototype history. Velocity discontinuity is the absolute change in CS-normalized cursor speed between adjacent note pairs, not raw movement speed. For each note pair, use Euclidean movement distance divided by elapsed time, normalize distance by circle diameter `D = 108.8 - 8.96·CS`, then compare consecutive normalized speeds as `|Δv|`. The experiments found that this signal is useful for detecting spatial substructure inside an already rhythmically coherent pattern, but it is not reliable as a standalone pattern-boundary detector.
+
+The proposed follow-up is a joint velocity + direction/angle signature: rhythm/temporal signals establish coarse pattern boundaries first; velocity and direction then describe or subdivide intra-pattern structure. Candidate descriptors include speed-change magnitude, direction-change magnitude, and their local co-occurrence. This remains design-only: no production segmentation rule, threshold, JSON output, or frontend contract has been adopted. The angle work is separately deferred to [[angle-distribution]]. Source: `Temp/(deferred_combine with directional discontinuity or angle stuffs) velocity-spatial-discontinuity-framework.md`.
 
 ## Discontinuity definitions: R vs T
 

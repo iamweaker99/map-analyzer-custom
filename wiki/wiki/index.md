@@ -1,6 +1,6 @@
 # Index — map-analyzer-custom Wiki
 
-_Updated 2026-08-13. History: [[log]]._
+_Updated 2026-08-14. History: [[log]]._
 
 ## Hubs (start here when wiki grows past ~100 pages)
 - [[reading-hub]] — reading domain: module, research, decisions, issues
@@ -58,7 +58,8 @@ _Updated 2026-08-13. History: [[log]]._
 - [[issue-4-forward-density]] — gh#4 CLOSED + archived 2026-08-08; design notes on [[forward-density]]
 
 ## Sessions (conversation state, most recent first)
-- [[2026-08-13-handoff]] — OIAH diagnostic of MM/MPA/SC vs tiered success criteria: complete — ingested as [[motor-metrics-oiah]] (active clearing basis), A/H/AA/HH demoted to reference, R↔Hyp coverage table + gap-hunt candidates; wiki diff pending human review before commit
+- [[2026-08-14-handoff]] — Hyp.2 experiment FORMED (velocity-spike channel, peaks+valleys, data-derived threshold; 10-row spike set; gate = spike magnitude ranks spike sections P>O>A; counterpart to Hyp.1's geometry channel); S003 kept as orange, S025/S026 distinct (recorded); uncommitted diff + deferred items carried to next resume
+- [[2026-08-13-handoff]] — OIAH diagnostic of MM/MPA/SC vs tiered success criteria: complete — ingested as [[motor-metrics-oiah]] (active clearing basis), A/H/AA/HH demoted to reference, R↔Hyp coverage table + gap-hunt candidates; committed 2026-08-14 (78406e5) (resolved)
 - [[2026-08-12-handoff]] — motor requirements discussion: A-list pruned to A1–A5, H10 replaced (shape-descriptor runs), R6 dropped, Q1–Q4 resolved/deferred, gh#5 angle review → AA1–AA3 + HH1, joins-vs-filler terminology; lint timing amended to session end (resolved)
 - [[2026-08-11-handoff]] — rerun verdict split: Feral 7/7 + 6/6 fixed, YOASOBI 106 rows break (pivot rule ≈ all; threshold ≈ none); "9 stacks gap-rule" refuted; clue-based kill-criteria adopted; threshold-0.35-only verified + ported to production (canary PASS); pivot rule ABANDONED
 - [[2026-08-10-handoff]] — cross-check rounds 1–2 → resolution: 8 mismatches accepted as known limitations (override rejected: 8 fixes vs 6 verified breaks); re-measure + NC bits done; decisions documented; resume = recap-only
