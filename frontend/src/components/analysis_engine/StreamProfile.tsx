@@ -85,31 +85,31 @@ export function StreamProfile({
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1">
                 <StatBar
-                    label="Bursts (3-4)"
+                    label="Burst (0.5-1s)"
                     value={analysis.bursts || 0}
                     total={totalLength}
                     colorClass="bg-green-500"
                 />
                 <StatBar
-                    label="Short (5-12)"
+                    label="Short (1-2s)"
                     value={analysis.short_streams || 0}
                     total={totalLength}
                     colorClass="bg-blue-500"
                 />
                 <StatBar
-                    label="Medium (13-24)"
+                    label="Medium (2-4s)"
                     value={analysis.medium_streams || 0}
                     total={totalLength}
                     colorClass="bg-orange-500"
                 />
                 <StatBar
-                    label="Long (25-48)"
+                    label="Long (4-6s)"
                     value={analysis.long_streams || 0}
                     total={totalLength}
                     colorClass="bg-red-500"
                 />
                 <StatBar
-                    label="Deathstream (49+)"
+                    label="Deathstream (6s+)"
                     value={analysis.death_streams || 0}
                     total={totalLength}
                     colorClass="bg-red-500"
@@ -118,7 +118,7 @@ export function StreamProfile({
 
             <li className="flex justify-between border-t border-blue-900 pt-2 font-semibold">
                 <span>Max stream:</span>
-                <span>{analysis.max_stream_length} notes</span>
+                <span>{(analysis.max_stream_duration || 0).toFixed(1)}s / {analysis.max_stream_length} notes</span>
             </li>
             <li className="flex justify-between">
                 <span>BPM Consistency:</span>
