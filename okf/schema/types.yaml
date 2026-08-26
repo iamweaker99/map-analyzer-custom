@@ -1,0 +1,37 @@
+types:
+  - name: entity
+    required_fields: []
+    forbidden_fields: []
+    canonical_claim: null
+    canonical_claims: false
+    active_sections: [Definition, "Identity and boundaries"]
+  - name: concept
+    required_fields: []
+    forbidden_fields: []
+    canonical_claim: definition_claim
+    canonical_claims: false
+    active_sections: [Definition, Boundaries]
+  - name: system
+    required_fields: []
+    forbidden_fields: []
+    canonical_claim: null
+    canonical_claims: true
+    active_sections: [Purpose, Boundary, "Current behavior", "Interfaces and dependencies", "Known limitations"]
+  - name: research
+    required_fields: [research_question]
+    forbidden_fields: []
+    canonical_claim: null
+    canonical_claims: true
+    active_sections: [Question, "Method and evidence", Findings, Conclusions, "Limitations and uncertainty"]
+  - name: decision
+    required_fields: [decision_key, decision_claim]
+    forbidden_fields: []
+    canonical_claim: decision_claim
+    canonical_claims: false
+    active_sections: [Context, Decision, Rationale, "Alternatives considered", Consequences]
+  - name: reference
+    required_fields: [source]
+    forbidden_fields: [claims]
+    canonical_claim: null
+    canonical_claims: false
+    active_sections: []

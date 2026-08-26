@@ -1,0 +1,231 @@
+{
+  "objects": [
+    {
+      "decision_claim": "window-size",
+      "decision_key": "reading.forward-density-window",
+      "description": "Accepted project decision for the forward-density window specified by the closed primary issue.",
+      "effective_freshness": "fresh",
+      "id": "decision.forward-density-window",
+      "lifecycle": "active",
+      "path": "okf/decisions/forward-density-window.md",
+      "semantic_hash": "sha256:d189a8cd31892cabd97aa437f8d5edf995fd457fa9cca10c271cb1631c5d46fd",
+      "title": "Forward-density window contract",
+      "type": "decision"
+    },
+    {
+      "description": "Repository-local snapshot of the backend analysis modules.",
+      "effective_freshness": "fresh",
+      "id": "reference.backend-analysis-source",
+      "lifecycle": "active",
+      "path": "okf/references/backend-analysis-source.md",
+      "semantic_hash": "sha256:e0cbd9ecf319ef48858041804ace3abe224a7cd850333c482e9a1092373fab5f",
+      "source_kind": "repository_tree",
+      "title": "Backend analysis source tree at bootstrap commit",
+      "type": "reference"
+    },
+    {
+      "description": "Repository-local snapshots of the backend HTTP routes and API handlers.",
+      "effective_freshness": "fresh",
+      "id": "reference.backend-api-source",
+      "lifecycle": "active",
+      "path": "okf/references/backend-api-source.md",
+      "semantic_hash": "sha256:4fc2c4edc7fb715fba9bde8b57b5e458dc1082afd4cb09d3aba2dbfcab755c62",
+      "source_kind": "repository_tree",
+      "title": "Backend API source at bootstrap commit",
+      "type": "reference"
+    },
+    {
+      "description": "Repository-local raw handoff describing a separate forward-looking density prototype.",
+      "effective_freshness": "fresh",
+      "id": "reference.forward-density-handoff",
+      "lifecycle": "active",
+      "path": "okf/references/forward-density-handoff.md",
+      "semantic_hash": "sha256:9c0bb2c69b56c7c674989cb65562dda3d2bc06fd9b355079ed30d9fd30f3790c",
+      "source_kind": "repository_file",
+      "title": "Forward-density prototype handoff",
+      "type": "reference"
+    },
+    {
+      "description": "Repository-local snapshot of the frontend application and analysis presentation code.",
+      "effective_freshness": "fresh",
+      "id": "reference.frontend-source",
+      "lifecycle": "active",
+      "path": "okf/references/frontend-source.md",
+      "semantic_hash": "sha256:1588881bd656f0ce12c831001428edc27fb1cd37aab4b180a8a9e4fde30988c0",
+      "source_kind": "repository_tree",
+      "title": "Frontend source tree at bootstrap commit",
+      "type": "reference"
+    },
+    {
+      "description": "Primary GitHub issue specifying the intra-pattern spacing workstream.",
+      "effective_freshness": "fresh",
+      "id": "reference.github-issue-3",
+      "lifecycle": "active",
+      "path": "okf/references/github-issue-3.md",
+      "semantic_hash": "sha256:c904843f0e3ac166118ccfb2b45c19d447e6a3148ff173352d4478a665a763fe",
+      "source_kind": "github_issue",
+      "title": "GitHub issue 3 — intra-pattern spacing",
+      "type": "reference"
+    },
+    {
+      "description": "Closed primary GitHub issue specifying the 1000ms forward-density contract.",
+      "effective_freshness": "fresh",
+      "id": "reference.github-issue-4",
+      "lifecycle": "active",
+      "path": "okf/references/github-issue-4.md",
+      "semantic_hash": "sha256:66fc6665eaaebc1c38b71328fc17b1d7ff04ff2b0ce1671357a0693110d6e3d6",
+      "source_kind": "github_issue",
+      "title": "GitHub issue 4 — forward-looking note density",
+      "type": "reference"
+    },
+    {
+      "description": "Primary GitHub issue specifying the short-pattern angle distribution workstream.",
+      "effective_freshness": "fresh",
+      "id": "reference.github-issue-5",
+      "lifecycle": "active",
+      "path": "okf/references/github-issue-5.md",
+      "semantic_hash": "sha256:3dde20ff95705cda804d786a6fbfc2b7fe09a443217ef2c56600bc0c32a33251",
+      "source_kind": "github_issue",
+      "title": "GitHub issue 5 — intra-pattern angle distribution",
+      "type": "reference"
+    },
+    {
+      "description": "Primary GitHub issue specifying duration-based stream categories and final-buffer handling.",
+      "effective_freshness": "fresh",
+      "id": "reference.github-issue-6",
+      "lifecycle": "active",
+      "path": "okf/references/github-issue-6.md",
+      "semantic_hash": "sha256:18dd2c91d4a76b266d141d63e845316d6629860ae1a9c8a0bd46d5ce89af7172",
+      "source_kind": "github_issue",
+      "title": "GitHub issue 6 — duration-based stream categorization",
+      "type": "reference"
+    },
+    {
+      "description": "Repository-local snapshot of the project README used for high-level project identity and scope.",
+      "effective_freshness": "fresh",
+      "id": "reference.project-readme",
+      "lifecycle": "active",
+      "path": "okf/references/project-readme.md",
+      "semantic_hash": "sha256:2f8704464dfa1cdc6595b5c28fd4d030a0c265248b6831b71ed3884039a45e95",
+      "source_kind": "repository_file",
+      "title": "Project README at bootstrap commit",
+      "type": "reference"
+    },
+    {
+      "description": "Repository-local raw PRD describing pattern-aware reading metrics and a proposed forward-density window.",
+      "effective_freshness": "fresh",
+      "id": "reference.reading-analysis-prd",
+      "lifecycle": "active",
+      "path": "okf/references/reading-analysis-prd.md",
+      "semantic_hash": "sha256:0be4bcabeea524a1207b15193c26cc198f54ce40b41640245db5bfd038bfa694",
+      "source_kind": "repository_file",
+      "title": "Reading analysis PRD raw document",
+      "type": "reference"
+    },
+    {
+      "description": "Repository-local prototype source for spacing-transition and sequence-motor descriptors.",
+      "effective_freshness": "fresh",
+      "id": "reference.sequence-motor-prototype",
+      "lifecycle": "active",
+      "path": "okf/references/sequence-motor-prototype.md",
+      "semantic_hash": "sha256:46611dbf0d0871d1b4750ca17b0bb7f9f5ad0b723cb98f25d05d6e9bf8503f3d",
+      "source_kind": "repository_tree",
+      "title": "Sequence-motor prototype source",
+      "type": "reference"
+    },
+    {
+      "description": "Repository-local JSON sample containing prototype sections, tiers, geometry notes, and descriptor values.",
+      "effective_freshness": "fresh",
+      "id": "reference.sequence-motor-sample",
+      "lifecycle": "active",
+      "path": "okf/references/sequence-motor-sample.md",
+      "semantic_hash": "sha256:c13eec4b5802c057cc9971ce4251c090aafb44898756f9cecaa2934f52fd53e9",
+      "source_kind": "repository_file",
+      "title": "Sequence-motor prototype sample",
+      "type": "reference"
+    },
+    {
+      "description": "Repository-local raw handoff describing prototype findings and a proposed spacing-transition metric.",
+      "effective_freshness": "fresh",
+      "id": "reference.spacing-transition-handoff",
+      "lifecycle": "active",
+      "path": "okf/references/spacing-transition-handoff.md",
+      "semantic_hash": "sha256:f7e6bee2add3f0dfe9b7f7b7a78d81e5f3ed265dbd49dc1da410cdb4d6b1a3fd",
+      "source_kind": "repository_file",
+      "title": "Spacing transition demand handoff",
+      "type": "reference"
+    },
+    {
+      "description": "Bootstrap research record for reconciling two raw project proposals with different forward-density windows.",
+      "effective_freshness": "unknown",
+      "id": "research.forward-density-window-conflict",
+      "lifecycle": "draft",
+      "path": "okf/research/forward-density-window-conflict.md",
+      "research_question": "Which forward-density window, if any, is the accepted current project contract?",
+      "semantic_hash": "sha256:f7ce76301ffce2ce545c329d2ceca0aff0782284d129a22cd0fe62da341c85d8",
+      "title": "Forward-density window reconciliation",
+      "type": "research"
+    },
+    {
+      "description": "Bootstrap research record for what the sequence-motor prototype measures and leaves unmeasured.",
+      "effective_freshness": "unknown",
+      "id": "research.sequence-motor-prototype-limitations",
+      "lifecycle": "draft",
+      "path": "okf/research/sequence-motor-prototype-limitations.md",
+      "research_question": "Which parts of the prototype's observed pattern difficulty are represented by its spacing descriptors?",
+      "semantic_hash": "sha256:b136d8103e15b5e0ec038ef727daa925e15a8b4cfdc607698abb15c38ba7b360",
+      "title": "Sequence-motor prototype limitations",
+      "type": "research"
+    },
+    {
+      "description": "Bootstrap research record for a prototype comparing local spacing-transition descriptors.",
+      "effective_freshness": "unknown",
+      "id": "research.spacing-transition-demand",
+      "lifecycle": "draft",
+      "path": "okf/research/spacing-transition-demand.md",
+      "research_question": "Which local spacing-transition descriptor best preserves the prototype's intended comparison across pattern lengths?",
+      "semantic_hash": "sha256:7b8e552f6205e285659edd417f52d479e227c406cd82d02461290421b22cd291",
+      "title": "Spacing transition demand prototype",
+      "type": "research"
+    },
+    {
+      "behavior_claims": [
+        "analysis-modules"
+      ],
+      "description": "Rust backend analysis modules that derive beatmap characteristics and expose analysis data to the application.",
+      "effective_freshness": "fresh",
+      "id": "system.backend-analysis",
+      "lifecycle": "active",
+      "path": "okf/systems/backend-analysis.md",
+      "semantic_hash": "sha256:f39f1f9ac625d48e6362a48aa27ab4e9cbab59e6e357cd929e6fe523b1f13300",
+      "title": "Backend analysis system",
+      "type": "system"
+    },
+    {
+      "behavior_claims": [
+        "analysis-routes"
+      ],
+      "description": "Axum HTTP surface that serves health, beatmap details, and beatmap analysis responses.",
+      "effective_freshness": "fresh",
+      "id": "system.backend-http-api",
+      "lifecycle": "active",
+      "path": "okf/systems/backend-http-api.md",
+      "semantic_hash": "sha256:f86b5ea9655e6715d7d37be79cdbe3823002a9a534c2d6c456f2eaac0dcfcb9e",
+      "title": "Backend HTTP API",
+      "type": "system"
+    },
+    {
+      "behavior_claims": [
+        "profile-surfaces"
+      ],
+      "description": "Frontend application surfaces that present beatmap analysis results and category profiles.",
+      "effective_freshness": "fresh",
+      "id": "system.frontend-analysis-ui",
+      "lifecycle": "active",
+      "path": "okf/systems/frontend-analysis-ui.md",
+      "semantic_hash": "sha256:4c4e6bdd5861c369959486c078c0fcb4bc465640603d30fb3976546007567c99",
+      "title": "Frontend analysis UI",
+      "type": "system"
+    }
+  ]
+}

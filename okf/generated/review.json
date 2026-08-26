@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "id": "research.forward-density-window-conflict",
+      "kind": "draft",
+      "message": "draft knowledge is not settled current truth"
+    },
+    {
+      "id": "research.sequence-motor-prototype-limitations",
+      "kind": "draft",
+      "message": "draft knowledge is not settled current truth"
+    },
+    {
+      "id": "research.spacing-transition-demand",
+      "kind": "draft",
+      "message": "draft knowledge is not settled current truth"
+    },
+    {
+      "effective_freshness": "unknown",
+      "id": "research.forward-density-window-conflict",
+      "kind": "freshness"
+    },
+    {
+      "effective_freshness": "unknown",
+      "id": "research.sequence-motor-prototype-limitations",
+      "kind": "freshness"
+    },
+    {
+      "effective_freshness": "unknown",
+      "id": "research.spacing-transition-demand",
+      "kind": "freshness"
+    }
+  ]
+}
