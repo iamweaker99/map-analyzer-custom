@@ -11,3 +11,9 @@ maps/
 !.claude/skills/wiki-query/
 nul
 web_hosting_memory.md
+Keep_LOCAL/*
+docs/*
+AGENTS.md
+CONTEXT.md
+.tools/gh/gh.exe
+.tools/LICENSE
