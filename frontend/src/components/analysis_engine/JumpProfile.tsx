@@ -29,31 +29,31 @@ export function JumpProfile({ analysis }: { analysis: JumpAnalysis }) {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1">
                 <StatBar
-                    label="Narrow (&lt;20% / 76.8 px)"
+                    label="Narrow (&lt;20% / 102.4 px)"
                     value={analysis.absolute_short_count || 0}
                     total={totalAbsoluteDistances}
                     colorClass="bg-green-500"
                 />
                 <StatBar
-                    label="Moderate (&lt;40% / 153.6 px)"
+                    label="Moderate (&lt;40% / 204.8 px)"
                     value={analysis.absolute_medium_count || 0}
                     total={totalAbsoluteDistances}
                     colorClass="bg-blue-500"
                 />
                 <StatBar
-                    label="Wide (&lt;60% / 230.4 px)"
+                    label="Wide (&lt;60% / 307.2 px)"
                     value={analysis.absolute_long_count || 0}
                     total={totalAbsoluteDistances}
                     colorClass="bg-orange-500"
                 />
                 <StatBar
-                    label="Extreme (&lt;80% / 307.2 px)"
+                    label="Extreme (&lt;80% / 409.6 px)"
                     value={analysis.absolute_extreme_count || 0}
                     total={totalAbsoluteDistances}
                     colorClass="bg-red-500"
                 />
                 <StatBar
-                    label="Cross-Screen (&ge;80% / 307.2 px)"
+                    label="Cross-Screen (&ge;80% / 409.6 px)"
                     value={analysis.absolute_cross_screen_count || 0}
                     total={totalAbsoluteDistances}
                     colorClass="bg-red-500"

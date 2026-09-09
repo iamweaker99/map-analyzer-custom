@@ -3,6 +3,7 @@ use serde_json::{json, Value};
 
 pub fn analyze(movements: &[Movement], cs: f32, bpm: f64, total_obj: f64) -> Value {
     let d = get_diameter(cs);
+    let playfield_size = 512.0;
     let stream_threshold = (60000.0 / bpm / 4.0) * 1.5;
     let jump_rhythm_threshold = 60000.0 / bpm;
 
@@ -66,13 +67,13 @@ pub fn analyze(movements: &[Movement], cs: f32, bpm: f64, total_obj: f64) -> Val
                 current_chain_duration += m.time_gap;
                 jump_times.push(m.time_gap);
 
-                if m.distance < 76.8 {
+                if m.distance < playfield_size * 0.2 {
                     abs_short += 1;
-                } else if m.distance < 153.6 {
+                } else if m.distance < playfield_size * 0.4 {
                     abs_medium += 1;
-                } else if m.distance < 230.4 {
+                } else if m.distance < playfield_size * 0.6 {
                     abs_long += 1;
-                } else if m.distance < 307.2 {
+                } else if m.distance < playfield_size * 0.8 {
                     abs_extreme += 1;
                 } else {
                     abs_cross_screen += 1;
@@ -143,8 +144,8 @@ mod tests {
     }
 
     #[test]
-    fn classifies_jump_distances_against_playfield_height() {
-        let movements = [76.7, 76.8, 153.6, 230.4, 307.2].map(|distance| movement(500.0, distance));
+    fn classifies_jump_distances_against_512_pixel_reference() {
+        let movements = [102.3, 102.4, 204.8, 307.2, 409.6].map(|distance| movement(500.0, distance));
         let result = analyze(&movements, 4.0, 60.0, 6.0);
 
         assert_eq!(count(&result, "absolute_short_count"), 1);

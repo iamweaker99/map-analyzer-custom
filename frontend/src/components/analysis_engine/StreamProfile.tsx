@@ -27,7 +27,7 @@ export function StreamProfile({
             </li>
 
             <h3 className="text-sm font-semibold text-blue-400 mb-4">
-                Distance Profile (Density by Notes)
+                Spacing Profile (Based on Circle Diameter)
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1">
                 <StatBar
@@ -57,7 +57,7 @@ export function StreamProfile({
             </div>
 
             <h3 className="text-sm font-semibold text-blue-400 mb-4">
-                Variance Profile
+                Variance of Distance Profile
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1">
                 <StatBar
