@@ -1,0 +1,804 @@
+{
+  "metadata": {
+    "branch": "Stream_Analysis_duration-based",
+    "head": "83fd9e6608da3070deb0280b5b05d87da16468c0"
+  },
+  "aggregate": {
+    "total_cases": 20,
+    "positive_case_count": 16,
+    "expected_hit_count": 5,
+    "recall_at_1": {
+      "hits": 5,
+      "cases": 16,
+      "value": 0.3125
+    },
+    "recall_at_3": {
+      "hits": 5,
+      "cases": 16,
+      "value": 0.3125
+    },
+    "recall_at_5": {
+      "hits": 5,
+      "cases": 16,
+      "value": 0.3125
+    },
+    "negative_case_count": 4,
+    "negative_cases_correctly_empty": 3,
+    "negative_control_pass_rate": {
+      "passed": 3,
+      "cases": 4,
+      "value": 0.75
+    },
+    "false_positive_negative_cases": [
+      "noise-generic-analysis"
+    ],
+    "output_size": {
+      "average_bytes": 96.15,
+      "max_bytes": 468
+    },
+    "by_class": {
+      "body_only": {
+        "total": 2,
+        "expected_hit_count": 0,
+        "recall_at_1": {
+          "hits": 0,
+          "cases": 2,
+          "value": 0.0
+        },
+        "recall_at_3": {
+          "hits": 0,
+          "cases": 2,
+          "value": 0.0
+        },
+        "recall_at_5": {
+          "hits": 0,
+          "cases": 2,
+          "value": 0.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "claim_only": {
+        "total": 2,
+        "expected_hit_count": 0,
+        "recall_at_1": {
+          "hits": 0,
+          "cases": 2,
+          "value": 0.0
+        },
+        "recall_at_3": {
+          "hits": 0,
+          "cases": 2,
+          "value": 0.0
+        },
+        "recall_at_5": {
+          "hits": 0,
+          "cases": 2,
+          "value": 0.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "code_navigation": {
+        "total": 1,
+        "expected_hit_count": 0,
+        "recall_at_1": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "recall_at_3": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "recall_at_5": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "negative_control_pass_rate": {
+          "passed": 1,
+          "cases": 1,
+          "value": 1.0
+        }
+      },
+      "conflicting_research": {
+        "total": 1,
+        "expected_hit_count": 0,
+        "recall_at_1": {
+          "hits": 0,
+          "cases": 1,
+          "value": 0.0
+        },
+        "recall_at_3": {
+          "hits": 0,
+          "cases": 1,
+          "value": 0.0
+        },
+        "recall_at_5": {
+          "hits": 0,
+          "cases": 1,
+          "value": 0.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "decision_key": {
+        "total": 1,
+        "expected_hit_count": 1,
+        "recall_at_1": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "recall_at_3": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "recall_at_5": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "exact_id": {
+        "total": 1,
+        "expected_hit_count": 1,
+        "recall_at_1": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "recall_at_3": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "recall_at_5": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "exact_title": {
+        "total": 2,
+        "expected_hit_count": 2,
+        "recall_at_1": {
+          "hits": 2,
+          "cases": 2,
+          "value": 1.0
+        },
+        "recall_at_3": {
+          "hits": 2,
+          "cases": 2,
+          "value": 1.0
+        },
+        "recall_at_5": {
+          "hits": 2,
+          "cases": 2,
+          "value": 1.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "mixed": {
+        "total": 1,
+        "expected_hit_count": 0,
+        "recall_at_1": {
+          "hits": 0,
+          "cases": 1,
+          "value": 0.0
+        },
+        "recall_at_3": {
+          "hits": 0,
+          "cases": 1,
+          "value": 0.0
+        },
+        "recall_at_5": {
+          "hits": 0,
+          "cases": 1,
+          "value": 0.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "natural_language": {
+        "total": 3,
+        "expected_hit_count": 0,
+        "recall_at_1": {
+          "hits": 0,
+          "cases": 3,
+          "value": 0.0
+        },
+        "recall_at_3": {
+          "hits": 0,
+          "cases": 3,
+          "value": 0.0
+        },
+        "recall_at_5": {
+          "hits": 0,
+          "cases": 3,
+          "value": 0.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "no_match": {
+        "total": 2,
+        "expected_hit_count": 0,
+        "recall_at_1": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "recall_at_3": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "recall_at_5": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "negative_control_pass_rate": {
+          "passed": 2,
+          "cases": 2,
+          "value": 1.0
+        }
+      },
+      "noise_control": {
+        "total": 1,
+        "expected_hit_count": 0,
+        "recall_at_1": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "recall_at_3": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "recall_at_5": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 1,
+          "value": 0.0
+        }
+      },
+      "research_draft": {
+        "total": 1,
+        "expected_hit_count": 1,
+        "recall_at_1": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "recall_at_3": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "recall_at_5": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "source_only": {
+        "total": 2,
+        "expected_hit_count": 0,
+        "recall_at_1": {
+          "hits": 0,
+          "cases": 2,
+          "value": 0.0
+        },
+        "recall_at_3": {
+          "hits": 0,
+          "cases": 2,
+          "value": 0.0
+        },
+        "recall_at_5": {
+          "hits": 0,
+          "cases": 2,
+          "value": 0.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "exact-decision-id",
+      "class": "exact_id",
+      "query": "decision.forward-density-window",
+      "expected_ids": [
+        "decision.forward-density-window"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Exact active decision object ID.",
+      "operation": "retrieve",
+      "returned_ids": [
+        "decision.forward-density-window"
+      ],
+      "expected_found": true,
+      "negative_control_pass": false,
+      "actual_coverage": null,
+      "coverage_match": null,
+      "pass": true,
+      "best_expected_rank": 1,
+      "process_exit_status": 0,
+      "output_size": 100,
+      "stdout": "decision.forward-density-window [active; effective_freshness=fresh] Forward-density window contract\n",
+      "stderr": ""
+    },
+    {
+      "id": "exact-decision-key",
+      "class": "decision_key",
+      "query": "reading.forward-density-window",
+      "expected_ids": [
+        "decision.forward-density-window"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Exact active decision key.",
+      "operation": "retrieve",
+      "returned_ids": [
+        "decision.forward-density-window"
+      ],
+      "expected_found": true,
+      "negative_control_pass": false,
+      "actual_coverage": null,
+      "coverage_match": null,
+      "pass": true,
+      "best_expected_rank": 1,
+      "process_exit_status": 0,
+      "output_size": 100,
+      "stdout": "decision.forward-density-window [active; effective_freshness=fresh] Forward-density window contract\n",
+      "stderr": ""
+    },
+    {
+      "id": "exact-title-decision",
+      "class": "exact_title",
+      "query": "Forward-density window contract",
+      "expected_ids": [
+        "decision.forward-density-window"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Exact title-like lookup.",
+      "operation": "retrieve",
+      "returned_ids": [
+        "decision.forward-density-window"
+      ],
+      "expected_found": true,
+      "negative_control_pass": false,
+      "actual_coverage": null,
+      "coverage_match": null,
+      "pass": true,
+      "best_expected_rank": 1,
+      "process_exit_status": 0,
+      "output_size": 100,
+      "stdout": "decision.forward-density-window [active; effective_freshness=fresh] Forward-density window contract\n",
+      "stderr": ""
+    },
+    {
+      "id": "exact-title-system",
+      "class": "exact_title",
+      "query": "Frontend analysis UI",
+      "expected_ids": [
+        "system.frontend-analysis-ui"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Exact title-like lookup for a current system.",
+      "operation": "retrieve",
+      "returned_ids": [
+        "system.frontend-analysis-ui"
+      ],
+      "expected_found": true,
+      "negative_control_pass": false,
+      "actual_coverage": null,
+      "coverage_match": null,
+      "pass": true,
+      "best_expected_rank": 1,
+      "process_exit_status": 0,
+      "output_size": 85,
+      "stdout": "system.frontend-analysis-ui [active; effective_freshness=fresh] Frontend analysis UI\n",
+      "stderr": ""
+    },
+    {
+      "id": "natural-forward-density-window",
+      "class": "natural_language",
+      "query": "Why do we use a one second forward density window?",
+      "expected_ids": [
+        "decision.forward-density-window"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Natural-language recall of a known active decision.",
+      "operation": "retrieve",
+      "returned_ids": [],
+      "expected_found": false,
+      "negative_control_pass": false,
+      "actual_coverage": null,
+      "coverage_match": null,
+      "pass": false,
+      "best_expected_rank": null,
+      "process_exit_status": 0,
+      "output_size": 68,
+      "stdout": "No OKF match for Why do we use a one second forward density window?\n",
+      "stderr": ""
+    },
+    {
+      "id": "natural-spacing-transition",
+      "class": "natural_language",
+      "query": "What did we learn about spacing transition demand?",
+      "expected_ids": [
+        "research.spacing-transition-demand"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Natural-language recall of draft research.",
+      "operation": "retrieve",
+      "returned_ids": [],
+      "expected_found": false,
+      "negative_control_pass": false,
+      "actual_coverage": null,
+      "coverage_match": null,
+      "pass": false,
+      "best_expected_rank": null,
+      "process_exit_status": 0,
+      "output_size": 68,
+      "stdout": "No OKF match for What did we learn about spacing transition demand?\n",
+      "stderr": ""
+    },
+    {
+      "id": "natural-sequence-motor",
+      "class": "natural_language",
+      "query": "What are the limitations of the sequence motor prototype?",
+      "expected_ids": [
+        "research.sequence-motor-prototype-limitations"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Natural-language recall of draft research.",
+      "operation": "retrieve",
+      "returned_ids": [],
+      "expected_found": false,
+      "negative_control_pass": false,
+      "actual_coverage": null,
+      "coverage_match": null,
+      "pass": false,
+      "best_expected_rank": null,
+      "process_exit_status": 0,
+      "output_size": 75,
+      "stdout": "No OKF match for What are the limitations of the sequence motor prototype?\n",
+      "stderr": ""
+    },
+    {
+      "id": "claim-only-density-contract",
+      "class": "claim_only",
+      "query": "raw counts and no weighting or decay",
+      "expected_ids": [
+        "decision.forward-density-window"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Useful wording exists in the claim statement, not searchable description/title.",
+      "operation": "retrieve",
+      "returned_ids": [],
+      "expected_found": false,
+      "negative_control_pass": false,
+      "actual_coverage": null,
+      "coverage_match": null,
+      "pass": false,
+      "best_expected_rank": null,
+      "process_exit_status": 0,
+      "output_size": 54,
+      "stdout": "No OKF match for raw counts and no weighting or decay\n",
+      "stderr": ""
+    },
+    {
+      "id": "claim-only-geometry-limit",
+      "class": "claim_only",
+      "query": "geometry and abrupt-transition descriptions are not represented",
+      "expected_ids": [
+        "research.sequence-motor-prototype-limitations"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Useful wording exists in a research claim statement.",
+      "operation": "retrieve",
+      "returned_ids": [],
+      "expected_found": false,
+      "negative_control_pass": false,
+      "actual_coverage": null,
+      "coverage_match": null,
+      "pass": false,
+      "best_expected_rank": null,
+      "process_exit_status": 0,
+      "output_size": 81,
+      "stdout": "No OKF match for geometry and abrupt-transition descriptions are not represented\n",
+      "stderr": ""
+    },
+    {
+      "id": "body-only-current-contract",
+      "class": "body_only",
+      "query": "Implementation may treat the 1000ms raw-count contract as verified project guidance.",
+      "expected_ids": [
+        "decision.forward-density-window"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Useful wording exists in Markdown body content.",
+      "operation": "retrieve",
+      "returned_ids": [],
+      "expected_found": false,
+      "negative_control_pass": false,
+      "actual_coverage": null,
+      "coverage_match": null,
+      "pass": false,
+      "best_expected_rank": null,
+      "process_exit_status": 0,
+      "output_size": 102,
+      "stdout": "No OKF match for Implementation may treat the 1000ms raw-count contract as verified project guidance.\n",
+      "stderr": ""
+    },
+    {
+      "id": "body-only-frontend-wiring",
+      "class": "body_only",
+      "query": "passes results into analysis components",
+      "expected_ids": [
+        "system.frontend-analysis-ui"
+      ],
+      "expected_coverage": "source_only",
+      "notes": "Useful wording exists in Markdown body content.",
+      "operation": "retrieve",
+      "returned_ids": [],
+      "expected_found": false,
+      "negative_control_pass": false,
+      "actual_coverage": null,
+      "coverage_match": null,
+      "pass": false,
+      "best_expected_rank": null,
+      "process_exit_status": 0,
+      "output_size": 57,
+      "stdout": "No OKF match for passes results into analysis components\n",
+      "stderr": ""
+    },
+    {
+      "id": "draft-research-id",
+      "class": "research_draft",
+      "query": "research.spacing-transition-demand",
+      "expected_ids": [
+        "research.spacing-transition-demand"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Exact lookup of draft research must remain visible as draft knowledge.",
+      "operation": "retrieve",
+      "returned_ids": [
+        "research.spacing-transition-demand"
+      ],
+      "expected_found": true,
+      "negative_control_pass": false,
+      "actual_coverage": null,
+      "coverage_match": null,
+      "pass": true,
+      "best_expected_rank": 1,
+      "process_exit_status": 0,
+      "output_size": 108,
+      "stdout": "research.spacing-transition-demand [draft; effective_freshness=unknown] Spacing transition demand prototype\n",
+      "stderr": ""
+    },
+    {
+      "id": "competing-density-research",
+      "class": "conflicting_research",
+      "query": "What are the competing 1000ms and 3000ms forward density proposals?",
+      "expected_ids": [
+        "research.forward-density-window-conflict"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Known research object records competing proposals.",
+      "operation": "retrieve",
+      "returned_ids": [],
+      "expected_found": false,
+      "negative_control_pass": false,
+      "actual_coverage": null,
+      "coverage_match": null,
+      "pass": false,
+      "best_expected_rank": null,
+      "process_exit_status": 0,
+      "output_size": 85,
+      "stdout": "No OKF match for What are the competing 1000ms and 3000ms forward density proposals?\n",
+      "stderr": ""
+    },
+    {
+      "id": "known-decision-versus-implementation",
+      "class": "mixed",
+      "query": "Compare the documented density-window decision against the implementation.",
+      "expected_ids": [
+        "decision.forward-density-window"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Combines documented project knowledge with current-code inspection.",
+      "operation": "retrieve",
+      "returned_ids": [],
+      "expected_found": false,
+      "negative_control_pass": false,
+      "actual_coverage": null,
+      "coverage_match": null,
+      "pass": false,
+      "best_expected_rank": null,
+      "process_exit_status": 0,
+      "output_size": 92,
+      "stdout": "No OKF match for Compare the documented density-window decision against the implementation.\n",
+      "stderr": ""
+    },
+    {
+      "id": "source-only-stream-buffer",
+      "class": "source_only",
+      "query": "Does a stream at the end of the map get counted?",
+      "expected_ids": [
+        "reference.github-issue-6"
+      ],
+      "expected_coverage": "source_only",
+      "notes": "The issue reference exists, but the detail is not distilled into a semantic object.",
+      "operation": "retrieve",
+      "returned_ids": [],
+      "expected_found": false,
+      "negative_control_pass": false,
+      "actual_coverage": null,
+      "coverage_match": null,
+      "pass": false,
+      "best_expected_rank": null,
+      "process_exit_status": 0,
+      "output_size": 66,
+      "stdout": "No OKF match for Does a stream at the end of the map get counted?\n",
+      "stderr": ""
+    },
+    {
+      "id": "source-only-duration-rules",
+      "class": "source_only",
+      "query": "What are our duration-based stream rules?",
+      "expected_ids": [
+        "reference.github-issue-6"
+      ],
+      "expected_coverage": "source_only",
+      "notes": "The issue reference describes the workstream, without semantic claim coverage.",
+      "operation": "retrieve",
+      "returned_ids": [],
+      "expected_found": false,
+      "negative_control_pass": false,
+      "actual_coverage": null,
+      "coverage_match": null,
+      "pass": false,
+      "best_expected_rank": null,
+      "process_exit_status": 0,
+      "output_size": 59,
+      "stdout": "No OKF match for What are our duration-based stream rules?\n",
+      "stderr": ""
+    },
+    {
+      "id": "ordinary-code-navigation",
+      "class": "code_navigation",
+      "query": "Where is StreamProfile rendered?",
+      "expected_ids": [],
+      "expected_coverage": "none",
+      "notes": "Ordinary source navigation should not require OKF.",
+      "operation": "retrieve",
+      "returned_ids": [],
+      "expected_found": false,
+      "negative_control_pass": true,
+      "actual_coverage": null,
+      "coverage_match": null,
+      "pass": true,
+      "best_expected_rank": null,
+      "process_exit_status": 0,
+      "output_size": 50,
+      "stdout": "No OKF match for Where is StreamProfile rendered?\n",
+      "stderr": ""
+    },
+    {
+      "id": "no-match-database-policy",
+      "class": "no_match",
+      "query": "What is the database migration policy?",
+      "expected_ids": [],
+      "expected_coverage": "none",
+      "notes": "Unrelated project question.",
+      "operation": "retrieve",
+      "returned_ids": [],
+      "expected_found": false,
+      "negative_control_pass": true,
+      "actual_coverage": null,
+      "coverage_match": null,
+      "pass": true,
+      "best_expected_rank": null,
+      "process_exit_status": 0,
+      "output_size": 56,
+      "stdout": "No OKF match for What is the database migration policy?\n",
+      "stderr": ""
+    },
+    {
+      "id": "no-match-deployment-owner",
+      "class": "no_match",
+      "query": "Who owns production deployment?",
+      "expected_ids": [],
+      "expected_coverage": "none",
+      "notes": "Unrelated project question.",
+      "operation": "retrieve",
+      "returned_ids": [],
+      "expected_found": false,
+      "negative_control_pass": true,
+      "actual_coverage": null,
+      "coverage_match": null,
+      "pass": true,
+      "best_expected_rank": null,
+      "process_exit_status": 0,
+      "output_size": 49,
+      "stdout": "No OKF match for Who owns production deployment?\n",
+      "stderr": ""
+    },
+    {
+      "id": "noise-generic-analysis",
+      "class": "noise_control",
+      "query": "analysis",
+      "expected_ids": [],
+      "expected_coverage": "none",
+      "notes": "Generic term should expose whether description substring matching creates noise.",
+      "operation": "retrieve",
+      "returned_ids": [
+        "reference.backend-analysis-source",
+        "reference.frontend-source",
+        "system.backend-analysis",
+        "system.backend-http-api",
+        "system.frontend-analysis-ui"
+      ],
+      "expected_found": false,
+      "negative_control_pass": false,
+      "actual_coverage": null,
+      "coverage_match": null,
+      "pass": false,
+      "best_expected_rank": null,
+      "process_exit_status": 0,
+      "output_size": 468,
+      "stdout": "reference.backend-analysis-source [active; effective_freshness=fresh] Backend analysis source tree at bootstrap commit\nreference.frontend-source [active; effective_freshness=fresh] Frontend source tree at bootstrap commit\nsystem.backend-analysis [active; effective_freshness=fresh] Backend analysis system\nsystem.backend-http-api [active; effective_freshness=fresh] Backend HTTP API\nsystem.frontend-analysis-ui [active; effective_freshness=fresh] Frontend analysis UI\n",
+      "stderr": ""
+    }
+  ]
+}

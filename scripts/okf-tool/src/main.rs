@@ -22,6 +22,27 @@ const SEMANTIC_FIELDS: [&str; 6] = [
     "decisions",
     "references",
 ];
+const CONTEXT_RESULT_LIMIT: usize = 5;
+const CONTEXT_BODY_LIMIT: usize = 600;
+const CONTEXT_MIN_SCORE: i32 = 12;
+const CONTEXT_SEMANTIC_MIN_SCORE: i32 = 30;
+const CONTEXT_EXACT_ID_SCORE: i32 = 1000;
+const CONTEXT_EXACT_KEY_SCORE: i32 = 900;
+const CONTEXT_EXACT_TITLE_SCORE: i32 = 800;
+const CONTEXT_TITLE_WEIGHT: i32 = 12;
+const CONTEXT_CLAIM_WEIGHT: i32 = 10;
+const CONTEXT_DESCRIPTION_WEIGHT: i32 = 6;
+const CONTEXT_HEADING_WEIGHT: i32 = 8;
+const CONTEXT_BODY_WEIGHT: i32 = 3;
+const CONTEXT_ACTIVE_BONUS: i32 = 50;
+const CONTEXT_FRESH_BONUS: i32 = 10;
+const CONTEXT_CLAIM_LIMIT: usize = 3;
+const CONTEXT_CLAIM_LIMIT_CHARS: usize = 500;
+const CONTEXT_STOP_WORDS: [&str; 28] = [
+    "a", "an", "and", "are", "do", "does", "for", "how", "in", "is", "it", "of", "on", "or", "our",
+    "the", "this", "to", "use", "uses", "using", "what", "where", "why", "with", "project",
+    "current", "analysis",
+];
 const SESSION_HANDOFF_PATH: &str = "Keep_LOCAL/SESSION_HANDOFF.md";
 const SESSION_HANDOFF_TEMPLATE: &str = r#"# Workstream
 
@@ -174,6 +195,7 @@ fn main() {
         "check" => check(&args.collect::<Vec<_>>()),
         "rehash" => rehash(&args.collect::<Vec<_>>()),
         "retrieve" => retrieve(&args.collect::<Vec<_>>()),
+        "context" => context(&args.collect::<Vec<_>>()),
         "session-init" => session_init(&args.collect::<Vec<_>>()),
         "session-check" => session_check(&args.collect::<Vec<_>>()),
         "draft-init" => draft_init(&args.collect::<Vec<_>>()),
@@ -195,13 +217,14 @@ fn main() {
 }
 
 fn print_help() {
-    println!("Usage: scripts/okf <lint|generate|source-check|review|check|rehash|retrieve|session-init|session-check|draft-init>");
+    println!("Usage: scripts/okf <lint|generate|source-check|review|check|rehash|retrieve|context|session-init|session-check|draft-init>");
     println!("  lint         validate semantic objects (use --history in CI)");
     println!("  generate     write deterministic views (use --check in CI)");
     println!("  source-check check repository-local References");
     println!("  review       display review conditions");
     println!("  check        run the read-only CI validation sequence");
     println!("  rehash       recompute derived hashes (use --write to modify objects)");
+    println!("  context      return bounded lexical OKF context for a natural-language query");
     println!("  session-init create the operational handoff template if absent");
     println!("  session-check validate the handoff and run the read-only OKF checks");
     println!("  draft-init   create a non-active draft semantic object");
@@ -1068,6 +1091,314 @@ fn retrieve(args: &[String]) -> Result<CommandOutcome, String> {
         }
     }
     Ok(CommandOutcome::Clean)
+}
+
+#[derive(Debug)]
+struct ContextMatch<'a> {
+    document: &'a SemanticDocument,
+    score: i32,
+    matched_fields: Vec<&'static str>,
+    matched_claims: Vec<String>,
+}
+
+fn context(args: &[String]) -> Result<CommandOutcome, String> {
+    let (documents, _) = load_documents()?;
+    let query =
+        option_value(args, "--query")?.ok_or_else(|| "context requires --query".to_string())?;
+    let query_tokens = meaningful_tokens(&query);
+    let mut matches = documents
+        .iter()
+        .filter_map(|document| score_context_match(document, &query, &query_tokens))
+        .collect::<Vec<_>>();
+    matches.sort_by(|left, right| {
+        right
+            .score
+            .cmp(&left.score)
+            .then_with(|| lifecycle_rank(left.document).cmp(&lifecycle_rank(right.document)))
+            .then_with(|| object_id(left.document).cmp(object_id(right.document)))
+    });
+    matches.truncate(CONTEXT_RESULT_LIMIT);
+
+    println!("OKF CONTEXT");
+    println!("query: {query}");
+    if matches.is_empty() {
+        println!("coverage: none");
+        println!("No OKF context matched the relevance threshold.");
+        return Ok(CommandOutcome::Clean);
+    }
+    let coverage = context_coverage(&matches);
+    println!("coverage: {coverage}");
+    for (rank, matched) in matches.iter().enumerate() {
+        let document = matched.document;
+        let id = object_id(document);
+        let lifecycle = document
+            .frontmatter
+            .get("lifecycle")
+            .and_then(Value::as_str)
+            .unwrap_or_default();
+        let title = document
+            .frontmatter
+            .get("title")
+            .and_then(Value::as_str)
+            .unwrap_or_default();
+        let verified = document.frontmatter.contains_key("verified");
+        println!(
+            "OKF_CONTEXT_OBJECT {id} rank={} score={} lifecycle={} freshness={} verified={} title={}",
+            rank + 1,
+            matched.score,
+            lifecycle,
+            effective_freshness(id, &documents),
+            if verified { "yes" } else { "no" },
+            title
+        );
+        println!("matched_fields: {}", matched.matched_fields.join(","));
+        for claim in &matched.matched_claims {
+            println!("claim: {claim}");
+        }
+        let excerpt = relevant_body_excerpt(&document.body, &query_tokens);
+        if !excerpt.is_empty() {
+            println!("body: {excerpt}");
+        }
+    }
+    Ok(CommandOutcome::Clean)
+}
+
+fn context_coverage(matches: &[ContextMatch<'_>]) -> &'static str {
+    if matches.iter().any(|matched| {
+        object_type(matched.document) != "reference"
+            && matched.score - context_state_score(matched.document) >= CONTEXT_SEMANTIC_MIN_SCORE
+    }) {
+        "semantic"
+    } else {
+        "source_only"
+    }
+}
+
+fn score_context_match<'a>(
+    document: &'a SemanticDocument,
+    query: &str,
+    query_tokens: &[String],
+) -> Option<ContextMatch<'a>> {
+    let id = object_id(document);
+    let decision_key = document
+        .frontmatter
+        .get("decision_key")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
+    let title = document
+        .frontmatter
+        .get("title")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
+    let description = document
+        .frontmatter
+        .get("description")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
+    let query_normalized = normalized_text(query);
+    let mut score = 0;
+    let mut matched_fields = Vec::new();
+    let mut matched_claims = Vec::new();
+
+    if query.eq_ignore_ascii_case(id) {
+        score += CONTEXT_EXACT_ID_SCORE;
+        matched_fields.push("id");
+    }
+    if !decision_key.is_empty() && query.eq_ignore_ascii_case(decision_key) {
+        score += CONTEXT_EXACT_KEY_SCORE;
+        matched_fields.push("decision_key");
+    }
+    if !title.is_empty() && normalized_text(title) == query_normalized {
+        score += CONTEXT_EXACT_TITLE_SCORE;
+        matched_fields.push("title");
+    }
+
+    if query_tokens.is_empty() && score == 0 {
+        return None;
+    }
+    let (title_score, title_matches) = lexical_score(query_tokens, title, CONTEXT_TITLE_WEIGHT);
+    if title_matches > 0 {
+        score += title_score;
+        matched_fields.push("title");
+    }
+    let (description_score, description_matches) =
+        lexical_score(query_tokens, description, CONTEXT_DESCRIPTION_WEIGHT);
+    if description_matches > 0 {
+        score += description_score;
+        matched_fields.push("description");
+    }
+    if let Some(claims) = document
+        .frontmatter
+        .get("claims")
+        .and_then(Value::as_sequence)
+    {
+        for claim in claims {
+            let statement = claim
+                .get("statement")
+                .and_then(Value::as_str)
+                .unwrap_or_default();
+            let (claim_score, claim_matches) =
+                lexical_score(query_tokens, statement, CONTEXT_CLAIM_WEIGHT);
+            if claim_matches > 0 {
+                score += claim_score;
+                matched_fields.push("claim");
+                matched_claims.push(bounded_text(statement, CONTEXT_CLAIM_LIMIT_CHARS));
+            }
+        }
+    }
+    let headings = document
+        .body
+        .lines()
+        .filter(|line| line.trim_start().starts_with('#'))
+        .collect::<Vec<_>>()
+        .join(" ");
+    let (heading_score, heading_matches) =
+        lexical_score(query_tokens, &headings, CONTEXT_HEADING_WEIGHT);
+    if heading_matches > 0 {
+        score += heading_score;
+        matched_fields.push("heading");
+    }
+    let (body_score, body_matches) =
+        lexical_score(query_tokens, &document.body, CONTEXT_BODY_WEIGHT);
+    if body_matches > 0 {
+        score += body_score;
+        matched_fields.push("body");
+    }
+    if score < CONTEXT_MIN_SCORE {
+        return None;
+    }
+    score += context_state_score(document);
+    matched_claims.sort();
+    matched_claims.dedup();
+    matched_claims.truncate(CONTEXT_CLAIM_LIMIT);
+    Some(ContextMatch {
+        document,
+        score,
+        matched_fields,
+        matched_claims,
+    })
+}
+
+fn object_id(document: &SemanticDocument) -> &str {
+    document
+        .frontmatter
+        .get("id")
+        .and_then(Value::as_str)
+        .unwrap_or_default()
+}
+
+fn object_type(document: &SemanticDocument) -> &str {
+    document
+        .frontmatter
+        .get("type")
+        .and_then(Value::as_str)
+        .unwrap_or_default()
+}
+
+fn lifecycle_rank(document: &SemanticDocument) -> u8 {
+    match document
+        .frontmatter
+        .get("lifecycle")
+        .and_then(Value::as_str)
+        .unwrap_or_default()
+    {
+        "active" => 0,
+        "draft" => 1,
+        "deprecated" => 2,
+        _ => 3,
+    }
+}
+
+fn context_state_score(document: &SemanticDocument) -> i32 {
+    let lifecycle_score = if document
+        .frontmatter
+        .get("lifecycle")
+        .and_then(Value::as_str)
+        == Some("active")
+    {
+        CONTEXT_ACTIVE_BONUS
+    } else {
+        0
+    };
+    let freshness_score = if document
+        .frontmatter
+        .get("freshness")
+        .and_then(|value| value.get("state"))
+        .and_then(Value::as_str)
+        == Some("fresh")
+    {
+        CONTEXT_FRESH_BONUS
+    } else {
+        0
+    };
+    lifecycle_score + freshness_score
+}
+
+fn lexical_score(query_tokens: &[String], text: &str, weight: i32) -> (i32, usize) {
+    let text_tokens = normalized_tokens(text);
+    let matches = query_tokens
+        .iter()
+        .filter(|token| text_tokens.contains(token))
+        .count();
+    ((matches as i32) * weight, matches)
+}
+
+fn meaningful_tokens(text: &str) -> Vec<String> {
+    normalized_tokens(text)
+        .into_iter()
+        .filter(|token| token.len() > 2 && !CONTEXT_STOP_WORDS.contains(&token.as_str()))
+        .collect()
+}
+
+fn normalized_tokens(text: &str) -> Vec<String> {
+    let mut tokens = Vec::new();
+    let mut current = String::new();
+    for character in text.chars() {
+        if character.is_ascii_alphanumeric() {
+            current.push(character.to_ascii_lowercase());
+        } else if !current.is_empty() {
+            tokens.push(std::mem::take(&mut current));
+        }
+    }
+    if !current.is_empty() {
+        tokens.push(current);
+    }
+    tokens
+}
+
+fn normalized_text(text: &str) -> String {
+    normalized_tokens(text).join(" ")
+}
+
+fn bounded_text(text: &str, limit: usize) -> String {
+    let mut bounded = text.to_string();
+    if bounded.len() > limit {
+        bounded.truncate(limit);
+        bounded.push_str("...");
+    }
+    bounded
+}
+
+fn relevant_body_excerpt(body: &str, query_tokens: &[String]) -> String {
+    let mut lines = body
+        .lines()
+        .filter(|line| {
+            query_tokens
+                .iter()
+                .any(|token| normalized_tokens(line).contains(token))
+        })
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+        .collect::<Vec<_>>();
+    if lines.is_empty() {
+        lines = body
+            .lines()
+            .map(str::trim)
+            .filter(|line| !line.is_empty())
+            .take(2)
+            .collect();
+    }
+    bounded_text(&lines.join(" "), CONTEXT_BODY_LIMIT)
 }
 
 fn load_documents() -> Result<(Vec<SemanticDocument>, Registries), String> {
@@ -3213,6 +3544,98 @@ mod tests {
     fn body_normalization_is_deterministic() {
         assert_eq!(normalize_body("a  \r\n\r\n"), "a\n");
         assert_eq!(normalize_body(""), "");
+    }
+
+    #[test]
+    fn context_ignores_generic_words() {
+        assert!(meaningful_tokens("analysis").is_empty());
+        assert!(score_context_match(&sample(), "analysis", &[]).is_none());
+    }
+
+    #[test]
+    fn context_scores_claim_and_body_terms() {
+        let mut document = sample();
+        document.frontmatter.insert(
+            Value::String("claims".into()),
+            serde_yaml::from_str(
+                "- id: finding\n  lifecycle: draft\n  statement: Raw counts use no weighting\n  load_bearing: true\n  semantic_hash: sha256:0000000000000000000000000000000000000000000000000000000000000000",
+            )
+            .unwrap(),
+        );
+        let claim_query = meaningful_tokens("raw counts no weighting");
+        let claim_match = score_context_match(&document, "raw counts no weighting", &claim_query)
+            .expect("claim terms should match");
+        assert!(claim_match.matched_fields.contains(&"claim"));
+
+        let body_query = meaningful_tokens("beatmap entity");
+        let body_match = score_context_match(&document, "beatmap entity", &body_query)
+            .expect("body terms should match");
+        assert!(body_match.matched_fields.contains(&"body"));
+    }
+
+    #[test]
+    fn context_coverage_uses_any_semantic_match() {
+        let mut reference = sample();
+        reference.frontmatter.insert(
+            Value::String("type".into()),
+            Value::String("reference".into()),
+        );
+        let mut research = sample();
+        research.frontmatter.insert(
+            Value::String("type".into()),
+            Value::String("research".into()),
+        );
+        let matches = vec![
+            ContextMatch {
+                document: &reference,
+                score: 100,
+                matched_fields: vec!["title"],
+                matched_claims: Vec::new(),
+            },
+            ContextMatch {
+                document: &research,
+                score: 30,
+                matched_fields: vec!["claim"],
+                matched_claims: Vec::new(),
+            },
+        ];
+        assert_eq!(context_coverage(&matches), "semantic");
+    }
+
+    #[test]
+    fn context_coverage_keeps_reference_only_matches_source_only() {
+        let mut weak_semantic = sample();
+        weak_semantic
+            .frontmatter
+            .insert(Value::String("type".into()), Value::String("system".into()));
+        weak_semantic.frontmatter.insert(
+            Value::String("lifecycle".into()),
+            Value::String("active".into()),
+        );
+        let mut second = sample();
+        second.frontmatter.insert(
+            Value::String("id".into()),
+            Value::String("reference.other".into()),
+        );
+        second.frontmatter.insert(
+            Value::String("type".into()),
+            Value::String("reference".into()),
+        );
+        let matches = vec![
+            ContextMatch {
+                document: &second,
+                score: 100,
+                matched_fields: vec!["body"],
+                matched_claims: Vec::new(),
+            },
+            ContextMatch {
+                document: &weak_semantic,
+                score: context_state_score(&weak_semantic) + 20,
+                matched_fields: vec!["claim"],
+                matched_claims: Vec::new(),
+            },
+        ];
+        assert_eq!(context_coverage(&matches), "source_only");
     }
 
     #[test]
