@@ -81,6 +81,7 @@ pub struct StreamAnalysis {
     pub long_streams: i32,
     pub death_streams: i32,
     pub max_stream_length: i32,
+    pub max_stream_duration: f64,
     pub bpm_consistency: f64,
     pub circle_diameter: f64,
 }

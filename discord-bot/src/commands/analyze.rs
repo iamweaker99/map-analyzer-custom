@@ -201,7 +201,7 @@ pub fn build_embed(
             .map(|data| embeds::jump::build(data))
             .unwrap_or_else(|| {
                 serenity::all::CreateEmbed::new()
-                    .title("Jump Analysis")
+                    .title("Jumps")
                     .description("Data unavailable.")
                     .color(0xec4899)
             }),
@@ -211,7 +211,7 @@ pub fn build_embed(
             .map(|data| embeds::stream::build(data))
             .unwrap_or_else(|| {
                 serenity::all::CreateEmbed::new()
-                    .title("Stream Analysis")
+                    .title("Streams")
                     .description("Data unavailable.")
                     .color(0x3b82f6)
             }),

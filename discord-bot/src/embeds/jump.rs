@@ -35,7 +35,7 @@ pub fn build(data: &JumpAnalysis) -> CreateEmbed {
     };
 
     let dist = format!(
-        "Narrow (<20% / 76.8 px): {} ({:.1}%)\nModerate (<40% / 153.6 px): {} ({:.1}%)\nWide (<60% / 230.4 px): {} ({:.1}%)\nExtreme (<80% / 307.2 px): {} ({:.1}%)\nCross-Screen (≥80% / 307.2 px): {} ({:.1}%)",
+        "Narrow (<20% / 102.4 px): {} ({:.1}%)\nModerate (<40% / 204.8 px): {} ({:.1}%)\nWide (<60% / 307.2 px): {} ({:.1}%)\nExtreme (<80% / 409.6 px): {} ({:.1}%)\nCross-Screen (≥80% / 409.6 px): {} ({:.1}%)",
         data.absolute_short_count, distance_pct(data.absolute_short_count),
         data.absolute_medium_count, distance_pct(data.absolute_medium_count),
         data.absolute_long_count, distance_pct(data.absolute_long_count),
@@ -44,7 +44,7 @@ pub fn build(data: &JumpAnalysis) -> CreateEmbed {
     );
 
     let chains = format!(
-        "Short (<1s): {}\nMedium (<2s): {}\nLong (<4s): {}\nExtreme (≥4s): {}\nMax chain: **{} notes / {:.1}s**",
+        "Short (<1s): {}\nMedium (<2s): {}\nLong (<4s): {}\nExtreme (≥4s): {}\nMax jump chain: **{} notes / {:.1}s**",
         data.duration_short_chains,
         data.duration_medium_chains,
         data.duration_long_chains,
@@ -56,15 +56,15 @@ pub fn build(data: &JumpAnalysis) -> CreateEmbed {
     let bpm_bar = progress_bar(data.bpm_consistency, 10);
 
     CreateEmbed::new()
-        .title("Jump Analysis")
+        .title("Jumps")
         .color(0xec4899)
         .field(
             "Spacing",
             format!("**{}** ({:.1} px)", tag, data.avg_spacing),
             true,
         )
-        .field("Distance Profile", dist, false)
-        .field("Jump Chains", chains, true)
+        .field("Distance Profile (Excluding Streams)", dist, false)
+        .field("Jump Chain Profile", chains, true)
         .field(
             "BPM Consistency",
             format!("{} {:.1}%", bpm_bar, data.bpm_consistency * 100.0),
