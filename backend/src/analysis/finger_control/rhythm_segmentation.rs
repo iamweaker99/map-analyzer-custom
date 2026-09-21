@@ -38,12 +38,6 @@ use super::snap_filter;
 /// Previously 0.5 ≈ a snap ratio change of 1.4×.
 const R_THRESHOLD: f64 = 0.35;
 
-/// Temporal discontinuity threshold. |T| above this → pattern boundary.
-///
-/// Same numeric value as R_THRESHOLD for direct comparison (T and R are
-/// equivalent on single-BPM maps and diverge only at BPM transitions).
-const T_THRESHOLD: f64 = 0.35;
-
 /// Engulf proximity = 2× the circle diameter — one "note's worth" of space.
 /// (2026-08-10: 25px was too strict — trailing slider heads measured 38.9–
 /// 116px in vs ≥185px out.)
@@ -321,69 +315,6 @@ pub fn extract_pattern_indices(map: &Beatmap) -> Vec<(Pattern, Range<usize>)> {
                 if boundary_idx < n {
                     is_boundary[boundary_idx] = true;
                 }
-            }
-        }
-    }
-
-    // Asymmetric type-boundary rules
-    apply_exp_type_rules(map, &kinds, &mut is_boundary);
-
-    group_into_patterns(objects, &times, timings, &kinds, &is_boundary)
-}
-
-// ── T-Based Segmentation ────────────────────────────────────────────────────
-
-/// Extract pattern indices using gap-threshold + temporal-discontinuity (T) +
-/// asymmetric type-boundary rules.
-///
-/// T = |log₂(Δt₂ / Δt₁)| — a pure time-ratio discontinuity computed from
-/// raw note timestamps, without any BPM/timing-point information.
-///
-/// Useful for comparison against R-based segmentation:
-/// - On single-BPM maps T and R produce identical results.
-/// - On multi-BPM maps T introduces false boundaries at BPM transitions
-///   (where the timing point changes but the snapped rhythm hasn't).
-pub fn extract_pattern_indices_temporal(map: &Beatmap) -> Vec<(Pattern, Range<usize>)> {
-    let objects = &map.hit_objects;
-    let timings = &map.timing_points;
-    let n = objects.len();
-
-    if n == 0 {
-        return Vec::new();
-    }
-
-    let times: Vec<f64> = objects.iter().map(|o| o.start_time).collect();
-    let kinds: Vec<ObjKind> = objects.iter().map(obj_kind).collect();
-
-    // ── Boundary Detection ─────────────────────────────────────────────────
-    let mut is_boundary = vec![false; n];
-    is_boundary[0] = true;
-
-    // Gap threshold (same as R-based)
-    for i in 0..n.saturating_sub(1) {
-        let gap = times[i + 1] - times[i];
-        let beat_len = snap_filter::timing_point_at(timings, times[i + 1])
-            .map_or(500.0, |tp| tp.beat_len);
-        let gap_threshold = beat_len / 2.0 + 10.0;
-        if gap > gap_threshold {
-            is_boundary[i + 1] = true;
-        }
-    }
-
-    // Temporal discontinuity: T = |log₂(Δt₂ / Δt₁)| at middle note k —
-    // skipped at slider→circle transition windows (see `skip_discontinuity`)
-    for k in 1..n.saturating_sub(1) {
-        if skip_discontinuity(&kinds, k) {
-            continue;
-        }
-        let dt1 = times[k] - times[k - 1];
-        let dt2 = times[k + 1] - times[k];
-        let t = if dt1 > 0.0 { (dt2 / dt1).log2().abs() } else { 0.0 };
-        let t = if t.is_finite() { t } else { 0.0 };
-        if t > T_THRESHOLD {
-            let boundary_idx = k + 1;
-            if boundary_idx < n {
-                is_boundary[boundary_idx] = true;
             }
         }
     }
