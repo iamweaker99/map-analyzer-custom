@@ -1,19 +1,9 @@
 {
   "items": [
     {
-      "id": "research.forward-density-window-conflict",
-      "kind": "draft",
-      "message": "draft knowledge is not settled current truth"
-    },
-    {
-      "id": "research.sequence-motor-prototype-limitations",
-      "kind": "draft",
-      "message": "draft knowledge is not settled current truth"
-    },
-    {
-      "id": "research.spacing-transition-demand",
-      "kind": "draft",
-      "message": "draft knowledge is not settled current truth"
+      "effective_freshness": "unknown",
+      "id": "decision.reading-analysis-methodology",
+      "kind": "freshness"
     },
     {
       "effective_freshness": "unknown",

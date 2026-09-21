@@ -3,7 +3,7 @@ id: reference.sequence-motor-sample
 type: reference
 title: Sequence-motor prototype sample
 description: Repository-local JSON sample containing prototype sections, tiers, geometry notes, and descriptor values.
-lifecycle: active
+lifecycle: deprecated
 created_at: 2026-08-25T00:00:00Z
 updated_at: 2026-08-25T11:49:57Z
 generated:
@@ -16,10 +16,10 @@ source:
   snapshot:
     commit: 138c45fe4cf52c269b5c3b3a02244afba6739577
     blob_sha: 688868e2a0165c0ba91c4973b7ec944204ff51a3
-semantic_hash: sha256:c13eec4b5802c057cc9971ce4251c090aafb44898756f9cecaa2934f52fd53e9
+semantic_hash: sha256:9a64bd927015375a473e9e799e841c40f1eeff8c4e26a2af466fe36ef7ceaf17
 freshness:
   state: fresh
   checked_at: 2026-08-25T11:49:57Z
 ---
 
-Anchored prototype output evidence. It is preserved as evidence, not as a current Decision or difficulty authority.
+Anchored historical prototype output evidence. Deprecated because sequence-motor descriptors were not validated as upstream-grounded difficulty-evaluation signals; it is preserved as evidence, not as current difficulty authority.

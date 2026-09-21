@@ -32,7 +32,7 @@ pub fn build(data: &StreamAnalysis) -> CreateEmbed {
     );
 
     let len = format!(
-        "Burst (0.5-1s): {}\nShort (1-2s): {}\nMedium (2-4s): {}\nLong (4-6s): {}\nDeathstream (6s+): {}",
+        "Burst (0.45-1s): {}\nShort (1-2s): {}\nMedium (2-4s): {}\nLong (4-6s): {}\nDeathstream (6s+): {}",
         data.bursts, data.short_streams, data.medium_streams, data.long_streams, data.death_streams
     );
 

@@ -3,7 +3,7 @@ id: reference.forward-density-handoff
 type: reference
 title: Forward-density prototype handoff
 description: Repository-local raw handoff describing a separate forward-looking density prototype.
-lifecycle: active
+lifecycle: deprecated
 created_at: 2026-08-25T00:00:00Z
 updated_at: 2026-08-25T11:49:57Z
 generated:
@@ -16,10 +16,10 @@ source:
   snapshot:
     commit: 138c45fe4cf52c269b5c3b3a02244afba6739577
     blob_sha: 9e0014e9158368a98bf2f43a86e448372242acc7
-semantic_hash: sha256:9c0bb2c69b56c7c674989cb65562dda3d2bc06fd9b355079ed30d9fd30f3790c
+semantic_hash: sha256:2e28171f91dd4442dd16a5ec0d1e780ec3b6abe65781ab05fd5b510994b7023d
 freshness:
   state: fresh
   checked_at: 2026-08-25T11:49:57Z
 ---
 
-Anchored raw project evidence. It is not treated as current implementation behavior.
+Anchored historical raw project evidence. Deprecated because forward-density was not validated as an upstream-grounded difficulty-evaluation signal and must not guide current implementation.

@@ -3,7 +3,7 @@ id: reference.spacing-transition-handoff
 type: reference
 title: Spacing transition demand handoff
 description: Repository-local raw handoff describing prototype findings and a proposed spacing-transition metric.
-lifecycle: active
+lifecycle: deprecated
 created_at: 2026-08-25T00:00:00Z
 updated_at: 2026-08-25T11:49:57Z
 generated:
@@ -16,10 +16,10 @@ source:
   snapshot:
     commit: 138c45fe4cf52c269b5c3b3a02244afba6739577
     blob_sha: c040497bccbcb8180ebf1cd0289f1d9b19640c52
-semantic_hash: sha256:f7e6bee2add3f0dfe9b7f7b7a78d81e5f3ed265dbd49dc1da410cdb4d6b1a3fd
+semantic_hash: sha256:e7133cf6613bdcd01f4e9ff8dbd55f37531cf4a58df3caffafbc7d065b498a71
 freshness:
   state: fresh
   checked_at: 2026-08-25T11:49:57Z
 ---
 
-Anchored raw project evidence. It is not treated as current implementation behavior or an accepted Decision.
+Anchored historical raw project evidence. Deprecated because spacing-transition descriptors were not validated as upstream-grounded difficulty-evaluation signals and must not guide current implementation.

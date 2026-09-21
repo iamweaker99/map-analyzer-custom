@@ -3,21 +3,21 @@ id: decision.forward-density-window
 type: decision
 title: Forward-density window contract
 description: Accepted project decision for the forward-density window specified by the closed primary issue.
-lifecycle: active
+lifecycle: deprecated
 created_at: 2026-08-25T00:00:00Z
-updated_at: "2026-08-26T04:11:20Z"
+updated_at: 2026-08-26T04:11:20Z
 generated:
   by: process:okf-bootstrap/v1
   at: 2026-08-25T00:00:00Z
 freshness:
   state: fresh
-  checked_at: "2026-08-26T04:11:20Z"
+  checked_at: 2026-08-26T04:11:20Z
 decision_key: reading.forward-density-window
 decision_claim: window-size
 decided_at: 2026-08-25T12:00:14Z
 claims:
 - id: window-size
-  lifecycle: active
+  lifecycle: deprecated
   statement: The primary closed GitHub issue specifies a 1000ms forward-looking note-density window, with raw counts and no weighting or decay.
   load_bearing: true
   relations:
@@ -29,7 +29,7 @@ claims:
       object: research.forward-density-window-conflict
       claim: handoff-window
   semantic_hash: sha256:1a915dc0f0b608b3dbbda5681c22e8f6c3021803f51ea10169a4a1509b43ec18
-semantic_hash: sha256:d189a8cd31892cabd97aa437f8d5edf995fd457fa9cca10c271cb1631c5d46fd
+semantic_hash: sha256:861085090216607b4098c59690a3672015b14871f015861c5e64c3ae41a4eef1
 verified:
 - by: human:iamweaker99
   at: 2026-08-25T12:00:14Z
@@ -57,4 +57,4 @@ The 3000ms proposal remains captured in draft research and has not been silently
 
 ## Consequences
 
-Implementation may treat the 1000ms raw-count contract as verified project guidance.
+This decision is deprecated because reading analysis is moving to signals grounded in osu! developers' established difficulty-evaluation work; the forward-density experiment was not validated as an upstream-grounded signal.
