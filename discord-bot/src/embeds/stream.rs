@@ -32,19 +32,23 @@ pub fn build(data: &StreamAnalysis) -> CreateEmbed {
     );
 
     let len = format!(
-        "Bursts (3-4): {}\nShort (5-12): {}\nMedium (13-24): {}\nLong (25-48): {}\nDeathstream (49+): {}",
+        "Burst (0.45-1s): {}\nShort (1-2s): {}\nMedium (2-4s): {}\nLong (4-6s): {}\nDeathstream (6s+): {}",
         data.bursts, data.short_streams, data.medium_streams, data.long_streams, data.death_streams
     );
 
     let bpm_bar = progress_bar(data.bpm_consistency, 10);
 
     CreateEmbed::new()
-        .title("Stream Analysis")
+        .title("Streams")
         .color(0x3b82f6)
         .field("Type", format!("**{}** ({:.1} px)", tag, data.avg_stream_spacing), true)
-        .field("Distance Profile", dist, false)
-        .field("Variance Profile", var, false)
+        .field("Spacing Profile (Based on Circle Diameter)", dist, false)
+        .field("Variance of Distance Profile", var, false)
         .field("Length Profile", len, true)
-        .field("Max Stream", format!("**{} notes**", data.max_stream_length), true)
+        .field(
+            "Max stream",
+            format!("{:.1}s / {} notes", data.max_stream_duration, data.max_stream_length),
+            true,
+        )
         .field("BPM Consistency", format!("{} {:.1}%", bpm_bar, data.bpm_consistency * 100.0), true)
 }

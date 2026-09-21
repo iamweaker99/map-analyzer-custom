@@ -1,0 +1,19 @@
+{
+  "description": "Project-local OKF read preflight.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/user-prompt-submit.js\"",
+            "commandWindows": "node .codex/hooks/user-prompt-submit.js",
+            "timeout": 20,
+            "additionalContextLimit": 2500,
+            "statusMessage": "Retrieving OKF project memory"
+          }
+        ]
+      }
+    ]
+  }
+}

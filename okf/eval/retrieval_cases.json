@@ -1,0 +1,162 @@
+[
+  {
+    "id": "exact-decision-id",
+    "class": "exact_id",
+    "query": "decision.forward-density-window",
+    "expected_ids": ["decision.forward-density-window"],
+    "expected_coverage": "semantic",
+    "notes": "Exact active decision object ID."
+  },
+  {
+    "id": "exact-decision-key",
+    "class": "decision_key",
+    "query": "reading.forward-density-window",
+    "expected_ids": ["decision.forward-density-window"],
+    "expected_coverage": "semantic",
+    "notes": "Exact active decision key."
+  },
+  {
+    "id": "exact-title-decision",
+    "class": "exact_title",
+    "query": "Forward-density window contract",
+    "expected_ids": ["decision.forward-density-window"],
+    "expected_coverage": "semantic",
+    "notes": "Exact title-like lookup."
+  },
+  {
+    "id": "exact-title-system",
+    "class": "exact_title",
+    "query": "Frontend analysis UI",
+    "expected_ids": ["system.frontend-analysis-ui"],
+    "expected_coverage": "semantic",
+    "notes": "Exact title-like lookup for a current system."
+  },
+  {
+    "id": "natural-forward-density-window",
+    "class": "natural_language",
+    "query": "Why do we use a one second forward density window?",
+    "expected_ids": ["decision.forward-density-window"],
+    "expected_coverage": "semantic",
+    "notes": "Natural-language recall of a known active decision."
+  },
+  {
+    "id": "natural-spacing-transition",
+    "class": "natural_language",
+    "query": "What did we learn about spacing transition demand?",
+    "expected_ids": ["research.spacing-transition-demand"],
+    "expected_coverage": "semantic",
+    "notes": "Natural-language recall of draft research."
+  },
+  {
+    "id": "natural-sequence-motor",
+    "class": "natural_language",
+    "query": "What are the limitations of the sequence motor prototype?",
+    "expected_ids": ["research.sequence-motor-prototype-limitations"],
+    "expected_coverage": "semantic",
+    "notes": "Natural-language recall of draft research."
+  },
+  {
+    "id": "claim-only-density-contract",
+    "class": "claim_only",
+    "query": "raw counts and no weighting or decay",
+    "expected_ids": ["decision.forward-density-window"],
+    "expected_coverage": "semantic",
+    "notes": "Useful wording exists in the claim statement, not searchable description/title."
+  },
+  {
+    "id": "claim-only-geometry-limit",
+    "class": "claim_only",
+    "query": "geometry and abrupt-transition descriptions are not represented",
+    "expected_ids": ["research.sequence-motor-prototype-limitations"],
+    "expected_coverage": "semantic",
+    "notes": "Useful wording exists in a research claim statement."
+  },
+  {
+    "id": "body-only-current-contract",
+    "class": "body_only",
+    "query": "Implementation may treat the 1000ms raw-count contract as verified project guidance.",
+    "expected_ids": ["decision.forward-density-window"],
+    "expected_coverage": "semantic",
+    "notes": "Useful wording exists in Markdown body content."
+  },
+  {
+    "id": "body-only-frontend-wiring",
+    "class": "body_only",
+    "query": "passes results into analysis components",
+    "expected_ids": ["system.frontend-analysis-ui"],
+    "expected_coverage": "source_only",
+    "notes": "Useful wording exists in Markdown body content."
+  },
+  {
+    "id": "draft-research-id",
+    "class": "research_draft",
+    "query": "research.spacing-transition-demand",
+    "expected_ids": ["research.spacing-transition-demand"],
+    "expected_coverage": "semantic",
+    "notes": "Exact lookup of draft research must remain visible as draft knowledge."
+  },
+  {
+    "id": "competing-density-research",
+    "class": "conflicting_research",
+    "query": "What are the competing 1000ms and 3000ms forward density proposals?",
+    "expected_ids": ["research.forward-density-window-conflict"],
+    "expected_coverage": "semantic",
+    "notes": "Known research object records competing proposals."
+  },
+  {
+    "id": "known-decision-versus-implementation",
+    "class": "mixed",
+    "query": "Compare the documented density-window decision against the implementation.",
+    "expected_ids": ["decision.forward-density-window"],
+    "expected_coverage": "semantic",
+    "notes": "Combines documented project knowledge with current-code inspection."
+  },
+  {
+    "id": "source-only-stream-buffer",
+    "class": "source_only",
+    "query": "Does a stream at the end of the map get counted?",
+    "expected_ids": ["reference.github-issue-6"],
+    "expected_coverage": "source_only",
+    "notes": "The issue reference exists, but the detail is not distilled into a semantic object."
+  },
+  {
+    "id": "source-only-duration-rules",
+    "class": "source_only",
+    "query": "What are our duration-based stream rules?",
+    "expected_ids": ["reference.github-issue-6"],
+    "expected_coverage": "source_only",
+    "notes": "The issue reference describes the workstream, without semantic claim coverage."
+  },
+  {
+    "id": "ordinary-code-navigation",
+    "class": "code_navigation",
+    "query": "Where is StreamProfile rendered?",
+    "expected_ids": [],
+    "expected_coverage": "none",
+    "notes": "Ordinary source navigation should not require OKF."
+  },
+  {
+    "id": "no-match-database-policy",
+    "class": "no_match",
+    "query": "What is the database migration policy?",
+    "expected_ids": [],
+    "expected_coverage": "none",
+    "notes": "Unrelated project question."
+  },
+  {
+    "id": "no-match-deployment-owner",
+    "class": "no_match",
+    "query": "Who owns production deployment?",
+    "expected_ids": [],
+    "expected_coverage": "none",
+    "notes": "Unrelated project question."
+  },
+  {
+    "id": "noise-generic-analysis",
+    "class": "noise_control",
+    "query": "analysis",
+    "expected_ids": [],
+    "expected_coverage": "none",
+    "notes": "Generic term should expose whether description substring matching creates noise."
+  }
+]

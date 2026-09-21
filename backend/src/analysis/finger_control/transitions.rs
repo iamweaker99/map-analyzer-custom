@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use serde::Serialize;
-use super::patterns::{Pattern, PatternType};
+use super::rhythm_segmentation::{Pattern, PatternType};
 
 #[derive(Debug, Serialize, Clone, Default)]
 #[serde(rename_all = "camelCase")]

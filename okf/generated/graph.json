@@ -1,0 +1,216 @@
+{
+  "authored": [
+    {
+      "note": null,
+      "path": "okf/decisions/forward-density-window.md",
+      "relation": "contradicts",
+      "selectors": null,
+      "source": "decision.forward-density-window#window-size",
+      "target": "research.forward-density-window-conflict#handoff-window"
+    },
+    {
+      "note": null,
+      "path": "okf/decisions/forward-density-window.md",
+      "relation": "supported_by",
+      "selectors": null,
+      "source": "decision.forward-density-window#window-size",
+      "target": "reference.github-issue-4"
+    },
+    {
+      "note": null,
+      "path": "okf/research/forward-density-window-conflict.md",
+      "relation": "supported_by",
+      "selectors": null,
+      "source": "research.forward-density-window-conflict#handoff-window",
+      "target": "reference.forward-density-handoff"
+    },
+    {
+      "note": null,
+      "path": "okf/research/forward-density-window-conflict.md",
+      "relation": "supported_by",
+      "selectors": null,
+      "source": "research.forward-density-window-conflict#prd-window",
+      "target": "reference.reading-analysis-prd"
+    },
+    {
+      "note": null,
+      "path": "okf/research/forward-density-window-conflict.md",
+      "relation": "contradicts",
+      "selectors": null,
+      "source": "research.forward-density-window-conflict#unresolved-window",
+      "target": "research.forward-density-window-conflict#handoff-window"
+    },
+    {
+      "note": null,
+      "path": "okf/research/forward-density-window-conflict.md",
+      "relation": "contradicts",
+      "selectors": null,
+      "source": "research.forward-density-window-conflict#unresolved-window",
+      "target": "research.forward-density-window-conflict#prd-window"
+    },
+    {
+      "note": null,
+      "path": "okf/research/sequence-motor-prototype-limitations.md",
+      "relation": "supported_by",
+      "selectors": null,
+      "source": "research.sequence-motor-prototype-limitations#geometry-unmeasured",
+      "target": "reference.sequence-motor-sample"
+    },
+    {
+      "note": null,
+      "path": "okf/research/sequence-motor-prototype-limitations.md",
+      "relation": "supported_by",
+      "selectors": null,
+      "source": "research.sequence-motor-prototype-limitations#spacing-descriptors",
+      "target": "reference.sequence-motor-prototype"
+    },
+    {
+      "note": null,
+      "path": "okf/research/sequence-motor-prototype-limitations.md",
+      "relation": "supported_by",
+      "selectors": null,
+      "source": "research.sequence-motor-prototype-limitations#spacing-descriptors",
+      "target": "reference.sequence-motor-sample"
+    },
+    {
+      "note": null,
+      "path": "okf/research/spacing-transition-demand.md",
+      "relation": "supported_by",
+      "selectors": null,
+      "source": "research.spacing-transition-demand#implementation-pending",
+      "target": "reference.spacing-transition-handoff"
+    },
+    {
+      "note": null,
+      "path": "okf/research/spacing-transition-demand.md",
+      "relation": "supported_by",
+      "selectors": null,
+      "source": "research.spacing-transition-demand#ltd-proposed-primary",
+      "target": "reference.spacing-transition-handoff"
+    },
+    {
+      "note": null,
+      "path": "okf/systems/backend-analysis.md",
+      "relation": "supported_by",
+      "selectors": null,
+      "source": "system.backend-analysis#analysis-modules",
+      "target": "reference.backend-analysis-source"
+    },
+    {
+      "note": null,
+      "path": "okf/systems/backend-http-api.md",
+      "relation": "supported_by",
+      "selectors": null,
+      "source": "system.backend-http-api#analysis-routes",
+      "target": "reference.backend-api-source"
+    },
+    {
+      "note": null,
+      "path": "okf/systems/frontend-analysis-ui.md",
+      "relation": "supported_by",
+      "selectors": null,
+      "source": "system.frontend-analysis-ui#profile-surfaces",
+      "target": "reference.frontend-source"
+    }
+  ],
+  "generated": [
+    {
+      "generated_from": "supported_by",
+      "path": "okf/systems/backend-analysis.md",
+      "relation": "supports",
+      "source": "reference.backend-analysis-source",
+      "target": "system.backend-analysis#analysis-modules"
+    },
+    {
+      "generated_from": "supported_by",
+      "path": "okf/systems/backend-http-api.md",
+      "relation": "supports",
+      "source": "reference.backend-api-source",
+      "target": "system.backend-http-api#analysis-routes"
+    },
+    {
+      "generated_from": "supported_by",
+      "path": "okf/research/forward-density-window-conflict.md",
+      "relation": "supports",
+      "source": "reference.forward-density-handoff",
+      "target": "research.forward-density-window-conflict#handoff-window"
+    },
+    {
+      "generated_from": "supported_by",
+      "path": "okf/systems/frontend-analysis-ui.md",
+      "relation": "supports",
+      "source": "reference.frontend-source",
+      "target": "system.frontend-analysis-ui#profile-surfaces"
+    },
+    {
+      "generated_from": "supported_by",
+      "path": "okf/decisions/forward-density-window.md",
+      "relation": "supports",
+      "source": "reference.github-issue-4",
+      "target": "decision.forward-density-window#window-size"
+    },
+    {
+      "generated_from": "supported_by",
+      "path": "okf/research/forward-density-window-conflict.md",
+      "relation": "supports",
+      "source": "reference.reading-analysis-prd",
+      "target": "research.forward-density-window-conflict#prd-window"
+    },
+    {
+      "generated_from": "supported_by",
+      "path": "okf/research/sequence-motor-prototype-limitations.md",
+      "relation": "supports",
+      "source": "reference.sequence-motor-prototype",
+      "target": "research.sequence-motor-prototype-limitations#spacing-descriptors"
+    },
+    {
+      "generated_from": "supported_by",
+      "path": "okf/research/sequence-motor-prototype-limitations.md",
+      "relation": "supports",
+      "source": "reference.sequence-motor-sample",
+      "target": "research.sequence-motor-prototype-limitations#geometry-unmeasured"
+    },
+    {
+      "generated_from": "supported_by",
+      "path": "okf/research/sequence-motor-prototype-limitations.md",
+      "relation": "supports",
+      "source": "reference.sequence-motor-sample",
+      "target": "research.sequence-motor-prototype-limitations#spacing-descriptors"
+    },
+    {
+      "generated_from": "supported_by",
+      "path": "okf/research/spacing-transition-demand.md",
+      "relation": "supports",
+      "source": "reference.spacing-transition-handoff",
+      "target": "research.spacing-transition-demand#implementation-pending"
+    },
+    {
+      "generated_from": "supported_by",
+      "path": "okf/research/spacing-transition-demand.md",
+      "relation": "supports",
+      "source": "reference.spacing-transition-handoff",
+      "target": "research.spacing-transition-demand#ltd-proposed-primary"
+    },
+    {
+      "generated_from": "contradicts",
+      "path": "okf/decisions/forward-density-window.md",
+      "relation": "contradicted_by",
+      "source": "research.forward-density-window-conflict#handoff-window",
+      "target": "decision.forward-density-window#window-size"
+    },
+    {
+      "generated_from": "contradicts",
+      "path": "okf/research/forward-density-window-conflict.md",
+      "relation": "contradicted_by",
+      "source": "research.forward-density-window-conflict#handoff-window",
+      "target": "research.forward-density-window-conflict#unresolved-window"
+    },
+    {
+      "generated_from": "contradicts",
+      "path": "okf/research/forward-density-window-conflict.md",
+      "relation": "contradicted_by",
+      "source": "research.forward-density-window-conflict#prd-window",
+      "target": "research.forward-density-window-conflict#unresolved-window"
+    }
+  ]
+}

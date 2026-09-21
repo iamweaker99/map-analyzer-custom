@@ -1,0 +1,1542 @@
+{
+  "source": "Prototyping/yoasobi_collab_extra_motor_patterns (success criteria here).xlsx",
+  "built": "2026-08-12",
+  "tier_order": [
+    "purple",
+    "orange",
+    "aqua"
+  ],
+  "sections": [
+    {
+      "id": "S001",
+      "tier": "aqua",
+      "rows": [
+        36
+      ],
+      "time_start": "00:17:309",
+      "note": "wiggle spreading out",
+      "patterns": [
+        {
+          "row": 36,
+          "time": "00:17:309",
+          "type": "4n Burst",
+          "notes": 4,
+          "range": "55..59",
+          "snap": "1/4",
+          "mpa": 0.831,
+          "mm": 0.812,
+          "sc": 0.591
+        }
+      ]
+    },
+    {
+      "id": "S002",
+      "tier": "aqua",
+      "rows": [
+        44
+      ],
+      "time_start": "00:19:963",
+      "note": "flatter wiggle with irregular spacing",
+      "patterns": [
+        {
+          "row": 44,
+          "time": "00:19:963",
+          "type": "5n Burst",
+          "notes": 5,
+          "range": "68..73",
+          "snap": "1/4",
+          "mpa": 0.993,
+          "mm": 0.821,
+          "sc": 0.306
+        }
+      ]
+    },
+    {
+      "id": "S003",
+      "tier": "orange",
+      "rows": [
+        56,
+        57
+      ],
+      "time_start": "00:24:578",
+      "note": "flow forward, then do a zig-zag to hit a circle then the next slider head",
+      "patterns": [
+        {
+          "row": 56,
+          "time": "00:24:578",
+          "type": "5n Burst",
+          "notes": 5,
+          "range": "89..94",
+          "snap": "1/4",
+          "mpa": 0.219,
+          "mm": 0.815,
+          "sc": 0.19
+        },
+        {
+          "row": 57,
+          "time": "00:25:155",
+          "type": "Slider",
+          "notes": 1,
+          "range": "94..95",
+          "snap": "Unstable",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        }
+      ],
+      "tag_note": "accidental darker orange swatch (user-confirmed)"
+    },
+    {
+      "id": "S004",
+      "tier": "aqua",
+      "rows": [
+        61
+      ],
+      "time_start": "00:26:540",
+      "note": "converging wiggle then 90 degree downward to hit the slider head",
+      "patterns": [
+        {
+          "row": 61,
+          "time": "00:26:540",
+          "type": "4n Burst",
+          "notes": 4,
+          "range": "100..104",
+          "snap": "1/4",
+          "mpa": 0.538,
+          "mm": 0.808,
+          "sc": 0.215
+        }
+      ]
+    },
+    {
+      "id": "S005",
+      "tier": "aqua",
+      "rows": [
+        99
+      ],
+      "time_start": "00:43:847",
+      "note": "notes spacing gradually increase",
+      "patterns": [
+        {
+          "row": 99,
+          "time": "00:43:847",
+          "type": "6n Burst",
+          "notes": 6,
+          "range": "172..178",
+          "snap": "1/4",
+          "mpa": 0.099,
+          "mm": 0.784,
+          "sc": 0.214
+        }
+      ]
+    },
+    {
+      "id": "S006",
+      "tier": "aqua",
+      "rows": [
+        134,
+        135,
+        136
+      ],
+      "time_start": "00:57:578",
+      "note": "two doubled then a slider head that moves in anti-clockwise spiral towards bottom left",
+      "patterns": [
+        {
+          "row": 134,
+          "time": "00:57:578",
+          "type": "2n Burst",
+          "notes": 2,
+          "range": "229..231",
+          "snap": "1/4",
+          "mpa": 0.0,
+          "mm": 0.282,
+          "sc": 0.0
+        },
+        {
+          "row": 135,
+          "time": "00:57:924",
+          "type": "Jump",
+          "notes": 1,
+          "range": "231..232",
+          "snap": "1/4",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        },
+        {
+          "row": 136,
+          "time": "00:58:040",
+          "type": "Jump",
+          "notes": 1,
+          "range": "232..233",
+          "snap": "1/2",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        }
+      ]
+    },
+    {
+      "id": "S007",
+      "tier": "orange",
+      "rows": [
+        139,
+        140
+      ],
+      "time_start": "00:59:193",
+      "note": "flat wiggle, but this time the spreading and spacing increment is bigger than the pattern earlier",
+      "patterns": [
+        {
+          "row": 139,
+          "time": "00:59:193",
+          "type": "2n Burst",
+          "notes": 2,
+          "range": "235..237",
+          "snap": "1/2",
+          "mpa": 0.0,
+          "mm": 0.0,
+          "sc": 0.0
+        },
+        {
+          "row": 140,
+          "time": "00:59:540",
+          "type": "5n Burst",
+          "notes": 5,
+          "range": "237..242",
+          "snap": "1/4",
+          "mpa": 0.081,
+          "mm": 1.017,
+          "sc": 0.021
+        }
+      ]
+    },
+    {
+      "id": "S008",
+      "tier": "aqua",
+      "rows": [
+        150
+      ],
+      "time_start": "01:03:347",
+      "note": "wiggle",
+      "patterns": [
+        {
+          "row": 150,
+          "time": "01:03:347",
+          "type": "4n Burst",
+          "notes": 4,
+          "range": "255..259",
+          "snap": "1/4",
+          "mpa": 0.821,
+          "mm": 1.071,
+          "sc": 0.203
+        }
+      ]
+    },
+    {
+      "id": "S009",
+      "tier": "purple",
+      "rows": [
+        157
+      ],
+      "time_start": "01:05:655",
+      "note": "curve from right towards left in anti-clockwise, then abruptly curve from bottom to top in clockwise, with slightly different spacing",
+      "patterns": [
+        {
+          "row": 157,
+          "time": "01:05:655",
+          "type": "Stream",
+          "notes": 8,
+          "range": "267..275",
+          "snap": "1/4",
+          "mpa": 0.2,
+          "mm": 0.736,
+          "sc": 0.279
+        }
+      ]
+    },
+    {
+      "id": "S010",
+      "tier": "orange",
+      "rows": [
+        196,
+        197
+      ],
+      "time_start": "01:21:116",
+      "note": "from bottom left to top right, then moves towards bottom left with a longer distance under same BPM snapping window",
+      "patterns": [
+        {
+          "row": 196,
+          "time": "01:21:116",
+          "type": "2n Burst",
+          "notes": 2,
+          "range": "337..339",
+          "snap": "1/4",
+          "mpa": 0.0,
+          "mm": 1.273,
+          "sc": 0.0
+        },
+        {
+          "row": 197,
+          "time": "01:21:347",
+          "type": "Slider",
+          "notes": 1,
+          "range": "339..340",
+          "snap": "1/1",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        }
+      ]
+    },
+    {
+      "id": "S011",
+      "tier": "purple",
+      "rows": [
+        212
+      ],
+      "time_start": "01:25:963",
+      "note": "this stream is actually 4 minor patterns: the first one is a diagonal in anti-clockwise, very close together, then abruptly moving down and trace a line from left to right, then turns into wiggles ",
+      "patterns": [
+        {
+          "row": 212,
+          "time": "01:25:963",
+          "type": "Stream",
+          "notes": 16,
+          "range": "360..376",
+          "snap": "1/4",
+          "mpa": 0.53,
+          "mm": 0.731,
+          "sc": 0.354
+        }
+      ]
+    },
+    {
+      "id": "S012",
+      "tier": "purple",
+      "rows": [
+        215
+      ],
+      "time_start": "01:28:732",
+      "note": "spaced stream curving from left towards top right in anti-clockwise, then abruptly curve from right towards the left in clockwise with spacing increment, under the same BPM snapping window",
+      "patterns": [
+        {
+          "row": 215,
+          "time": "01:28:732",
+          "type": "Stream",
+          "notes": 8,
+          "range": "380..388",
+          "snap": "1/4",
+          "mpa": 0.338,
+          "mm": 1.184,
+          "sc": 0.129
+        }
+      ]
+    },
+    {
+      "id": "S013",
+      "tier": "orange",
+      "rows": [
+        228
+      ],
+      "time_start": "01:32:886",
+      "note": "a diagonal, but the trajectory of 3-4 go pass the 1-2, this kind of overlapping trajectory makes a pattern hard to read when happens at close proximity and within same BPM snapping window",
+      "patterns": [
+        {
+          "row": 228,
+          "time": "01:32:886",
+          "type": "4n Burst",
+          "notes": 4,
+          "range": "401..405",
+          "snap": "1/4",
+          "mpa": 0.897,
+          "mm": 1.536,
+          "sc": 0.271
+        }
+      ]
+    },
+    {
+      "id": "S014",
+      "tier": "aqua",
+      "rows": [
+        231
+      ],
+      "time_start": "01:34:386",
+      "note": "diagonal with spacing",
+      "patterns": [
+        {
+          "row": 231,
+          "time": "01:34:386",
+          "type": "4n Burst",
+          "notes": 4,
+          "range": "408..412",
+          "snap": "1/4",
+          "mpa": 0.011,
+          "mm": 1.274,
+          "sc": 0.027
+        }
+      ]
+    },
+    {
+      "id": "S015",
+      "tier": "orange",
+      "rows": [
+        250,
+        251
+      ],
+      "time_start": "01:40:386",
+      "note": "diagonal with self-overlapping trajectory again",
+      "patterns": [
+        {
+          "row": 250,
+          "time": "01:40:386",
+          "type": "3n Burst",
+          "notes": 3,
+          "range": "436..439",
+          "snap": "1/4",
+          "mpa": 0.0,
+          "mm": 1.234,
+          "sc": 0.03
+        },
+        {
+          "row": 251,
+          "time": "01:40:732",
+          "type": "Slider",
+          "notes": 1,
+          "range": "439..440",
+          "snap": "1/2",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        }
+      ]
+    },
+    {
+      "id": "S016",
+      "tier": "purple",
+      "rows": [
+        255
+      ],
+      "time_start": "01:42:116",
+      "note": "could say a zig-zag pattern, with spacing increse exponentially comparing the spacing between the first 3 circles, 3rd to 4th and 4th to 5th",
+      "patterns": [
+        {
+          "row": 255,
+          "time": "01:42:116",
+          "type": "5n Burst",
+          "notes": 5,
+          "range": "444..449",
+          "snap": "1/4",
+          "mpa": 0.453,
+          "mm": 1.412,
+          "sc": 0.479
+        }
+      ]
+    },
+    {
+      "id": "S017",
+      "tier": "aqua",
+      "rows": [
+        256,
+        257
+      ],
+      "time_start": "01:49:501",
+      "note": "curve with spacing increment",
+      "patterns": [
+        {
+          "row": 256,
+          "time": "01:49:501",
+          "type": "Jump",
+          "notes": 1,
+          "range": "449..450",
+          "snap": "1/4",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        },
+        {
+          "row": 257,
+          "time": "01:49:616",
+          "type": "4n Burst",
+          "notes": 4,
+          "range": "450..454",
+          "snap": "1/4",
+          "mpa": 0.032,
+          "mm": 0.79,
+          "sc": 0.16
+        }
+      ]
+    },
+    {
+      "id": "S018",
+      "tier": "orange",
+      "rows": [
+        263,
+        264
+      ],
+      "time_start": "01:51:578",
+      "note": "trajectory forms an acute v shape from top to bottom left then to the right slider head",
+      "patterns": [
+        {
+          "row": 263,
+          "time": "01:51:578",
+          "type": "3n Burst",
+          "notes": 3,
+          "range": "460..463",
+          "snap": "1/4",
+          "mpa": 0.0,
+          "mm": 1.083,
+          "sc": 0.007
+        },
+        {
+          "row": 264,
+          "time": "01:51:924",
+          "type": "Slider",
+          "notes": 1,
+          "range": "463..464",
+          "snap": "Unstable",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        }
+      ]
+    },
+    {
+      "id": "S019",
+      "tier": "aqua",
+      "rows": [
+        269,
+        270
+      ],
+      "time_start": "01:53:424",
+      "note": "spreading wiggle",
+      "patterns": [
+        {
+          "row": 269,
+          "time": "01:53:424",
+          "type": "3n Burst",
+          "notes": 3,
+          "range": "469..472",
+          "snap": "1/4",
+          "mpa": 0.0,
+          "mm": 0.765,
+          "sc": 0.212
+        },
+        {
+          "row": 270,
+          "time": "01:53:770",
+          "type": "Slider",
+          "notes": 1,
+          "range": "472..473",
+          "snap": "Unstable",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        }
+      ]
+    },
+    {
+      "id": "S020",
+      "tier": "purple",
+      "rows": [
+        275,
+        276
+      ],
+      "time_start": "01:55:847",
+      "note": "a flatten V shape with spacing sligtly increased",
+      "patterns": [
+        {
+          "row": 275,
+          "time": "01:55:847",
+          "type": "5n Burst",
+          "notes": 5,
+          "range": "480..485",
+          "snap": "1/4",
+          "mpa": 0.227,
+          "mm": 0.699,
+          "sc": 0.276
+        },
+        {
+          "row": 276,
+          "time": "01:56:424",
+          "type": "Slider",
+          "notes": 1,
+          "range": "485..486",
+          "snap": "1/2",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        }
+      ]
+    },
+    {
+      "id": "S021",
+      "tier": "orange",
+      "rows": [
+        294
+      ],
+      "time_start": "02:03:347",
+      "note": "stream that made up by minor sections with different spacing and geometry (line or curve or wiggle) in each section",
+      "patterns": [
+        {
+          "row": 294,
+          "time": "02:03:347",
+          "type": "Stream",
+          "notes": 36,
+          "range": "511..547",
+          "snap": "1/4",
+          "mpa": 0.231,
+          "mm": 0.543,
+          "sc": 0.369
+        }
+      ]
+    },
+    {
+      "id": "S022",
+      "tier": "orange",
+      "rows": [
+        297
+      ],
+      "time_start": "02:08:424",
+      "note": "the ending 3 circles have significant change in spacing (from half stacked to merely touched) and geometry design (from line to a flatten curve)",
+      "patterns": [
+        {
+          "row": 297,
+          "time": "02:08:424",
+          "type": "Stream",
+          "notes": 15,
+          "range": "551..566",
+          "snap": "1/4",
+          "mpa": 0.23,
+          "mm": 0.666,
+          "sc": 0.429
+        }
+      ]
+    },
+    {
+      "id": "S023",
+      "tier": "purple",
+      "rows": [
+        301,
+        302,
+        303
+      ],
+      "time_start": "02:11:193",
+      "note": "spaced stream, spiral with slightly increase and then decrease in spacing with self-overlap when hitting the slider",
+      "patterns": [
+        {
+          "row": 301,
+          "time": "02:11:193",
+          "type": "2n Burst",
+          "notes": 2,
+          "range": "569..571",
+          "snap": "1/2",
+          "mpa": 0.0,
+          "mm": 0.0,
+          "sc": 0.0
+        },
+        {
+          "row": 302,
+          "time": "02:11:540",
+          "type": "5n Burst",
+          "notes": 5,
+          "range": "571..576",
+          "snap": "1/4",
+          "mpa": 0.369,
+          "mm": 0.948,
+          "sc": 0.34
+        },
+        {
+          "row": 303,
+          "time": "02:12:116",
+          "type": "Slider",
+          "notes": 1,
+          "range": "576..577",
+          "snap": "1/2",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        }
+      ]
+    },
+    {
+      "id": "S024",
+      "tier": "purple",
+      "rows": [
+        322
+      ],
+      "time_start": "02:18:924",
+      "note": "flatten zig-zag, mentioned before",
+      "patterns": [
+        {
+          "row": 322,
+          "time": "02:18:924",
+          "type": "6n Burst",
+          "notes": 6,
+          "range": "605..611",
+          "snap": "1/4",
+          "mpa": 0.144,
+          "mm": 0.826,
+          "sc": 0.201
+        }
+      ]
+    },
+    {
+      "id": "S025",
+      "tier": "aqua",
+      "rows": [
+        323
+      ],
+      "time_start": "02:19:847",
+      "note": "flatten wiggle",
+      "patterns": [
+        {
+          "row": 323,
+          "time": "02:19:847",
+          "type": "6n Burst",
+          "notes": 6,
+          "range": "611..617",
+          "snap": "1/4",
+          "mpa": 0.14,
+          "mm": 0.89,
+          "sc": 0.175
+        }
+      ]
+    },
+    {
+      "id": "S026",
+      "tier": "aqua",
+      "rows": [
+        324
+      ],
+      "time_start": "02:20:770",
+      "note": "flatten wiggle",
+      "patterns": [
+        {
+          "row": 324,
+          "time": "02:20:770",
+          "type": "6n Burst",
+          "notes": 6,
+          "range": "617..623",
+          "snap": "1/4",
+          "mpa": 0.166,
+          "mm": 0.931,
+          "sc": 0.176
+        }
+      ]
+    },
+    {
+      "id": "S027",
+      "tier": "orange",
+      "rows": [
+        337,
+        338
+      ],
+      "time_start": "02:26:078",
+      "note": "half stacked line into slightly spreaded wiggle then back to stacked doubles",
+      "patterns": [
+        {
+          "row": 337,
+          "time": "02:26:078",
+          "type": "Jump",
+          "notes": 1,
+          "range": "642..643",
+          "snap": "1/4",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        },
+        {
+          "row": 338,
+          "time": "02:26:193",
+          "type": "Stream",
+          "notes": 8,
+          "range": "643..651",
+          "snap": "1/4",
+          "mpa": 0.226,
+          "mm": 0.565,
+          "sc": 0.498
+        }
+      ]
+    },
+    {
+      "id": "S028",
+      "tier": "purple",
+      "rows": [
+        343,
+        344
+      ],
+      "time_start": "02:27:924",
+      "note": "half stacked line then abruptly connect to another triple stack at the bottom then acruptly into a diagonal in anti-clockwise",
+      "patterns": [
+        {
+          "row": 343,
+          "time": "02:27:924",
+          "type": "Jump",
+          "notes": 1,
+          "range": "655..656",
+          "snap": "1/4",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        },
+        {
+          "row": 344,
+          "time": "02:28:040",
+          "type": "Stream",
+          "notes": 10,
+          "range": "656..666",
+          "snap": "1/4",
+          "mpa": 1.132,
+          "mm": 0.943,
+          "sc": 0.598
+        }
+      ]
+    },
+    {
+      "id": "S029",
+      "tier": "orange",
+      "rows": [
+        347
+      ],
+      "time_start": "02:29:886",
+      "note": "curve in anti-clockwise towards the bottom with spacing increment, but slightly more aggressive, then abruptly jump to the left",
+      "patterns": [
+        {
+          "row": 347,
+          "time": "02:29:886",
+          "type": "Stream",
+          "notes": 8,
+          "range": "668..676",
+          "snap": "1/4",
+          "mpa": 0.337,
+          "mm": 1.263,
+          "sc": 0.684
+        }
+      ]
+    },
+    {
+      "id": "S030",
+      "tier": "orange",
+      "rows": [
+        352,
+        353
+      ],
+      "time_start": "02:31:616",
+      "note": "half stacked line, abruptly into wiggle slightly spreaded, then stacked doubles (mentioned before)",
+      "patterns": [
+        {
+          "row": 352,
+          "time": "02:31:616",
+          "type": "Jump",
+          "notes": 1,
+          "range": "680..681",
+          "snap": "1/4",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        },
+        {
+          "row": 353,
+          "time": "02:31:731",
+          "type": "Stream",
+          "notes": 8,
+          "range": "681..689",
+          "snap": "1/4",
+          "mpa": 0.819,
+          "mm": 0.717,
+          "sc": 0.561
+        }
+      ]
+    },
+    {
+      "id": "S031",
+      "tier": "orange",
+      "rows": [
+        358,
+        359,
+        360,
+        361,
+        362,
+        363
+      ],
+      "time_start": "02:33:462",
+      "note": "a line from top to bottom, then a sharp turn from bottom to top, then 1-2 jumps that goes from right to left, but the pairs moves up then down",
+      "patterns": [
+        {
+          "row": 358,
+          "time": "02:33:462",
+          "type": "Jump",
+          "notes": 1,
+          "range": "693..694",
+          "snap": "1/4",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        },
+        {
+          "row": 359,
+          "time": "02:33:578",
+          "type": "Stream",
+          "notes": 8,
+          "range": "694..702",
+          "snap": "1/4",
+          "mpa": 0.409,
+          "mm": 0.953,
+          "sc": 0.674
+        },
+        {
+          "row": 360,
+          "time": "02:34:616",
+          "type": "Jump",
+          "notes": 1,
+          "range": "702..703",
+          "snap": "1/4",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        },
+        {
+          "row": 361,
+          "time": "02:34:732",
+          "type": "Jump",
+          "notes": 1,
+          "range": "703..704",
+          "snap": "1/2",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        },
+        {
+          "row": 362,
+          "time": "02:34:963",
+          "type": "Jump",
+          "notes": 1,
+          "range": "704..705",
+          "snap": "1/4",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        },
+        {
+          "row": 363,
+          "time": "02:35:078",
+          "type": "Jump",
+          "notes": 1,
+          "range": "705..706",
+          "snap": "1/2",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        }
+      ]
+    },
+    {
+      "id": "S032",
+      "tier": "purple",
+      "rows": [
+        364,
+        365
+      ],
+      "time_start": "02:35:309",
+      "note": "half stacked line from top to bottom, then wiggle from left to right, then a curve that self-overlap when hitting the slider head",
+      "patterns": [
+        {
+          "row": 364,
+          "time": "02:35:309",
+          "type": "Jump",
+          "notes": 1,
+          "range": "706..707",
+          "snap": "1/4",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        },
+        {
+          "row": 365,
+          "time": "02:35:424",
+          "type": "Stream",
+          "notes": 10,
+          "range": "707..717",
+          "snap": "1/4",
+          "mpa": 0.427,
+          "mm": 1.003,
+          "sc": 0.323
+        }
+      ]
+    },
+    {
+      "id": "S033",
+      "tier": "purple",
+      "rows": [
+        367,
+        368
+      ],
+      "time_start": "02:37:155",
+      "note": "line from right to left, then abruptly from top to bottom, then abruptly to a diagonal goes in anti-clockwise, then self-overlap when going to hit the first stacked doubles, and after the second one, abruptly a line with wide spacing from bottom to top",
+      "patterns": [
+        {
+          "row": 367,
+          "time": "02:37:155",
+          "type": "Jump",
+          "notes": 1,
+          "range": "720..721",
+          "snap": "1/4",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        },
+        {
+          "row": 368,
+          "time": "02:37:270",
+          "type": "Stream",
+          "notes": 18,
+          "range": "721..739",
+          "snap": "1/4",
+          "mpa": 1.35,
+          "mm": 1.2,
+          "sc": 0.599
+        }
+      ]
+    },
+    {
+      "id": "S034",
+      "tier": "aqua",
+      "rows": [
+        378,
+        379
+      ],
+      "time_start": "02:42:232",
+      "note": "diagonal in anti-clockwise in hitting the slider head",
+      "patterns": [
+        {
+          "row": 378,
+          "time": "02:42:232",
+          "type": "3n Burst",
+          "notes": 3,
+          "range": "749..752",
+          "snap": "1/4",
+          "mpa": 0.0,
+          "mm": 1.199,
+          "sc": 0.01
+        },
+        {
+          "row": 379,
+          "time": "02:42:578",
+          "type": "Slider",
+          "notes": 1,
+          "range": "752..753",
+          "snap": "Unstable",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        }
+      ]
+    },
+    {
+      "id": "S035",
+      "tier": "purple",
+      "rows": [
+        411
+      ],
+      "time_start": "02:53:193",
+      "note": "spaced curve, then a zig zag into another curve but more stacked, then zig zag into the spaced curve",
+      "patterns": [
+        {
+          "row": 411,
+          "time": "02:53:193",
+          "type": "Stream",
+          "notes": 12,
+          "range": "792..804",
+          "snap": "1/4",
+          "mpa": 0.113,
+          "mm": 0.816,
+          "sc": 0.196
+        }
+      ]
+    },
+    {
+      "id": "S036",
+      "tier": "orange",
+      "rows": [
+        419,
+        420
+      ],
+      "time_start": "02:57:116",
+      "note": "line into spaced zig zag from top to bottom, then hitting the slider end with a increased spacing",
+      "patterns": [
+        {
+          "row": 419,
+          "time": "02:57:116",
+          "type": "2n Burst",
+          "notes": 2,
+          "range": "815..817",
+          "snap": "1/2",
+          "mpa": 0.0,
+          "mm": 0.0,
+          "sc": 0.0
+        },
+        {
+          "row": 420,
+          "time": "02:57:462",
+          "type": "Stream",
+          "notes": 8,
+          "range": "817..825",
+          "snap": "1/4",
+          "mpa": 0.266,
+          "mm": 0.951,
+          "sc": 0.267
+        }
+      ]
+    },
+    {
+      "id": "S037",
+      "tier": "aqua",
+      "rows": [
+        421
+      ],
+      "time_start": "02:58:732",
+      "note": "wiggle",
+      "patterns": [
+        {
+          "row": 421,
+          "time": "02:58:732",
+          "type": "5n Burst",
+          "notes": 5,
+          "range": "825..830",
+          "snap": "1/4",
+          "mpa": 0.18,
+          "mm": 0.566,
+          "sc": 0.233
+        }
+      ]
+    },
+    {
+      "id": "S038",
+      "tier": "orange",
+      "rows": [
+        423
+      ],
+      "time_start": "03:00:116",
+      "note": "a V shape curve from right to left to right",
+      "patterns": [
+        {
+          "row": 423,
+          "time": "03:00:116",
+          "type": "Stream",
+          "notes": 8,
+          "range": "834..842",
+          "snap": "1/4",
+          "mpa": 0.063,
+          "mm": 0.754,
+          "sc": 0.101
+        }
+      ]
+    },
+    {
+      "id": "S039",
+      "tier": "aqua",
+      "rows": [
+        428
+      ],
+      "time_start": "03:03:001",
+      "note": "not a wiggle or zig zag or V shape, but nor a clean line, kinda dirty the placement",
+      "patterns": [
+        {
+          "row": 428,
+          "time": "03:03:001",
+          "type": "Stream",
+          "notes": 7,
+          "range": "846..853",
+          "snap": "1/4",
+          "mpa": 0.196,
+          "mm": 0.472,
+          "sc": 0.454
+        }
+      ]
+    },
+    {
+      "id": "S040",
+      "tier": "aqua",
+      "rows": [
+        434,
+        435,
+        436
+      ],
+      "time_start": "03:05:309",
+      "note": "dirty line (mentioned before)",
+      "patterns": [
+        {
+          "row": 434,
+          "time": "03:05:309",
+          "type": "Jump",
+          "notes": 1,
+          "range": "859..860",
+          "snap": "1/4",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        },
+        {
+          "row": 435,
+          "time": "03:05:424",
+          "type": "3n Burst",
+          "notes": 3,
+          "range": "860..863",
+          "snap": "1/4",
+          "mpa": 0.0,
+          "mm": 0.871,
+          "sc": 0.019
+        },
+        {
+          "row": 436,
+          "time": "03:06:116",
+          "type": "Jump",
+          "notes": 1,
+          "range": "863..864",
+          "snap": "1/2",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        }
+      ]
+    },
+    {
+      "id": "S041",
+      "tier": "aqua",
+      "rows": [
+        441
+      ],
+      "time_start": "03:07:501",
+      "note": "curve, with a bit of zig zag, then into another curve",
+      "patterns": [
+        {
+          "row": 441,
+          "time": "03:07:501",
+          "type": "Stream",
+          "notes": 10,
+          "range": "869..879",
+          "snap": "1/4",
+          "mpa": 0.051,
+          "mm": 0.529,
+          "sc": 0.058
+        }
+      ]
+    },
+    {
+      "id": "S042",
+      "tier": "orange",
+      "rows": [
+        464
+      ],
+      "time_start": "03:26:886",
+      "note": "1-2 jumps pair, but first pair goes from top left to right, then abruptly into the circle at a higher top left towards the bottom (2nd 1-2 jump pair), which make self-overlap exists while transitioning from first to seconds jump pair",
+      "patterns": [
+        {
+          "row": 464,
+          "time": "03:26:886",
+          "type": "4n Burst",
+          "notes": 4,
+          "range": "905..909",
+          "snap": "1/4",
+          "mpa": 1.581,
+          "mm": 2.642,
+          "sc": 0.209
+        }
+      ]
+    },
+    {
+      "id": "S043",
+      "tier": "aqua",
+      "rows": [
+        482,
+        483,
+        484
+      ],
+      "time_start": "03:32:309",
+      "note": "curve from right to left slider head that continues to left slider end, then back to right for hitting the next slider head from top to bottom",
+      "patterns": [
+        {
+          "row": 482,
+          "time": "03:32:309",
+          "type": "3n Burst",
+          "notes": 3,
+          "range": "933..936",
+          "snap": "1/4",
+          "mpa": 0.0,
+          "mm": 1.207,
+          "sc": 0.023
+        },
+        {
+          "row": 483,
+          "time": "03:32:655",
+          "type": "Slider",
+          "notes": 1,
+          "range": "936..937",
+          "snap": "1/2",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        },
+        {
+          "row": 484,
+          "time": "03:32:886",
+          "type": "Slider",
+          "notes": 1,
+          "range": "937..938",
+          "snap": "Unstable",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        }
+      ]
+    },
+    {
+      "id": "S044",
+      "tier": "orange",
+      "rows": [
+        491,
+        492,
+        493,
+        494
+      ],
+      "time_start": "03:35:424",
+      "note": "a spiral the goes from jump to slider, the self-overlap happens here on hitting the next jump then the next slider, and the first pair goes anti-clockwise and the second pair goes clockwise",
+      "patterns": [
+        {
+          "row": 491,
+          "time": "03:35:424",
+          "type": "Jump",
+          "notes": 1,
+          "range": "949..950",
+          "snap": "1/4",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        },
+        {
+          "row": 492,
+          "time": "03:35:540",
+          "type": "Slider",
+          "notes": 1,
+          "range": "950..951",
+          "snap": "1/2",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        },
+        {
+          "row": 493,
+          "time": "03:35:770",
+          "type": "Jump",
+          "notes": 1,
+          "range": "951..952",
+          "snap": "1/4",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        },
+        {
+          "row": 494,
+          "time": "03:35:886",
+          "type": "Slider",
+          "notes": 1,
+          "range": "952..953",
+          "snap": "1/2",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        }
+      ]
+    },
+    {
+      "id": "S045",
+      "tier": "aqua",
+      "rows": [
+        506
+      ],
+      "time_start": "03:40:732",
+      "note": "V shape curve with slightly increased spacing",
+      "patterns": [
+        {
+          "row": 506,
+          "time": "03:40:732",
+          "type": "Stream",
+          "notes": 8,
+          "range": "974..982",
+          "snap": "1/4",
+          "mpa": 0.042,
+          "mm": 0.885,
+          "sc": 0.016
+        }
+      ]
+    },
+    {
+      "id": "S046",
+      "tier": "purple",
+      "rows": [
+        512,
+        513,
+        514
+      ],
+      "time_start": "03:43:501",
+      "note": "first, an acute anti-clockwise spiral goes from slider follow by 3 circles (from right to left), then form another spiral here (self-overlap trajectory) on 2 circles and towards hitting the slider head",
+      "patterns": [
+        {
+          "row": 512,
+          "time": "03:43:501",
+          "type": "Slider",
+          "notes": 1,
+          "range": "991..992",
+          "snap": "Unstable",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        },
+        {
+          "row": 513,
+          "time": "03:43:847",
+          "type": "5n Burst",
+          "notes": 5,
+          "range": "992..997",
+          "snap": "1/4",
+          "mpa": 0.698,
+          "mm": 1.693,
+          "sc": 0.222
+        },
+        {
+          "row": 514,
+          "time": "03:44:424",
+          "type": "Slider",
+          "notes": 1,
+          "range": "997..998",
+          "snap": "Unstable",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        }
+      ]
+    },
+    {
+      "id": "S047",
+      "tier": "aqua",
+      "rows": [
+        531,
+        532
+      ],
+      "time_start": "03:50:309",
+      "note": "spiral in anti-clockwise in hitting the slider head",
+      "patterns": [
+        {
+          "row": 531,
+          "time": "03:50:309",
+          "type": "5n Burst",
+          "notes": 5,
+          "range": "1026..1031",
+          "snap": "1/4",
+          "mpa": 0.784,
+          "mm": 1.609,
+          "sc": 0.452
+        },
+        {
+          "row": 532,
+          "time": "03:50:886",
+          "type": "Slider",
+          "notes": 1,
+          "range": "1031..1032",
+          "snap": "Unstable",
+          "mpa": null,
+          "mm": null,
+          "sc": null
+        }
+      ]
+    },
+    {
+      "id": "S048",
+      "tier": "orange",
+      "rows": [
+        533
+      ],
+      "time_start": "03:51:232",
+      "note": "wiggle that is quite spaced",
+      "patterns": [
+        {
+          "row": 533,
+          "time": "03:51:232",
+          "type": "5n Burst",
+          "notes": 5,
+          "range": "1032..1037",
+          "snap": "1/4",
+          "mpa": 0.325,
+          "mm": 1.195,
+          "sc": 0.097
+        }
+      ]
+    },
+    {
+      "id": "S049",
+      "tier": "purple",
+      "rows": [
+        542
+      ],
+      "time_start": "03:55:501",
+      "note": "the hardest: spaced diagonal/spiral in clockwise, then another spaced diagonal/spiral in anticlockwise, then stacked a bit and follow by a flatten wiggle (the first two spaced diagonal/spiral is one of the hardest pattern)",
+      "patterns": [
+        {
+          "row": 542,
+          "time": "03:55:501",
+          "type": "Stream",
+          "notes": 12,
+          "range": "1054..1066",
+          "snap": "1/4",
+          "mpa": 0.358,
+          "mm": 0.952,
+          "sc": 0.269
+        }
+      ]
+    },
+    {
+      "id": "S050",
+      "tier": "purple",
+      "rows": [
+        546
+      ],
+      "time_start": "03:59:540",
+      "note": "spaced and forms two spiral with self-overlap trajectory",
+      "patterns": [
+        {
+          "row": 546,
+          "time": "03:59:540",
+          "type": "6n Burst",
+          "notes": 6,
+          "range": "1079..1085",
+          "snap": "1/4",
+          "mpa": 1.446,
+          "mm": 1.522,
+          "sc": 0.237
+        }
+      ]
+    },
+    {
+      "id": "S051",
+      "tier": "aqua",
+      "rows": [
+        548
+      ],
+      "time_start": "04:01:155",
+      "note": "from top to bottom, one line then abruptly into another line with slightly more stacked",
+      "patterns": [
+        {
+          "row": 548,
+          "time": "04:01:155",
+          "type": "Stream",
+          "notes": 7,
+          "range": "1088..1095",
+          "snap": "1/4",
+          "mpa": 0.943,
+          "mm": 0.835,
+          "sc": 0.461
+        }
+      ]
+    }
+  ]
+}

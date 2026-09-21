@@ -1,0 +1,1216 @@
+{
+  "metadata": {
+    "branch": "Stream_Analysis_duration-based",
+    "head": "83fd9e6608da3070deb0280b5b05d87da16468c0"
+  },
+  "baseline": {
+    "total_cases": 20,
+    "positive_case_count": 16,
+    "expected_hit_count": 5,
+    "recall_at_1": {
+      "hits": 5,
+      "cases": 16,
+      "value": 0.3125
+    },
+    "recall_at_3": {
+      "hits": 5,
+      "cases": 16,
+      "value": 0.3125
+    },
+    "recall_at_5": {
+      "hits": 5,
+      "cases": 16,
+      "value": 0.3125
+    },
+    "negative_case_count": 4,
+    "negative_cases_correctly_empty": 3,
+    "negative_control_pass_rate": {
+      "passed": 3,
+      "cases": 4,
+      "value": 0.75
+    },
+    "false_positive_negative_cases": [
+      "noise-generic-analysis"
+    ],
+    "output_size": {
+      "average_bytes": 96.15,
+      "max_bytes": 468
+    },
+    "by_class": {
+      "body_only": {
+        "total": 2,
+        "expected_hit_count": 0,
+        "recall_at_1": {
+          "hits": 0,
+          "cases": 2,
+          "value": 0.0
+        },
+        "recall_at_3": {
+          "hits": 0,
+          "cases": 2,
+          "value": 0.0
+        },
+        "recall_at_5": {
+          "hits": 0,
+          "cases": 2,
+          "value": 0.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "claim_only": {
+        "total": 2,
+        "expected_hit_count": 0,
+        "recall_at_1": {
+          "hits": 0,
+          "cases": 2,
+          "value": 0.0
+        },
+        "recall_at_3": {
+          "hits": 0,
+          "cases": 2,
+          "value": 0.0
+        },
+        "recall_at_5": {
+          "hits": 0,
+          "cases": 2,
+          "value": 0.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "code_navigation": {
+        "total": 1,
+        "expected_hit_count": 0,
+        "recall_at_1": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "recall_at_3": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "recall_at_5": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "negative_control_pass_rate": {
+          "passed": 1,
+          "cases": 1,
+          "value": 1.0
+        }
+      },
+      "conflicting_research": {
+        "total": 1,
+        "expected_hit_count": 0,
+        "recall_at_1": {
+          "hits": 0,
+          "cases": 1,
+          "value": 0.0
+        },
+        "recall_at_3": {
+          "hits": 0,
+          "cases": 1,
+          "value": 0.0
+        },
+        "recall_at_5": {
+          "hits": 0,
+          "cases": 1,
+          "value": 0.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "decision_key": {
+        "total": 1,
+        "expected_hit_count": 1,
+        "recall_at_1": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "recall_at_3": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "recall_at_5": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "exact_id": {
+        "total": 1,
+        "expected_hit_count": 1,
+        "recall_at_1": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "recall_at_3": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "recall_at_5": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "exact_title": {
+        "total": 2,
+        "expected_hit_count": 2,
+        "recall_at_1": {
+          "hits": 2,
+          "cases": 2,
+          "value": 1.0
+        },
+        "recall_at_3": {
+          "hits": 2,
+          "cases": 2,
+          "value": 1.0
+        },
+        "recall_at_5": {
+          "hits": 2,
+          "cases": 2,
+          "value": 1.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "mixed": {
+        "total": 1,
+        "expected_hit_count": 0,
+        "recall_at_1": {
+          "hits": 0,
+          "cases": 1,
+          "value": 0.0
+        },
+        "recall_at_3": {
+          "hits": 0,
+          "cases": 1,
+          "value": 0.0
+        },
+        "recall_at_5": {
+          "hits": 0,
+          "cases": 1,
+          "value": 0.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "natural_language": {
+        "total": 3,
+        "expected_hit_count": 0,
+        "recall_at_1": {
+          "hits": 0,
+          "cases": 3,
+          "value": 0.0
+        },
+        "recall_at_3": {
+          "hits": 0,
+          "cases": 3,
+          "value": 0.0
+        },
+        "recall_at_5": {
+          "hits": 0,
+          "cases": 3,
+          "value": 0.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "no_match": {
+        "total": 2,
+        "expected_hit_count": 0,
+        "recall_at_1": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "recall_at_3": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "recall_at_5": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "negative_control_pass_rate": {
+          "passed": 2,
+          "cases": 2,
+          "value": 1.0
+        }
+      },
+      "noise_control": {
+        "total": 1,
+        "expected_hit_count": 0,
+        "recall_at_1": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "recall_at_3": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "recall_at_5": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 1,
+          "value": 0.0
+        }
+      },
+      "research_draft": {
+        "total": 1,
+        "expected_hit_count": 1,
+        "recall_at_1": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "recall_at_3": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "recall_at_5": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "source_only": {
+        "total": 2,
+        "expected_hit_count": 0,
+        "recall_at_1": {
+          "hits": 0,
+          "cases": 2,
+          "value": 0.0
+        },
+        "recall_at_3": {
+          "hits": 0,
+          "cases": 2,
+          "value": 0.0
+        },
+        "recall_at_5": {
+          "hits": 0,
+          "cases": 2,
+          "value": 0.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      }
+    }
+  },
+  "context": {
+    "total_cases": 20,
+    "positive_case_count": 16,
+    "expected_hit_count": 16,
+    "recall_at_1": {
+      "hits": 12,
+      "cases": 16,
+      "value": 0.75
+    },
+    "recall_at_3": {
+      "hits": 15,
+      "cases": 16,
+      "value": 0.9375
+    },
+    "recall_at_5": {
+      "hits": 16,
+      "cases": 16,
+      "value": 1.0
+    },
+    "negative_case_count": 4,
+    "negative_cases_correctly_empty": 4,
+    "negative_control_pass_rate": {
+      "passed": 4,
+      "cases": 4,
+      "value": 1.0
+    },
+    "false_positive_negative_cases": [],
+    "output_size": {
+      "average_bytes": 1531.55,
+      "max_bytes": 2482
+    },
+    "by_class": {
+      "body_only": {
+        "total": 2,
+        "expected_hit_count": 2,
+        "recall_at_1": {
+          "hits": 2,
+          "cases": 2,
+          "value": 1.0
+        },
+        "recall_at_3": {
+          "hits": 2,
+          "cases": 2,
+          "value": 1.0
+        },
+        "recall_at_5": {
+          "hits": 2,
+          "cases": 2,
+          "value": 1.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "claim_only": {
+        "total": 2,
+        "expected_hit_count": 2,
+        "recall_at_1": {
+          "hits": 1,
+          "cases": 2,
+          "value": 0.5
+        },
+        "recall_at_3": {
+          "hits": 2,
+          "cases": 2,
+          "value": 1.0
+        },
+        "recall_at_5": {
+          "hits": 2,
+          "cases": 2,
+          "value": 1.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "code_navigation": {
+        "total": 1,
+        "expected_hit_count": 0,
+        "recall_at_1": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "recall_at_3": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "recall_at_5": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "negative_control_pass_rate": {
+          "passed": 1,
+          "cases": 1,
+          "value": 1.0
+        }
+      },
+      "conflicting_research": {
+        "total": 1,
+        "expected_hit_count": 1,
+        "recall_at_1": {
+          "hits": 0,
+          "cases": 1,
+          "value": 0.0
+        },
+        "recall_at_3": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "recall_at_5": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "decision_key": {
+        "total": 1,
+        "expected_hit_count": 1,
+        "recall_at_1": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "recall_at_3": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "recall_at_5": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "exact_id": {
+        "total": 1,
+        "expected_hit_count": 1,
+        "recall_at_1": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "recall_at_3": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "recall_at_5": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "exact_title": {
+        "total": 2,
+        "expected_hit_count": 2,
+        "recall_at_1": {
+          "hits": 2,
+          "cases": 2,
+          "value": 1.0
+        },
+        "recall_at_3": {
+          "hits": 2,
+          "cases": 2,
+          "value": 1.0
+        },
+        "recall_at_5": {
+          "hits": 2,
+          "cases": 2,
+          "value": 1.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "mixed": {
+        "total": 1,
+        "expected_hit_count": 1,
+        "recall_at_1": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "recall_at_3": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "recall_at_5": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "natural_language": {
+        "total": 3,
+        "expected_hit_count": 3,
+        "recall_at_1": {
+          "hits": 1,
+          "cases": 3,
+          "value": 0.3333333333333333
+        },
+        "recall_at_3": {
+          "hits": 2,
+          "cases": 3,
+          "value": 0.6666666666666666
+        },
+        "recall_at_5": {
+          "hits": 3,
+          "cases": 3,
+          "value": 1.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "no_match": {
+        "total": 2,
+        "expected_hit_count": 0,
+        "recall_at_1": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "recall_at_3": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "recall_at_5": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "negative_control_pass_rate": {
+          "passed": 2,
+          "cases": 2,
+          "value": 1.0
+        }
+      },
+      "noise_control": {
+        "total": 1,
+        "expected_hit_count": 0,
+        "recall_at_1": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "recall_at_3": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "recall_at_5": {
+          "hits": 0,
+          "cases": 0,
+          "value": null
+        },
+        "negative_control_pass_rate": {
+          "passed": 1,
+          "cases": 1,
+          "value": 1.0
+        }
+      },
+      "research_draft": {
+        "total": 1,
+        "expected_hit_count": 1,
+        "recall_at_1": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "recall_at_3": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "recall_at_5": {
+          "hits": 1,
+          "cases": 1,
+          "value": 1.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      },
+      "source_only": {
+        "total": 2,
+        "expected_hit_count": 2,
+        "recall_at_1": {
+          "hits": 2,
+          "cases": 2,
+          "value": 1.0
+        },
+        "recall_at_3": {
+          "hits": 2,
+          "cases": 2,
+          "value": 1.0
+        },
+        "recall_at_5": {
+          "hits": 2,
+          "cases": 2,
+          "value": 1.0
+        },
+        "negative_control_pass_rate": {
+          "passed": 0,
+          "cases": 0,
+          "value": null
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "exact-decision-id",
+      "class": "exact_id",
+      "query": "decision.forward-density-window",
+      "expected_ids": [
+        "decision.forward-density-window"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Exact active decision object ID.",
+      "operation": "context",
+      "returned_ids": [
+        "decision.forward-density-window",
+        "research.forward-density-window-conflict",
+        "reference.forward-density-handoff",
+        "reference.github-issue-4",
+        "reference.reading-analysis-prd"
+      ],
+      "expected_found": true,
+      "negative_control_pass": false,
+      "actual_coverage": "semantic",
+      "coverage_match": true,
+      "pass": true,
+      "best_expected_rank": 1,
+      "process_exit_status": 0,
+      "output_size": 2225,
+      "stdout": "OKF CONTEXT\nquery: decision.forward-density-window\ncoverage: semantic\nOKF_CONTEXT_OBJECT decision.forward-density-window rank=1 score=1170 lifecycle=active freshness=fresh verified=yes title=Forward-density window contract\nmatched_fields: id,title,description,claim,heading,body\nclaim: The primary closed GitHub issue specifies a 1000ms forward-looking note-density window, with raw counts and no weighting or decay.\nbody: ## Decision The accepted current contract is a 1000ms forward-looking note-density window using raw counts with no weighting or decay. The closed issue is a primary project decision surface; raw handoffs remain evidence of earlier or competing proposals.\nOKF_CONTEXT_OBJECT research.forward-density-window-conflict rank=2 score=148 lifecycle=draft freshness=unknown verified=no title=Forward-density window reconciliation\nmatched_fields: title,description,claim,claim,claim\nclaim: The raw forward-density handoff proposes a 3000ms forward-looking note-density window.\nclaim: The raw reading-analysis PRD proposes a 1000ms forward-looking note-density window.\nclaim: The repository contains conflicting raw proposals for the forward-density window; no current Decision should be inferred until the conflict is resolved.\nbody: This is intentionally a draft. The raw documents are evidence of proposals, not proof of the current product contract.\nOKF_CONTEXT_OBJECT reference.forward-density-handoff rank=3 score=96 lifecycle=active freshness=fresh verified=no title=Forward-density prototype handoff\nmatched_fields: title,description\nbody: Anchored raw project evidence. It is not treated as current implementation behavior.\nOKF_CONTEXT_OBJECT reference.github-issue-4 rank=4 score=96 lifecycle=active freshness=fresh verified=no title=GitHub issue 4 \u2014 forward-looking note density\nmatched_fields: title,description\nbody: Anchored primary GitHub workstream specification. The issue is recorded as closed in the bootstrap inventory.\nOKF_CONTEXT_OBJECT reference.reading-analysis-prd rank=5 score=78 lifecycle=active freshness=fresh verified=no title=Reading analysis PRD raw document\nmatched_fields: description\nbody: Anchored raw project evidence. It is not treated as current implementation behavior.\n",
+      "stderr": ""
+    },
+    {
+      "id": "exact-decision-key",
+      "class": "decision_key",
+      "query": "reading.forward-density-window",
+      "expected_ids": [
+        "decision.forward-density-window"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Exact active decision key.",
+      "operation": "context",
+      "returned_ids": [
+        "decision.forward-density-window",
+        "research.forward-density-window-conflict",
+        "reference.forward-density-handoff",
+        "reference.github-issue-4",
+        "reference.reading-analysis-prd"
+      ],
+      "expected_found": true,
+      "negative_control_pass": false,
+      "actual_coverage": "semantic",
+      "coverage_match": true,
+      "pass": true,
+      "best_expected_rank": 1,
+      "process_exit_status": 0,
+      "output_size": 2100,
+      "stdout": "OKF CONTEXT\nquery: reading.forward-density-window\ncoverage: semantic\nOKF_CONTEXT_OBJECT decision.forward-density-window rank=1 score=1053 lifecycle=active freshness=fresh verified=yes title=Forward-density window contract\nmatched_fields: decision_key,title,description,claim,body\nclaim: The primary closed GitHub issue specifies a 1000ms forward-looking note-density window, with raw counts and no weighting or decay.\nbody: The accepted current contract is a 1000ms forward-looking note-density window using raw counts with no weighting or decay.\nOKF_CONTEXT_OBJECT research.forward-density-window-conflict rank=2 score=148 lifecycle=draft freshness=unknown verified=no title=Forward-density window reconciliation\nmatched_fields: title,description,claim,claim,claim\nclaim: The raw forward-density handoff proposes a 3000ms forward-looking note-density window.\nclaim: The raw reading-analysis PRD proposes a 1000ms forward-looking note-density window.\nclaim: The repository contains conflicting raw proposals for the forward-density window; no current Decision should be inferred until the conflict is resolved.\nbody: This is intentionally a draft. The raw documents are evidence of proposals, not proof of the current product contract.\nOKF_CONTEXT_OBJECT reference.forward-density-handoff rank=3 score=96 lifecycle=active freshness=fresh verified=no title=Forward-density prototype handoff\nmatched_fields: title,description\nbody: Anchored raw project evidence. It is not treated as current implementation behavior.\nOKF_CONTEXT_OBJECT reference.github-issue-4 rank=4 score=96 lifecycle=active freshness=fresh verified=no title=GitHub issue 4 \u2014 forward-looking note density\nmatched_fields: title,description\nbody: Anchored primary GitHub workstream specification. The issue is recorded as closed in the bootstrap inventory.\nOKF_CONTEXT_OBJECT reference.reading-analysis-prd rank=5 score=96 lifecycle=active freshness=fresh verified=no title=Reading analysis PRD raw document\nmatched_fields: title,description\nbody: Anchored raw project evidence. It is not treated as current implementation behavior.\n",
+      "stderr": ""
+    },
+    {
+      "id": "exact-title-decision",
+      "class": "exact_title",
+      "query": "Forward-density window contract",
+      "expected_ids": [
+        "decision.forward-density-window"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Exact title-like lookup.",
+      "operation": "context",
+      "returned_ids": [
+        "decision.forward-density-window",
+        "research.forward-density-window-conflict",
+        "reference.github-issue-4",
+        "reference.forward-density-handoff",
+        "reference.reading-analysis-prd"
+      ],
+      "expected_found": true,
+      "negative_control_pass": false,
+      "actual_coverage": "semantic",
+      "coverage_match": true,
+      "pass": true,
+      "best_expected_rank": 1,
+      "process_exit_status": 0,
+      "output_size": 2178,
+      "stdout": "OKF CONTEXT\nquery: Forward-density window contract\ncoverage: semantic\nOKF_CONTEXT_OBJECT decision.forward-density-window rank=1 score=968 lifecycle=active freshness=fresh verified=yes title=Forward-density window contract\nmatched_fields: title,title,description,claim,body\nclaim: The primary closed GitHub issue specifies a 1000ms forward-looking note-density window, with raw counts and no weighting or decay.\nbody: The accepted current contract is a 1000ms forward-looking note-density window using raw counts with no weighting or decay. Implementation may treat the 1000ms raw-count contract as verified project guidance.\nOKF_CONTEXT_OBJECT research.forward-density-window-conflict rank=2 score=141 lifecycle=draft freshness=unknown verified=no title=Forward-density window reconciliation\nmatched_fields: title,description,claim,claim,claim,body\nclaim: The raw forward-density handoff proposes a 3000ms forward-looking note-density window.\nclaim: The raw reading-analysis PRD proposes a 1000ms forward-looking note-density window.\nclaim: The repository contains conflicting raw proposals for the forward-density window; no current Decision should be inferred until the conflict is resolved.\nbody: This is intentionally a draft. The raw documents are evidence of proposals, not proof of the current product contract.\nOKF_CONTEXT_OBJECT reference.github-issue-4 rank=3 score=102 lifecycle=active freshness=fresh verified=no title=GitHub issue 4 \u2014 forward-looking note density\nmatched_fields: title,description\nbody: Anchored primary GitHub workstream specification. The issue is recorded as closed in the bootstrap inventory.\nOKF_CONTEXT_OBJECT reference.forward-density-handoff rank=4 score=96 lifecycle=active freshness=fresh verified=no title=Forward-density prototype handoff\nmatched_fields: title,description\nbody: Anchored raw project evidence. It is not treated as current implementation behavior.\nOKF_CONTEXT_OBJECT reference.reading-analysis-prd rank=5 score=78 lifecycle=active freshness=fresh verified=no title=Reading analysis PRD raw document\nmatched_fields: description\nbody: Anchored raw project evidence. It is not treated as current implementation behavior.\n",
+      "stderr": ""
+    },
+    {
+      "id": "exact-title-system",
+      "class": "exact_title",
+      "query": "Frontend analysis UI",
+      "expected_ids": [
+        "system.frontend-analysis-ui"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Exact title-like lookup for a current system.",
+      "operation": "context",
+      "returned_ids": [
+        "system.frontend-analysis-ui",
+        "reference.frontend-source"
+      ],
+      "expected_found": true,
+      "negative_control_pass": false,
+      "actual_coverage": "semantic",
+      "coverage_match": true,
+      "pass": true,
+      "best_expected_rank": 1,
+      "process_exit_status": 0,
+      "output_size": 1040,
+      "stdout": "OKF CONTEXT\nquery: Frontend analysis UI\ncoverage: semantic\nOKF_CONTEXT_OBJECT system.frontend-analysis-ui rank=1 score=891 lifecycle=active freshness=fresh verified=yes title=Frontend analysis UI\nmatched_fields: title,title,description,claim,body\nclaim: The frontend contains analysis presentation surfaces for jump, finger-control, aim-control, slider, reading, and stream profiles.\nbody: The system covers frontend analysis presentation and request wiring. It does not implement backend analysis algorithms. The frontend contains analysis presentation surfaces for jump, finger-control, aim-control, slider, reading, and stream profiles. The frontend type and rendering contracts should be reconciled against each backend response before further UI claims are activated.\nOKF_CONTEXT_OBJECT reference.frontend-source rank=2 score=81 lifecycle=active freshness=fresh verified=no title=Frontend source tree at bootstrap commit\nmatched_fields: title,description,body\nbody: Anchored repository evidence for frontend behavior and presentation.\n",
+      "stderr": ""
+    },
+    {
+      "id": "natural-forward-density-window",
+      "class": "natural_language",
+      "query": "Why do we use a one second forward density window?",
+      "expected_ids": [
+        "decision.forward-density-window"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Natural-language recall of a known active decision.",
+      "operation": "context",
+      "returned_ids": [
+        "decision.forward-density-window",
+        "research.forward-density-window-conflict",
+        "reference.forward-density-handoff",
+        "reference.github-issue-4",
+        "reference.reading-analysis-prd"
+      ],
+      "expected_found": true,
+      "negative_control_pass": false,
+      "actual_coverage": "semantic",
+      "coverage_match": true,
+      "pass": true,
+      "best_expected_rank": 1,
+      "process_exit_status": 0,
+      "output_size": 2100,
+      "stdout": "OKF CONTEXT\nquery: Why do we use a one second forward density window?\ncoverage: semantic\nOKF_CONTEXT_OBJECT decision.forward-density-window rank=1 score=153 lifecycle=active freshness=fresh verified=yes title=Forward-density window contract\nmatched_fields: title,description,claim,body\nclaim: The primary closed GitHub issue specifies a 1000ms forward-looking note-density window, with raw counts and no weighting or decay.\nbody: The accepted current contract is a 1000ms forward-looking note-density window using raw counts with no weighting or decay.\nOKF_CONTEXT_OBJECT research.forward-density-window-conflict rank=2 score=138 lifecycle=draft freshness=unknown verified=no title=Forward-density window reconciliation\nmatched_fields: title,description,claim,claim,claim\nclaim: The raw forward-density handoff proposes a 3000ms forward-looking note-density window.\nclaim: The raw reading-analysis PRD proposes a 1000ms forward-looking note-density window.\nclaim: The repository contains conflicting raw proposals for the forward-density window; no current Decision should be inferred until the conflict is resolved.\nbody: This is intentionally a draft. The raw documents are evidence of proposals, not proof of the current product contract.\nOKF_CONTEXT_OBJECT reference.forward-density-handoff rank=3 score=96 lifecycle=active freshness=fresh verified=no title=Forward-density prototype handoff\nmatched_fields: title,description\nbody: Anchored raw project evidence. It is not treated as current implementation behavior.\nOKF_CONTEXT_OBJECT reference.github-issue-4 rank=4 score=96 lifecycle=active freshness=fresh verified=no title=GitHub issue 4 \u2014 forward-looking note density\nmatched_fields: title,description\nbody: Anchored primary GitHub workstream specification. The issue is recorded as closed in the bootstrap inventory.\nOKF_CONTEXT_OBJECT reference.reading-analysis-prd rank=5 score=78 lifecycle=active freshness=fresh verified=no title=Reading analysis PRD raw document\nmatched_fields: description\nbody: Anchored raw project evidence. It is not treated as current implementation behavior.\n",
+      "stderr": ""
+    },
+    {
+      "id": "natural-spacing-transition",
+      "class": "natural_language",
+      "query": "What did we learn about spacing transition demand?",
+      "expected_ids": [
+        "research.spacing-transition-demand"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Natural-language recall of draft research.",
+      "operation": "context",
+      "returned_ids": [
+        "reference.spacing-transition-handoff",
+        "reference.github-issue-3",
+        "reference.sequence-motor-prototype",
+        "research.spacing-transition-demand",
+        "research.sequence-motor-prototype-limitations"
+      ],
+      "expected_found": true,
+      "negative_control_pass": false,
+      "actual_coverage": "semantic",
+      "coverage_match": true,
+      "pass": true,
+      "best_expected_rank": 4,
+      "process_exit_status": 0,
+      "output_size": 2205,
+      "stdout": "OKF CONTEXT\nquery: What did we learn about spacing transition demand?\ncoverage: semantic\nOKF_CONTEXT_OBJECT reference.spacing-transition-handoff rank=1 score=108 lifecycle=active freshness=fresh verified=no title=Spacing transition demand handoff\nmatched_fields: title,description\nbody: Anchored raw project evidence. It is not treated as current implementation behavior or an accepted Decision.\nOKF_CONTEXT_OBJECT reference.github-issue-3 rank=2 score=78 lifecycle=active freshness=fresh verified=no title=GitHub issue 3 \u2014 intra-pattern spacing\nmatched_fields: title,description\nbody: Anchored primary GitHub workstream specification.\nOKF_CONTEXT_OBJECT reference.sequence-motor-prototype rank=3 score=72 lifecycle=active freshness=fresh verified=no title=Sequence-motor prototype source\nmatched_fields: description\nbody: Anchored prototype implementation evidence. Prototype behavior is not automatically current production behavior.\nOKF_CONTEXT_OBJECT research.spacing-transition-demand rank=4 score=68 lifecycle=draft freshness=unknown verified=no title=Spacing transition demand prototype\nmatched_fields: title,description,claim\nclaim: The spacing-transition handoff recommends mean squared bending energy (LTD) as the primary prototype descriptor because it is normalized by pattern length and emphasizes large deviations.\nbody: This remains a draft research record. It preserves the prototype recommendation without promoting it to a current implementation Decision.\nOKF_CONTEXT_OBJECT research.sequence-motor-prototype-limitations rank=5 score=30 lifecycle=draft freshness=unknown verified=no title=Sequence-motor prototype limitations\nmatched_fields: claim,claim\nclaim: The prototype computes spacing-derived descriptors for selected burst patterns, including second-order spacing variation and a normalized squared bending-energy candidate.\nclaim: The prototype sample contains geometry and abrupt-transition descriptions that are not represented by spacing-only descriptors, so those descriptors cannot be treated as a complete difficulty model.\nbody: This remains a draft research record. It records measurable scope and limitations without promoting prototype rankings to product behavior.\n",
+      "stderr": ""
+    },
+    {
+      "id": "natural-sequence-motor",
+      "class": "natural_language",
+      "query": "What are the limitations of the sequence motor prototype?",
+      "expected_ids": [
+        "research.sequence-motor-prototype-limitations"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Natural-language recall of draft research.",
+      "operation": "context",
+      "returned_ids": [
+        "reference.sequence-motor-prototype",
+        "reference.sequence-motor-sample",
+        "research.sequence-motor-prototype-limitations",
+        "reference.forward-density-handoff",
+        "research.spacing-transition-demand"
+      ],
+      "expected_found": true,
+      "negative_control_pass": false,
+      "actual_coverage": "semantic",
+      "coverage_match": true,
+      "pass": true,
+      "best_expected_rank": 3,
+      "process_exit_status": 0,
+      "output_size": 2458,
+      "stdout": "OKF CONTEXT\nquery: What are the limitations of the sequence motor prototype?\ncoverage: semantic\nOKF_CONTEXT_OBJECT reference.sequence-motor-prototype rank=1 score=117 lifecycle=active freshness=fresh verified=no title=Sequence-motor prototype source\nmatched_fields: title,description,body\nbody: Anchored prototype implementation evidence. Prototype behavior is not automatically current production behavior.\nOKF_CONTEXT_OBJECT reference.sequence-motor-sample rank=2 score=105 lifecycle=active freshness=fresh verified=no title=Sequence-motor prototype sample\nmatched_fields: title,description,body\nbody: Anchored prototype output evidence. It is preserved as evidence, not as a current Decision or difficulty authority.\nOKF_CONTEXT_OBJECT research.sequence-motor-prototype-limitations rank=3 score=92 lifecycle=draft freshness=unknown verified=no title=Sequence-motor prototype limitations\nmatched_fields: title,description,claim,claim,body\nclaim: The prototype computes spacing-derived descriptors for selected burst patterns, including second-order spacing variation and a normalized squared bending-energy candidate.\nclaim: The prototype sample contains geometry and abrupt-transition descriptions that are not represented by spacing-only descriptors, so those descriptors cannot be treated as a complete difficulty model.\nbody: This remains a draft research record. It records measurable scope and limitations without promoting prototype rankings to product behavior.\nOKF_CONTEXT_OBJECT reference.forward-density-handoff rank=4 score=78 lifecycle=active freshness=fresh verified=no title=Forward-density prototype handoff\nmatched_fields: title,description\nbody: Anchored raw project evidence. It is not treated as current implementation behavior.\nOKF_CONTEXT_OBJECT research.spacing-transition-demand rank=5 score=41 lifecycle=draft freshness=unknown verified=no title=Spacing transition demand prototype\nmatched_fields: title,description,claim,claim,body\nclaim: The prototype recommendation is not evidence that the descriptor is current production behavior; backend implementation and validation remain pending.\nclaim: The spacing-transition handoff recommends mean squared bending energy (LTD) as the primary prototype descriptor because it is normalized by pattern length and emphasizes large deviations.\nbody: This remains a draft research record. It preserves the prototype recommendation without promoting it to a current implementation Decision.\n",
+      "stderr": ""
+    },
+    {
+      "id": "claim-only-density-contract",
+      "class": "claim_only",
+      "query": "raw counts and no weighting or decay",
+      "expected_ids": [
+        "decision.forward-density-window"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Useful wording exists in the claim statement, not searchable description/title.",
+      "operation": "context",
+      "returned_ids": [
+        "decision.forward-density-window",
+        "reference.reading-analysis-prd",
+        "research.forward-density-window-conflict"
+      ],
+      "expected_found": true,
+      "negative_control_pass": false,
+      "actual_coverage": "semantic",
+      "coverage_match": true,
+      "pass": true,
+      "best_expected_rank": 1,
+      "process_exit_status": 0,
+      "output_size": 1758,
+      "stdout": "OKF CONTEXT\nquery: raw counts and no weighting or decay\ncoverage: semantic\nOKF_CONTEXT_OBJECT decision.forward-density-window rank=1 score=112 lifecycle=active freshness=fresh verified=yes title=Forward-density window contract\nmatched_fields: claim,body\nclaim: The primary closed GitHub issue specifies a 1000ms forward-looking note-density window, with raw counts and no weighting or decay.\nbody: Raw project documents contain both 1000ms and 3000ms proposals. The accepted current contract is a 1000ms forward-looking note-density window using raw counts with no weighting or decay. The closed issue is a primary project decision surface; raw handoffs remain evidence of earlier or competing proposals. Implementation may treat the 1000ms raw-count contract as verified project guidance.\nOKF_CONTEXT_OBJECT reference.reading-analysis-prd rank=2 score=81 lifecycle=active freshness=fresh verified=no title=Reading analysis PRD raw document\nmatched_fields: title,description,body\nbody: Anchored raw project evidence. It is not treated as current implementation behavior.\nOKF_CONTEXT_OBJECT research.forward-density-window-conflict rank=3 score=39 lifecycle=draft freshness=unknown verified=no title=Forward-density window reconciliation\nmatched_fields: description,claim,claim,claim,body\nclaim: The raw forward-density handoff proposes a 3000ms forward-looking note-density window.\nclaim: The raw reading-analysis PRD proposes a 1000ms forward-looking note-density window.\nclaim: The repository contains conflicting raw proposals for the forward-density window; no current Decision should be inferred until the conflict is resolved.\nbody: This is intentionally a draft. The raw documents are evidence of proposals, not proof of the current product contract.\n",
+      "stderr": ""
+    },
+    {
+      "id": "claim-only-geometry-limit",
+      "class": "claim_only",
+      "query": "geometry and abrupt-transition descriptions are not represented",
+      "expected_ids": [
+        "research.sequence-motor-prototype-limitations"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Useful wording exists in a research claim statement.",
+      "operation": "context",
+      "returned_ids": [
+        "reference.spacing-transition-handoff",
+        "research.sequence-motor-prototype-limitations",
+        "research.spacing-transition-demand"
+      ],
+      "expected_found": true,
+      "negative_control_pass": false,
+      "actual_coverage": "semantic",
+      "coverage_match": true,
+      "pass": true,
+      "best_expected_rank": 2,
+      "process_exit_status": 0,
+      "output_size": 1659,
+      "stdout": "OKF CONTEXT\nquery: geometry and abrupt-transition descriptions are not represented\ncoverage: semantic\nOKF_CONTEXT_OBJECT reference.spacing-transition-handoff rank=1 score=81 lifecycle=active freshness=fresh verified=no title=Spacing transition demand handoff\nmatched_fields: title,description,body\nbody: Anchored raw project evidence. It is not treated as current implementation behavior or an accepted Decision.\nOKF_CONTEXT_OBJECT research.sequence-motor-prototype-limitations rank=2 score=60 lifecycle=draft freshness=unknown verified=no title=Sequence-motor prototype limitations\nmatched_fields: claim\nclaim: The prototype sample contains geometry and abrupt-transition descriptions that are not represented by spacing-only descriptors, so those descriptors cannot be treated as a complete difficulty model.\nbody: This remains a draft research record. It records measurable scope and limitations without promoting prototype rankings to product behavior.\nOKF_CONTEXT_OBJECT research.spacing-transition-demand rank=3 score=38 lifecycle=draft freshness=unknown verified=no title=Spacing transition demand prototype\nmatched_fields: title,description,claim,claim\nclaim: The prototype recommendation is not evidence that the descriptor is current production behavior; backend implementation and validation remain pending.\nclaim: The spacing-transition handoff recommends mean squared bending energy (LTD) as the primary prototype descriptor because it is normalized by pattern length and emphasizes large deviations.\nbody: This remains a draft research record. It preserves the prototype recommendation without promoting it to a current implementation Decision.\n",
+      "stderr": ""
+    },
+    {
+      "id": "body-only-current-contract",
+      "class": "body_only",
+      "query": "Implementation may treat the 1000ms raw-count contract as verified project guidance.",
+      "expected_ids": [
+        "decision.forward-density-window"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Useful wording exists in Markdown body content.",
+      "operation": "context",
+      "returned_ids": [
+        "decision.forward-density-window",
+        "reference.reading-analysis-prd",
+        "reference.forward-density-handoff",
+        "reference.github-issue-4",
+        "reference.spacing-transition-handoff"
+      ],
+      "expected_found": true,
+      "negative_control_pass": false,
+      "actual_coverage": "semantic",
+      "coverage_match": true,
+      "pass": true,
+      "best_expected_rank": 1,
+      "process_exit_status": 0,
+      "output_size": 2011,
+      "stdout": "OKF CONTEXT\nquery: Implementation may treat the 1000ms raw-count contract as verified project guidance.\ncoverage: semantic\nOKF_CONTEXT_OBJECT decision.forward-density-window rank=1 score=119 lifecycle=active freshness=fresh verified=yes title=Forward-density window contract\nmatched_fields: title,claim,body\nclaim: The primary closed GitHub issue specifies a 1000ms forward-looking note-density window, with raw counts and no weighting or decay.\nbody: Raw project documents contain both 1000ms and 3000ms proposals. The accepted current contract is a 1000ms forward-looking note-density window using raw counts with no weighting or decay. The closed issue is a primary project decision surface; raw handoffs remain evidence of earlier or competing proposals. Implementation may treat the 1000ms raw-count contract as verified project guidance.\nOKF_CONTEXT_OBJECT reference.reading-analysis-prd rank=2 score=84 lifecycle=active freshness=fresh verified=no title=Reading analysis PRD raw document\nmatched_fields: title,description,body\nbody: Anchored raw project evidence. It is not treated as current implementation behavior.\nOKF_CONTEXT_OBJECT reference.forward-density-handoff rank=3 score=72 lifecycle=active freshness=fresh verified=no title=Forward-density prototype handoff\nmatched_fields: description,body\nbody: Anchored raw project evidence. It is not treated as current implementation behavior.\nOKF_CONTEXT_OBJECT reference.github-issue-4 rank=4 score=72 lifecycle=active freshness=fresh verified=no title=GitHub issue 4 \u2014 forward-looking note density\nmatched_fields: description\nbody: Anchored primary GitHub workstream specification. The issue is recorded as closed in the bootstrap inventory.\nOKF_CONTEXT_OBJECT reference.spacing-transition-handoff rank=5 score=72 lifecycle=active freshness=fresh verified=no title=Spacing transition demand handoff\nmatched_fields: description,body\nbody: Anchored raw project evidence. It is not treated as current implementation behavior or an accepted Decision.\n",
+      "stderr": ""
+    },
+    {
+      "id": "body-only-frontend-wiring",
+      "class": "body_only",
+      "query": "passes results into analysis components",
+      "expected_ids": [
+        "system.frontend-analysis-ui"
+      ],
+      "expected_coverage": "source_only",
+      "notes": "Useful wording exists in Markdown body content.",
+      "operation": "context",
+      "returned_ids": [
+        "system.frontend-analysis-ui",
+        "system.backend-analysis"
+      ],
+      "expected_found": true,
+      "negative_control_pass": false,
+      "actual_coverage": "source_only",
+      "coverage_match": true,
+      "pass": true,
+      "best_expected_rank": 1,
+      "process_exit_status": 0,
+      "output_size": 831,
+      "stdout": "OKF CONTEXT\nquery: passes results into analysis components\ncoverage: source_only\nOKF_CONTEXT_OBJECT system.frontend-analysis-ui rank=1 score=78 lifecycle=active freshness=fresh verified=yes title=Frontend analysis UI\nmatched_fields: description,body\nbody: Present beatmap details and analysis results to users. The page calls the backend beatmap details and analysis endpoints and passes results into analysis components.\nOKF_CONTEXT_OBJECT system.backend-analysis rank=2 score=73 lifecycle=active freshness=fresh verified=yes title=Backend analysis system\nmatched_fields: claim,body\nclaim: The backend groups analysis behavior into jumps, streams, sliders, finger control, aim control, and reading modules.\nbody: The backend groups analysis behavior into jumps, streams, sliders, finger control, aim control, and reading modules.\n",
+      "stderr": ""
+    },
+    {
+      "id": "draft-research-id",
+      "class": "research_draft",
+      "query": "research.spacing-transition-demand",
+      "expected_ids": [
+        "research.spacing-transition-demand"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Exact lookup of draft research must remain visible as draft knowledge.",
+      "operation": "context",
+      "returned_ids": [
+        "research.spacing-transition-demand",
+        "reference.spacing-transition-handoff",
+        "reference.github-issue-3",
+        "reference.sequence-motor-prototype",
+        "research.sequence-motor-prototype-limitations"
+      ],
+      "expected_found": true,
+      "negative_control_pass": false,
+      "actual_coverage": "semantic",
+      "coverage_match": true,
+      "pass": true,
+      "best_expected_rank": 1,
+      "process_exit_status": 0,
+      "output_size": 2216,
+      "stdout": "OKF CONTEXT\nquery: research.spacing-transition-demand\ncoverage: semantic\nOKF_CONTEXT_OBJECT research.spacing-transition-demand rank=1 score=1077 lifecycle=draft freshness=unknown verified=no title=Spacing transition demand prototype\nmatched_fields: id,title,description,claim,body\nclaim: The spacing-transition handoff recommends mean squared bending energy (LTD) as the primary prototype descriptor because it is normalized by pattern length and emphasizes large deviations.\nbody: This remains a draft research record. It preserves the prototype recommendation without promoting it to a current implementation Decision.\nOKF_CONTEXT_OBJECT reference.spacing-transition-handoff rank=2 score=108 lifecycle=active freshness=fresh verified=no title=Spacing transition demand handoff\nmatched_fields: title,description\nbody: Anchored raw project evidence. It is not treated as current implementation behavior or an accepted Decision.\nOKF_CONTEXT_OBJECT reference.github-issue-3 rank=3 score=78 lifecycle=active freshness=fresh verified=no title=GitHub issue 3 \u2014 intra-pattern spacing\nmatched_fields: title,description\nbody: Anchored primary GitHub workstream specification.\nOKF_CONTEXT_OBJECT reference.sequence-motor-prototype rank=4 score=72 lifecycle=active freshness=fresh verified=no title=Sequence-motor prototype source\nmatched_fields: description\nbody: Anchored prototype implementation evidence. Prototype behavior is not automatically current production behavior.\nOKF_CONTEXT_OBJECT research.sequence-motor-prototype-limitations rank=5 score=39 lifecycle=draft freshness=unknown verified=no title=Sequence-motor prototype limitations\nmatched_fields: description,claim,claim,body\nclaim: The prototype computes spacing-derived descriptors for selected burst patterns, including second-order spacing variation and a normalized squared bending-energy candidate.\nclaim: The prototype sample contains geometry and abrupt-transition descriptions that are not represented by spacing-only descriptors, so those descriptors cannot be treated as a complete difficulty model.\nbody: This remains a draft research record. It records measurable scope and limitations without promoting prototype rankings to product behavior.\n",
+      "stderr": ""
+    },
+    {
+      "id": "competing-density-research",
+      "class": "conflicting_research",
+      "query": "What are the competing 1000ms and 3000ms forward density proposals?",
+      "expected_ids": [
+        "research.forward-density-window-conflict"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Known research object records competing proposals.",
+      "operation": "context",
+      "returned_ids": [
+        "decision.forward-density-window",
+        "research.forward-density-window-conflict",
+        "reference.github-issue-4",
+        "reference.forward-density-handoff",
+        "reference.reading-analysis-prd"
+      ],
+      "expected_found": true,
+      "negative_control_pass": false,
+      "actual_coverage": "semantic",
+      "coverage_match": true,
+      "pass": true,
+      "best_expected_rank": 2,
+      "process_exit_status": 0,
+      "output_size": 2482,
+      "stdout": "OKF CONTEXT\nquery: What are the competing 1000ms and 3000ms forward density proposals?\ncoverage: semantic\nOKF_CONTEXT_OBJECT decision.forward-density-window rank=1 score=144 lifecycle=active freshness=fresh verified=yes title=Forward-density window contract\nmatched_fields: title,description,claim,body\nclaim: The primary closed GitHub issue specifies a 1000ms forward-looking note-density window, with raw counts and no weighting or decay.\nbody: Raw project documents contain both 1000ms and 3000ms proposals. The accepted current contract is a 1000ms forward-looking note-density window using raw counts with no weighting or decay. The closed issue is a primary project decision surface; raw handoffs remain evidence of earlier or competing proposals. The 3000ms proposal remains captured in draft research and has not been silently deleted. Implementation may treat the 1000ms raw-count contract as verified project guidance.\nOKF_CONTEXT_OBJECT research.forward-density-window-conflict rank=2 score=135 lifecycle=draft freshness=unknown verified=no title=Forward-density window reconciliation\nmatched_fields: title,description,claim,claim,claim,body\nclaim: The raw forward-density handoff proposes a 3000ms forward-looking note-density window.\nclaim: The raw reading-analysis PRD proposes a 1000ms forward-looking note-density window.\nclaim: The repository contains conflicting raw proposals for the forward-density window; no current Decision should be inferred until the conflict is resolved.\nbody: This is intentionally a draft. The raw documents are evidence of proposals, not proof of the current product contract.\nOKF_CONTEXT_OBJECT reference.github-issue-4 rank=3 score=102 lifecycle=active freshness=fresh verified=no title=GitHub issue 4 \u2014 forward-looking note density\nmatched_fields: title,description\nbody: Anchored primary GitHub workstream specification. The issue is recorded as closed in the bootstrap inventory.\nOKF_CONTEXT_OBJECT reference.forward-density-handoff rank=4 score=96 lifecycle=active freshness=fresh verified=no title=Forward-density prototype handoff\nmatched_fields: title,description\nbody: Anchored raw project evidence. It is not treated as current implementation behavior.\nOKF_CONTEXT_OBJECT reference.reading-analysis-prd rank=5 score=72 lifecycle=active freshness=fresh verified=no title=Reading analysis PRD raw document\nmatched_fields: description\nbody: Anchored raw project evidence. It is not treated as current implementation behavior.\n",
+      "stderr": ""
+    },
+    {
+      "id": "known-decision-versus-implementation",
+      "class": "mixed",
+      "query": "Compare the documented density-window decision against the implementation.",
+      "expected_ids": [
+        "decision.forward-density-window"
+      ],
+      "expected_coverage": "semantic",
+      "notes": "Combines documented project knowledge with current-code inspection.",
+      "operation": "context",
+      "returned_ids": [
+        "decision.forward-density-window",
+        "research.forward-density-window-conflict",
+        "reference.forward-density-handoff",
+        "reference.github-issue-4",
+        "reference.reading-analysis-prd"
+      ],
+      "expected_found": true,
+      "negative_control_pass": false,
+      "actual_coverage": "semantic",
+      "coverage_match": true,
+      "pass": true,
+      "best_expected_rank": 1,
+      "process_exit_status": 0,
+      "output_size": 2359,
+      "stdout": "OKF CONTEXT\nquery: Compare the documented density-window decision against the implementation.\ncoverage: semantic\nOKF_CONTEXT_OBJECT decision.forward-density-window rank=1 score=142 lifecycle=active freshness=fresh verified=yes title=Forward-density window contract\nmatched_fields: title,description,claim,heading,body\nclaim: The primary closed GitHub issue specifies a 1000ms forward-looking note-density window, with raw counts and no weighting or decay.\nbody: ## Decision The accepted current contract is a 1000ms forward-looking note-density window using raw counts with no weighting or decay. The closed issue is a primary project decision surface; raw handoffs remain evidence of earlier or competing proposals. Implementation may treat the 1000ms raw-count contract as verified project guidance.\nOKF_CONTEXT_OBJECT research.forward-density-window-conflict rank=2 score=100 lifecycle=draft freshness=unknown verified=no title=Forward-density window reconciliation\nmatched_fields: title,description,claim,claim,claim\nclaim: The raw forward-density handoff proposes a 3000ms forward-looking note-density window.\nclaim: The raw reading-analysis PRD proposes a 1000ms forward-looking note-density window.\nclaim: The repository contains conflicting raw proposals for the forward-density window; no current Decision should be inferred until the conflict is resolved.\nbody: This is intentionally a draft. The raw documents are evidence of proposals, not proof of the current product contract.\nOKF_CONTEXT_OBJECT reference.forward-density-handoff rank=3 score=81 lifecycle=active freshness=fresh verified=no title=Forward-density prototype handoff\nmatched_fields: title,description,body\nbody: Anchored raw project evidence. It is not treated as current implementation behavior.\nOKF_CONTEXT_OBJECT reference.github-issue-4 rank=4 score=78 lifecycle=active freshness=fresh verified=no title=GitHub issue 4 \u2014 forward-looking note density\nmatched_fields: title,description\nbody: Anchored primary GitHub workstream specification. The issue is recorded as closed in the bootstrap inventory.\nOKF_CONTEXT_OBJECT reference.reading-analysis-prd rank=5 score=75 lifecycle=active freshness=fresh verified=no title=Reading analysis PRD raw document\nmatched_fields: description,body\nbody: Anchored raw project evidence. It is not treated as current implementation behavior.\n",
+      "stderr": ""
+    },
+    {
+      "id": "source-only-stream-buffer",
+      "class": "source_only",
+      "query": "Does a stream at the end of the map get counted?",
+      "expected_ids": [
+        "reference.github-issue-6"
+      ],
+      "expected_coverage": "source_only",
+      "notes": "The issue reference exists, but the detail is not distilled into a semantic object.",
+      "operation": "context",
+      "returned_ids": [
+        "reference.github-issue-6",
+        "system.backend-http-api",
+        "system.frontend-analysis-ui"
+      ],
+      "expected_found": true,
+      "negative_control_pass": false,
+      "actual_coverage": "source_only",
+      "coverage_match": true,
+      "pass": true,
+      "best_expected_rank": 1,
+      "process_exit_status": 0,
+      "output_size": 1287,
+      "stdout": "OKF CONTEXT\nquery: Does a stream at the end of the map get counted?\ncoverage: source_only\nOKF_CONTEXT_OBJECT reference.github-issue-6 rank=1 score=78 lifecycle=active freshness=fresh verified=no title=GitHub issue 6 \u2014 duration-based stream categorization\nmatched_fields: title,description\nbody: Anchored primary GitHub workstream specification.\nOKF_CONTEXT_OBJECT system.backend-http-api rank=2 score=73 lifecycle=active freshness=fresh verified=yes title=Backend HTTP API\nmatched_fields: claim,body\nclaim: The backend exposes beatmap details and analysis routes, including analysis types for jump, stream, slider, finger control, aim control, reading, and all.\nbody: The API exposes health, beatmap details, and typed beatmap analysis endpoints. Supported analysis types include jump, stream, slider, finger control, aim control, reading, and all.\nOKF_CONTEXT_OBJECT system.frontend-analysis-ui rank=3 score=73 lifecycle=active freshness=fresh verified=yes title=Frontend analysis UI\nmatched_fields: claim,body\nclaim: The frontend contains analysis presentation surfaces for jump, finger-control, aim-control, slider, reading, and stream profiles.\nbody: The frontend contains analysis presentation surfaces for jump, finger-control, aim-control, slider, reading, and stream profiles.\n",
+      "stderr": ""
+    },
+    {
+      "id": "source-only-duration-rules",
+      "class": "source_only",
+      "query": "What are our duration-based stream rules?",
+      "expected_ids": [
+        "reference.github-issue-6"
+      ],
+      "expected_coverage": "source_only",
+      "notes": "The issue reference describes the workstream, without semantic claim coverage.",
+      "operation": "context",
+      "returned_ids": [
+        "reference.github-issue-6",
+        "system.backend-http-api",
+        "system.frontend-analysis-ui"
+      ],
+      "expected_found": true,
+      "negative_control_pass": false,
+      "actual_coverage": "source_only",
+      "coverage_match": true,
+      "pass": true,
+      "best_expected_rank": 1,
+      "process_exit_status": 0,
+      "output_size": 1281,
+      "stdout": "OKF CONTEXT\nquery: What are our duration-based stream rules?\ncoverage: source_only\nOKF_CONTEXT_OBJECT reference.github-issue-6 rank=1 score=114 lifecycle=active freshness=fresh verified=no title=GitHub issue 6 \u2014 duration-based stream categorization\nmatched_fields: title,description\nbody: Anchored primary GitHub workstream specification.\nOKF_CONTEXT_OBJECT system.backend-http-api rank=2 score=73 lifecycle=active freshness=fresh verified=yes title=Backend HTTP API\nmatched_fields: claim,body\nclaim: The backend exposes beatmap details and analysis routes, including analysis types for jump, stream, slider, finger control, aim control, reading, and all.\nbody: The API exposes health, beatmap details, and typed beatmap analysis endpoints. Supported analysis types include jump, stream, slider, finger control, aim control, reading, and all.\nOKF_CONTEXT_OBJECT system.frontend-analysis-ui rank=3 score=73 lifecycle=active freshness=fresh verified=yes title=Frontend analysis UI\nmatched_fields: claim,body\nclaim: The frontend contains analysis presentation surfaces for jump, finger-control, aim-control, slider, reading, and stream profiles.\nbody: The frontend contains analysis presentation surfaces for jump, finger-control, aim-control, slider, reading, and stream profiles.\n",
+      "stderr": ""
+    },
+    {
+      "id": "ordinary-code-navigation",
+      "class": "code_navigation",
+      "query": "Where is StreamProfile rendered?",
+      "expected_ids": [],
+      "expected_coverage": "none",
+      "notes": "Ordinary source navigation should not require OKF.",
+      "operation": "context",
+      "returned_ids": [],
+      "expected_found": false,
+      "negative_control_pass": true,
+      "actual_coverage": "none",
+      "coverage_match": true,
+      "pass": true,
+      "best_expected_rank": null,
+      "process_exit_status": 0,
+      "output_size": 115,
+      "stdout": "OKF CONTEXT\nquery: Where is StreamProfile rendered?\ncoverage: none\nNo OKF context matched the relevance threshold.\n",
+      "stderr": ""
+    },
+    {
+      "id": "no-match-database-policy",
+      "class": "no_match",
+      "query": "What is the database migration policy?",
+      "expected_ids": [],
+      "expected_coverage": "none",
+      "notes": "Unrelated project question.",
+      "operation": "context",
+      "returned_ids": [],
+      "expected_found": false,
+      "negative_control_pass": true,
+      "actual_coverage": "none",
+      "coverage_match": true,
+      "pass": true,
+      "best_expected_rank": null,
+      "process_exit_status": 0,
+      "output_size": 121,
+      "stdout": "OKF CONTEXT\nquery: What is the database migration policy?\ncoverage: none\nNo OKF context matched the relevance threshold.\n",
+      "stderr": ""
+    },
+    {
+      "id": "no-match-deployment-owner",
+      "class": "no_match",
+      "query": "Who owns production deployment?",
+      "expected_ids": [],
+      "expected_coverage": "none",
+      "notes": "Unrelated project question.",
+      "operation": "context",
+      "returned_ids": [],
+      "expected_found": false,
+      "negative_control_pass": true,
+      "actual_coverage": "none",
+      "coverage_match": true,
+      "pass": true,
+      "best_expected_rank": null,
+      "process_exit_status": 0,
+      "output_size": 114,
+      "stdout": "OKF CONTEXT\nquery: Who owns production deployment?\ncoverage: none\nNo OKF context matched the relevance threshold.\n",
+      "stderr": ""
+    },
+    {
+      "id": "noise-generic-analysis",
+      "class": "noise_control",
+      "query": "analysis",
+      "expected_ids": [],
+      "expected_coverage": "none",
+      "notes": "Generic term should expose whether description substring matching creates noise.",
+      "operation": "context",
+      "returned_ids": [],
+      "expected_found": false,
+      "negative_control_pass": true,
+      "actual_coverage": "none",
+      "coverage_match": true,
+      "pass": true,
+      "best_expected_rank": null,
+      "process_exit_status": 0,
+      "output_size": 91,
+      "stdout": "OKF CONTEXT\nquery: analysis\ncoverage: none\nNo OKF context matched the relevance threshold.\n",
+      "stderr": ""
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "items": [
+    {
+      "effective_freshness": "unknown",
+      "id": "decision.reading-analysis-methodology",
+      "kind": "freshness"
+    },
+    {
+      "effective_freshness": "unknown",
+      "id": "research.forward-density-window-conflict",
+      "kind": "freshness"
+    },
+    {
+      "effective_freshness": "unknown",
+      "id": "research.sequence-motor-prototype-limitations",
+      "kind": "freshness"
+    },
+    {
+      "effective_freshness": "unknown",
+      "id": "research.spacing-transition-demand",
+      "kind": "freshness"
+    }
+  ]
+}

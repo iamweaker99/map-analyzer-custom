@@ -24,12 +24,13 @@ pub fn analyze(map: &Beatmap) -> Value {
     let trap_states = traps::calculate_traps(&visual_nodes, bpm);
 
     let (_strain_points, klines) = strain::calculate_strain_and_klines(
-        &visual_nodes, 
-        &density_states, 
-        &trajectory_states, 
+        &visual_nodes,
+        &density_states,
+        &trajectory_states,
         &trap_states
     );
 
+    // ── Sequence Motor Descriptors (per-pattern) ──
     let total_nodes = visual_nodes.len() as f64;
     let total_traj = trajectory_states.len().max(1) as f64;
 
@@ -164,6 +165,6 @@ pub fn analyze(map: &Beatmap) -> Value {
         },
         "topography": {
             "klines": klines
-        }
+        },
     })
 }

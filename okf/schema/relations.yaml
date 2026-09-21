@@ -1,0 +1,82 @@
+relations:
+  - name: depends_on
+    inverse: required_by
+    source_claim: true
+    target_claim: true
+    source_types: [entity, concept, system, research, decision]
+    target_types: [entity, concept, system, research, decision]
+    selectors: false
+    self_edges: forbidden
+    acyclic: false
+  - name: derived_from
+    inverse: source_for
+    source_claim: true
+    target_claim: true
+    source_types: [entity, concept, system, research, decision]
+    target_types: [entity, concept, system, research, decision, reference]
+    selectors: true
+    self_edges: forbidden
+    acyclic: false
+  - name: supported_by
+    inverse: supports
+    source_claim: true
+    target_claim: true
+    source_types: [entity, concept, system, research, decision]
+    target_types: [entity, concept, system, research, decision, reference]
+    selectors: true
+    self_edges: forbidden
+    acyclic: false
+  - name: supersedes
+    inverse: superseded_by
+    source_claim: true
+    target_claim: true
+    source_types: [entity, concept, system, research, decision]
+    target_types: [entity, concept, system, research, decision]
+    selectors: false
+    self_edges: forbidden
+    acyclic: true
+  - name: contradicts
+    inverse: contradicted_by
+    source_claim: true
+    target_claim: true
+    source_types: [entity, concept, system, research, decision]
+    target_types: [entity, concept, system, research, decision]
+    selectors: false
+    self_edges: forbidden
+    acyclic: false
+  - name: implements
+    inverse: implemented_by
+    source_claim: true
+    target_claim: true
+    source_types: [system]
+    target_types: [decision]
+    selectors: false
+    self_edges: forbidden
+    acyclic: false
+  - name: investigates
+    inverse: investigated_by
+    source_claim: false
+    target_claim: true
+    source_types: [research]
+    target_types: [entity, concept, system, decision]
+    selectors: false
+    self_edges: forbidden
+    acyclic: false
+  - name: governs
+    inverse: governed_by
+    source_claim: true
+    target_claim: true
+    source_types: [decision]
+    target_types: [entity, concept, system]
+    selectors: false
+    self_edges: forbidden
+    acyclic: false
+  - name: part_of
+    inverse: contains
+    source_claim: false
+    target_claim: false
+    source_types: [entity, system]
+    target_types: [entity, system]
+    selectors: false
+    self_edges: forbidden
+    acyclic: true

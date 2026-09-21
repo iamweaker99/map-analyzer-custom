@@ -1,4 +1,4 @@
-use super::patterns::Pattern;
+use super::rhythm_segmentation::Pattern;
 use serde::Serialize;
 
 #[derive(Debug, Serialize, Clone, Default)]

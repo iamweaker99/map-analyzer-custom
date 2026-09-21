@@ -3,7 +3,7 @@ use serde::Serialize;
 use std::collections::HashMap;
 
 pub mod snap_filter;
-pub mod patterns;
+pub mod rhythm_segmentation;
 pub mod transitions;
 pub mod timeline; // NEW: Register timeline
 
@@ -30,7 +30,14 @@ pub struct SnapBucket {
 
 pub fn analyze(map: &Beatmap, md5: String) -> FingerControlAnalysis {
     let (snaps, mut bursts, off_grid, buckets) = snap_filter::analyze_foundation(map);
-    let pattern_list = patterns::extract_patterns(map);
+    // Unified segmentation ([[segmentation-unification]]): Path A
+    // (patterns::extract_patterns) retired — rhythm_segmentation drives
+    // transitions/timeline/histogram.
+    let pattern_list: Vec<rhythm_segmentation::Pattern> =
+        rhythm_segmentation::extract_pattern_indices(map)
+            .into_iter()
+            .map(|(pattern, _range)| pattern)
+            .collect();
     let matrix = transitions::analyze(&pattern_list);
 
     // REMOVED: The problematic recursive call line was here.
@@ -38,7 +45,7 @@ pub fn analyze(map: &Beatmap, md5: String) -> FingerControlAnalysis {
     // FIX: Populate histogram strictly from the Action-Based pattern list
     bursts.clear();
     for p in &pattern_list {
-        if let patterns::PatternType::Burst(n) = p.p_type {
+        if let rhythm_segmentation::PatternType::Burst(n) = p.p_type {
             *bursts.entry(n).or_insert(0) += 1;
         }
     }

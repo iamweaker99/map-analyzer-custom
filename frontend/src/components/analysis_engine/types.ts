@@ -20,10 +20,12 @@ export interface BeatmapAnalysisResult {
 
 export interface JumpAnalysis {
     overall_confidence: number; circle_diameter: number;
-    max_jump_length: number; short_jumps: number; medium_jumps: number; long_jumps: number;
+    max_jump_length: number; max_jump_duration: number;
     jump_density: number; bpm_consistency: number; avg_spacing: number;
-    narrow_count: number; moderate_count: number; wide_count: number; extreme_count: number;
-    narrow_dens: number; moderate_dens: number; wide_dens: number; extreme_dens: number;
+    absolute_short_count: number; absolute_medium_count: number; absolute_long_count: number;
+    absolute_extreme_count: number; absolute_cross_screen_count: number;
+    duration_short_chains: number; duration_medium_chains: number;
+    duration_long_chains: number; duration_extreme_chains: number;
 }
 
 export interface StreamAnalysis {
@@ -32,7 +34,7 @@ export interface StreamAnalysis {
     s_stack_dens: number; s_over_dens: number; s_space_dens: number; s_extr_dens: number;
     avg_stream_spacing: number; v_steady_count: number; v_variable_count: number; v_dynamic_count: number;
     bursts: number; short_streams: number; medium_streams: number; long_streams: number; death_streams: number;
-    max_stream_length: number; stream_density: number; bpm_consistency: number;
+    max_stream_length: number; max_stream_duration: number; bpm_consistency: number;
 }
 
 export interface SliderAnalysis {
